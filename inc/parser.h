@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   parser.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/11 15:34:10 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/11 17:03:05 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PARSER_H
+#ifndef PARSER_H
 # define PARSER_H
 
-typedef enum	e_token_type
+typedef enum e_token_type
 {
 	T_NONE = 0u,
 	T_WORD = (1u << 0),
@@ -25,7 +25,7 @@ typedef enum	e_token_type
 	T_PIPE = (1u << 6)
 }	t_token_type;
 
-typedef struct	s_token
+typedef struct s_token
 {
 	char			*data;
 	t_token_type	type;
