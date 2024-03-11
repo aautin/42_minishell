@@ -15,7 +15,8 @@ GOTO_B	:=	\e[1A\e[K
 
 DEFAULT	:=	\e(B\e[m
 
-FILES		:=	main.c
+FILES		:=	main.c		\
+				tokenize.c	\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
@@ -46,7 +47,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@make --silent -C $(FT_PATH)
 	@echo "$(ORANGE)$(ITA)Linking$(NOITA) into $(BOLD)$@$(DEFAULT)..."
-	@$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) \
+	@$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS) \
 		&& echo "$(GOTO_B)$(GREEN)Successfully $(ITA)linked$(NOITA) into $(BOLD)$@$(DEFAULT)"
 
 -include $(DEPS)
@@ -81,7 +82,7 @@ norm:
 	@echo "$(CYAN)libft :$(DEFAULT)"
 	@make --silent norm -C $(FT_PATH)
 	@echo "$(CYAN)minishell :$(DEFAULT)"
-	@norminette -R CheckForbiddenSourceHeader $(SRC_BONUS)
+	@norminette -R CheckForbiddenSourceHeader $(SRCS)
 	@norminette -R CheckDefine $(INC_PATH)
 
 cleanlib:
