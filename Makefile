@@ -30,7 +30,7 @@ CC			:=	cc
 CFLAGS		:=	-Wall -Wextra -Werror
 GDB			:=	-g3
 export GDB
-INC_PATH	:=	include
+INC_PATH	:=	inc
 INCS		:=	-I. -I$(INC_PATH)
 
 FT		:=	ft
