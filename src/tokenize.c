@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/13 17:08:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/13 21:20:04 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 
 #include "parser.h"
 
-#define OPERATOR_TOKENS "<>|"
-#define QUOTES_CHARS "\"'"
+#define REDIRECT_OPERATOR "<>"
+#define CONTROL_OPERATOR "|"
+#define OPERATOR_TOKENS CONTROL_OPERATOR REDIRECT_OPERATOR
+#define QUOTE_CHARS "\"'"
 
 #define NO_QUOTE 0
 #define SG_QUOTE 1
@@ -73,6 +75,8 @@ int	tokenize(t_list **tokens, char line[])
 		// RULE #1
 		if (line[i] == '\0')
 		{
+			if (token->type == T_NONE)
+				break ;
 			token->data = ft_substr(line, 0, i + 1);
 			if (!add_to_list(tokens, token))
 				return (0);
@@ -81,79 +85,57 @@ int	tokenize(t_list **tokens, char line[])
 		if (token->type & T_OPERATOR)
 		{
 			// RULE #2
-			if (ft_strchr(OPERATOR_TOKENS, line[i]) != NULL)
+			if (token->type & T_REDIRECT_OPERATOR)
 			{
-				if ((token->type & T_PIPE)
-						|| (token->type & T_REDIRECT_HERE_DOC)
-						|| (token->type & T_REDIRECT_APPEND))
-				{
-					token = store_and_create_token(tokens, token, line, i);
-					if (token == NULL)
-						return (0);
-					line += i;
-					i = 0;
-					continue ;
-				}
-				if ((token->type & T_REDIRECT_OUTPUT))
+				if (ft_strchr(REDIRECT_OPERATOR, line[i]) != NULL)
 				{
 					if (line[i] == '>')
 					{
-						token->type &= ~T_REDIRECT_OUTPUT;
-						token->type |= T_REDIRECT_APPEND;
+						if (token->type & T_REDIRECT_OUTPUT)
+						{
+							token->type &= ~T_REDIRECT_OUTPUT;
+							token->type |= T_REDIRECT_APPEND;
+							i++;
+							continue ;
+						}
 					}
-					else if (line[i] == '|')
-					{
-						token = store_and_create_token(tokens, token, line, i);
-						if (token == NULL)
-							return (0);
-						line += i;
-						i = 0;
-						continue ;
-					}
-					else
-					{
-						free(token);
-						return (0);
-					}
-				}
-				if ((token->type & T_REDIRECT_INPUT))
-				{
 					if (line[i] == '<')
 					{
-						token->type &= ~T_REDIRECT_INPUT;
-						token->type |= T_REDIRECT_HERE_DOC;
+						if ((token->type & T_REDIRECT_INPUT))
+						{
+							token->type &= ~T_REDIRECT_INPUT;
+							token->type |= T_REDIRECT_HERE_DOC;
+							i++;
+							continue ;
+						}
 					}
-					else if (line[i] == '|')
-					{
-						token = store_and_create_token(tokens, token, line, i);
-						if (token == NULL)
-							return (0);
-						line += i;
-						i = 0;
-						continue ;
-					}
-					else
-					{
-						free(token);
-						return (0);
-					}
+					//if (line[i] == '|'
+					//		|| (token->type & T_PIPE)
+					//		|| (token->type & T_REDIRECT_HERE_DOC)
+					//		|| (token->type & T_REDIRECT_APPEND))
+					//{
+					//	token = store_and_create_token(tokens, token, line, i);
+					//	if (token == NULL)
+					//		return (0);
+					//	line += i;
+					//	i = 0;
+					//	continue ;
+					//}
 				}
-				i++;
-				continue ;
 			}
-			// RULE #3
-			else
-			{
-				token = store_and_create_token(tokens, token, line, i);
-				if (token == NULL)
-					return (0);
-				line += i;
-				i = 0;
-				continue ;
-			}
+		// RULE #3
+		//	else
+		//	{
+			token = store_and_create_token(tokens, token, line, i);
+			if (token == NULL)
+				return (0);
+			line += i;
+			i = 0;
+			continue ;
+		//	}
 		}
 		// RULE #4
-		if (ft_strchr(QUOTES_CHARS, line[i]) != NULL)
+		if (ft_strchr(QUOTE_CHARS, line[i]) != NULL)
 		{
 			if (line[i] == '\'')
 			{
@@ -186,11 +168,11 @@ int	tokenize(t_list **tokens, char line[])
 			}
 			token->type = T_OPERATOR;
 			if (line[i] == '>')
-				token->type |= T_REDIRECT_OUTPUT;
+				token->type |= T_REDIRECT_OPERATOR | T_REDIRECT_OUTPUT;
 			else if (line[i] == '<')
-				token->type |= T_REDIRECT_INPUT;
+				token->type |= T_REDIRECT_OPERATOR | T_REDIRECT_INPUT;
 			else
-				token->type |= T_PIPE;
+				token->type |= T_CONTROL_OPERATOR | T_PIPE;
 			i++;
 			continue ;
 		}
