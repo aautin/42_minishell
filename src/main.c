@@ -19,24 +19,22 @@
 
 int	parse_data_len(char *data, int data_len);
 
-int	main(int argc, char **argv)
+int	main(void)
 {
-	(void) argc;
-	parse_data_len(argv[1], ft_strlen(argv[1]));
-	// char	*line;
-	// t_list	*tokens;
+	char	*line;
+	t_list	*tokens;
 
-	// tokens = NULL;
-	// while (1)
-	// {
-	// 	line = readline("minishell> ");
-	// 	if (line == NULL)
-	// 		break ;
-	// 	if (*line != '\0')
-	// 		add_history(line);
-	// 	ft_putstr_fd(line, STDOUT_FILENO);
-	// 	free(line);
-	// }
-	// rl_clear_history();
+	tokens = NULL;
+	while (1)
+	{
+		line = readline("minishell> ");
+		if (line == NULL)
+			break ;
+		if (*line != '\0')
+			add_history(line);
+		ft_putstr_fd(line, STDOUT_FILENO);
+		free(line);
+	}
+	rl_clear_history();
 	return (EXIT_SUCCESS);
 }

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "libft/libft.h"
@@ -20,66 +21,106 @@
 #define QUOTE_MODE 1
 #define DB_QUOTE_MODE 2
 
-// static void	parse_data(char *data, char	*parsed_data)
-// {
-// 	char			mode;
-// 	unsigned int	i;
-
-// 	mode = NORMAL_MODE;
-// 	i = 0;
-// 	while (data[i])
-// 	{
-// 		if (data[i] == '"' && mode != QUOTE_MODE)
-// 		{
-// 			if (mode == NORMAL_MODE)
-// 				mode = DB_QUOTE_MODE;
-// 			else if (mode == DB_QUOTE_MODE)
-// 				mode = NORMAL_MODE;
-// 			data_len--;
-// 		}
-// 		else if (data[i] == '\'' && mode != DB_QUOTE_MODE)
-// 		{
-// 			if (mode == NORMAL_MODE)
-// 				mode = QUOTE_MODE;
-// 			else if (mode == QUOTE_MODE)
-// 				mode = NORMAL_MODE;
-// 			data_len--;
-// 		}
-// 		else if (data[i] == '$' && mode != QUOTE_MODE)
-// 			data_len += expansion_len(&data[i + 1], &i);
-// 		i++;
-// 	}
-// }
-
-static int	expansion_len(char *pathname, unsigned int *i)
+static int	expansion(char *pathname, char *parsed_data, char *mode, unsigned int *parsed_i)
 {
 	unsigned int	len;
 	char			temp;
+	char			*var_value;
 
-	if (pathname[0] == '?')
+	if (*mode == DB_QUOTE_MODE && pathname[0] == '\'')
 	{
-		*i += 1;																// here, have to place the previous EXIT_STATUS
-		return (-1);															// 	-> for now, just place substitute $? with 0
+		parsed_data[*parsed_i] = '$';
+		parsed_data[*parsed_i + 1] = '\'';
+		return (*parsed_i += 2, 2);
 	}
-	len = 0;
+	if (*mode == DB_QUOTE_MODE && pathname[0] == '"')
+		return (*mode = NORMAL_MODE, 2);
+	else if (pathname[0] == '?')
+		return (parsed_data[*parsed_i] = '0', 2);								// here, have to place the previous EXIT_STATUS
+	len = 0;																	// 	-> for now, just place substitute $? with 0
+	while (ft_isalnum(pathname[len]) || pathname[len] == '_')
+		len++;
+	if (len == 0)
+		return (parsed_data[*parsed_i] = '$', *parsed_data += 1, 1);
+	temp = pathname[len];
+	pathname[len] = '\0';
+	var_value = getenv(pathname);
+	pathname[len] = temp;
+	if (var_value == NULL)
+		return (len + 1);
+	return (ft_strlcpy(&parsed_data[*parsed_i], var_value, ft_strlen(var_value) + 1), *parsed_i += ft_strlen(var_value), len + 1);
+}
+
+static void	parse_data(char *data, char *parsed_data)
+{
+	unsigned int	i;
+	unsigned int	parsed_i;
+	char			mode;
+
+	mode = NORMAL_MODE;
+	i = 0;
+	parsed_i = 0;
+	while (data[i])
+	{
+		if (data[i] == '"' && mode != QUOTE_MODE)
+		{
+			if (mode == NORMAL_MODE)
+				mode = DB_QUOTE_MODE;
+			else if (mode == DB_QUOTE_MODE)
+				mode = NORMAL_MODE;
+			i++;
+		}
+		else if (data[i] == '\'' && mode != DB_QUOTE_MODE)
+		{
+			if (mode == NORMAL_MODE)
+				mode = QUOTE_MODE;
+			else if (mode == QUOTE_MODE)
+				mode = NORMAL_MODE;
+			i++;
+		}
+		else if (data[i] == '$' && mode != QUOTE_MODE)
+			i += expansion(&data[i + 1], parsed_data, &mode, &parsed_i);
+		else
+		{
+			parsed_data[parsed_i] = data[i];
+			i++;
+			parsed_i++;
+		}
+	}
+	printf("%s\n", parsed_data);
+}
+
+static int	expansion_len(char *pathname, char *mode, unsigned int *i)
+{
+	unsigned int	len;
+	char			temp;
+	char			*var_value;
+
+	if (*mode == DB_QUOTE_MODE && pathname[0] == '\'')
+		return (*i += 1, 0);
+	if (*mode == DB_QUOTE_MODE && pathname[0] == '"')
+		return (*i += 1, *mode = NORMAL_MODE, -2);
+	else if (pathname[0] == '?')
+		return (*i += 1, -1);													// here, have to place the previous EXIT_STATUS
+	len = 0;																	// 	-> for now, just place substitute $? with 0
 	while (ft_isalnum(pathname[len]) || pathname[len] == '_')
 		len++;
 	*i += len;																	// here, move the index browsing in token->data
 	if (len == 0)																// at the end of expension_pathname, examples:
-		return (0);																// 	-> "$HOME qe": on the E	->"$? ": on the ?
+		return (-1);															// 	-> "$HOME qe": on the E	->"$? ": on the ?
 	temp = pathname[len];
 	pathname[len] = '\0';
-	if (getenv(pathname) == NULL)
+	var_value = getenv(pathname);
+	pathname[len] = temp;
+	if (var_value == NULL)
 		return (-len - 1);
-	return (ft_strlen(getenv(pathname)) - len - 1);
+	return (ft_strlen(var_value) - len - 1);
 }
-
-#include <stdio.h>
 
 int	parse_data_len(char *data, int data_len)
 {
-	char			mode;
 	unsigned int	i;
+	char			mode;
 
 	mode = NORMAL_MODE;
 	i = 0;
@@ -102,26 +143,22 @@ int	parse_data_len(char *data, int data_len)
 			data_len--;
 		}
 		else if (data[i] == '$' && mode != QUOTE_MODE)
-			data_len += expansion_len(&data[i + 1], &i);
+			data_len += expansion_len(&data[i + 1], &mode, &i);
 		i++;
 	}
-	printf("%s: %d\n", data, data_len);
-	return (data_len);
+	return (printf("%s: %d\n", data, data_len), data_len);
 }
 
 static int	parse_token(t_token *token)
 {
-	int		len;
-	char	*parsed_data;
+	unsigned int	len;
+	char			*parsed_data;
 
 	len = parse_data_len(token->data, ft_strlen(token->data));
-	if (len == -1)
-		return (1);
 	parsed_data = malloc((len + 1) * sizeof(char));
 	if (parsed_data == NULL)
 		return (1);
-	ft_bzero(parsed_data, len + 1);
-	// parse_data(token->data, parsed_data);
+	parse_data(token->data, parsed_data);
 	free(token->data);
 	token->data = parsed_data;
 	return (0);
