@@ -17,6 +17,7 @@
 
 #include "parser.h"
 
+// TODO: to rename and move in parser.h
 #define NORMAL_MODE 0
 #define QUOTE_MODE 1
 #define DB_QUOTE_MODE 2
@@ -87,6 +88,7 @@ static void	parse_data(char *data, char *parsed_data)
 			parsed_i++;
 		}
 	}
+	// TODO: avoid to overwrite '\0' at the end of the new_data
 	printf("%s\n", parsed_data);
 }
 
@@ -98,7 +100,8 @@ static int	expansion_len(char *pathname, char *mode, unsigned int *i)
 
 	if (*mode == DB_QUOTE_MODE && pathname[0] == '\'')
 		return (*i += 1, 0);
-	if (*mode == DB_QUOTE_MODE && pathname[0] == '"')
+	// TODO: make the $ sign staying
+	if (*mode == DB_QUOTE_MODE && pathname[0] == '"') 
 		return (*i += 1, *mode = NORMAL_MODE, -2);
 	else if (pathname[0] == '?')
 		return (*i += 1, -1);													// here, have to place the previous EXIT_STATUS
@@ -171,6 +174,7 @@ int	parse_tokens(t_list *tokens)
 	while (tokens)
 	{
 		token = (t_token *) tokens->content;
+		// TODO: don't parse other things than the T_WORD type
 		if ((token->type & T_PIPE) == 0)
 		{
 			if (parse_token(token) == 1)
