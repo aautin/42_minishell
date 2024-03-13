@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/12 20:27:05 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/13 17:08:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,38 +83,9 @@ int	tokenize(t_list **tokens, char line[])
 			// RULE #2
 			if (ft_strchr(OPERATOR_TOKENS, line[i]) != NULL)
 			{
-				if ((token->type & T_REDIRECT_OUTPUT))
-				{
-					if (line[i] == '>')
-					{
-						token->type &= ~T_REDIRECT_OUTPUT;
-						token->type |= T_REDIRECT_APPEND;
-					}
-					else
-					{
-						free(token);
-						return (0);
-					}
-				}
-				else if ((token->type & T_REDIRECT_INPUT))
-				{
-					if (line[i] == '<')
-					{
-						token->type &= ~T_REDIRECT_INPUT;
-						token->type |= T_REDIRECT_HERE_DOC;
-					}
-					else
-					{
-						free(token);
-						return (0);
-					}
-				}
-				else if ((token->type & T_REDIRECT_HERE_DOC) || (token->type & T_REDIRECT_APPEND))
-				{
-					free(token);
-					return (0);
-				}
-				else if ((token->type & T_PIPE))
+				if ((token->type & T_PIPE)
+						|| (token->type & T_REDIRECT_HERE_DOC)
+						|| (token->type & T_REDIRECT_APPEND))
 				{
 					token = store_and_create_token(tokens, token, line, i);
 					if (token == NULL)
@@ -122,6 +93,50 @@ int	tokenize(t_list **tokens, char line[])
 					line += i;
 					i = 0;
 					continue ;
+				}
+				if ((token->type & T_REDIRECT_OUTPUT))
+				{
+					if (line[i] == '>')
+					{
+						token->type &= ~T_REDIRECT_OUTPUT;
+						token->type |= T_REDIRECT_APPEND;
+					}
+					else if (line[i] == '|')
+					{
+						token = store_and_create_token(tokens, token, line, i);
+						if (token == NULL)
+							return (0);
+						line += i;
+						i = 0;
+						continue ;
+					}
+					else
+					{
+						free(token);
+						return (0);
+					}
+				}
+				if ((token->type & T_REDIRECT_INPUT))
+				{
+					if (line[i] == '<')
+					{
+						token->type &= ~T_REDIRECT_INPUT;
+						token->type |= T_REDIRECT_HERE_DOC;
+					}
+					else if (line[i] == '|')
+					{
+						token = store_and_create_token(tokens, token, line, i);
+						if (token == NULL)
+							return (0);
+						line += i;
+						i = 0;
+						continue ;
+					}
+					else
+					{
+						free(token);
+						return (0);
+					}
 				}
 				i++;
 				continue ;
