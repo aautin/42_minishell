@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/14 10:52:18 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/14 11:21:54 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static t_token	*store_and_create_token(t_list **tokens, t_token *token,
 	return (token);
 }
 
-static int	append_operator(t_token *token, char c, int *i)
+static int	append_redirect_operator(t_token *token, char c, int *i)
 {
 	if (ft_strchr(REDIRECT_OPERATOR, c) == NULL)
 		return (0);
@@ -169,7 +169,7 @@ int	tokenize(t_list **tokens, char line[])
 		{
 			if (token->type == T_NONE)
 				break ;
-			token->data = ft_substr(line, 0, i + 1);
+			token->data = ft_substr(line, 0, i);
 			if (!add_to_list(tokens, token))
 				return (0);
 			break ;
@@ -179,7 +179,7 @@ int	tokenize(t_list **tokens, char line[])
 			// RULE #2
 			if (token->type & T_REDIRECT_OPERATOR)
 			{
-				if (append_operator(token, line[i], &i))
+				if (append_redirect_operator(token, line[i], &i))
 					continue ;
 			}
 			// RULE #3
@@ -216,12 +216,7 @@ int	tokenize(t_list **tokens, char line[])
 		}
 		// RULE #9
 		if (line[i] == '#')
-		{
-			token->data = ft_substr(line, 0, i + 1);
-			if (!add_to_list(tokens, token))
-				return (0);
 			break ;
-		}
 		// RULE #10
 		token->type = T_WORD;
 		i++;
