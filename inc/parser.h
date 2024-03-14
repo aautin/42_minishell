@@ -6,12 +6,23 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/11 17:03:05 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/14 16:52:07 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
+
+# define NO_QUOTE 0
+# define SG_QUOTE 1
+# define DB_QUOTE 2
+
+// expansion.c
+int	expansion(char *pathname, char *parsed_data, char *mode, unsigned int *i);
+int	expansion_len(char *pathname, char *mode, unsigned int *i);
+
+// parse_tokens.c
+int	parse_tokens(t_list *tokens);
 
 typedef enum e_token_type
 {
