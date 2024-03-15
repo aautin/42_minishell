@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/14 17:50:02 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/15 19:40:05 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ static unsigned int	pathname_len(char *pathname)
 	unsigned int	len;
 
 	len = 0;
+	if (!ft_isalpha(pathname[len]))
+		return (1);
 	while (ft_isalnum(pathname[len]) || pathname[len] == '_')
 		len++;
 	return (len);
