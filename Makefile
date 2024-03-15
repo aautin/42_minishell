@@ -15,8 +15,10 @@ GOTO_B	:=	\e[1A\e[K
 
 DEFAULT	:=	\e(B\e[m
 
-FILES		:=	main.c		\
-				tokenize.c	\
+FILES		:=	main.c				\
+				tokenize.c			\
+				tokenize_rules.c	\
+				tokenize_utils.c	\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))

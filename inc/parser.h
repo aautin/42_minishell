@@ -6,12 +6,16 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/13 20:44:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/15 17:56:00 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
+
+#define NO_QUOTE 0
+#define SG_QUOTE 1
+#define DB_QUOTE 2
 
 typedef enum e_token_type
 {

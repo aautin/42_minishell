@@ -1,0 +1,42 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokenize_utils.h                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/15 17:44:13 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/03/15 17:57:56 by pnguyen-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef TOKENIZE_UTILS_H
+# define TOKENIZE_UTILS_H
+
+# include "libft/libft.h"
+
+# include "parser.h"
+
+# define REDIRECT_OPERATOR "<>"
+# define CONTROL_OPERATOR "|"
+# define OPERATOR_TOKENS "<>|"
+# define QUOTE_CHARS "\"'"
+
+typedef enum e_action
+{
+	A_NONE = 0,
+	A_CONTINUE,
+	A_BREAK,
+	A_RETURN
+}	t_action;
+
+int	add_to_list(t_list **tokens, t_token *token);
+t_token	*store_and_create_token(t_list **tokens, t_token *token,
+		char line[], int len);
+t_action	append_redirect_operator(t_token *token, char c, int *i);
+t_action	new_operator(t_list **tokens, t_token **token,
+		char *line[], int *i);
+t_action	ignore_blank(t_list **tokens, t_token **token,
+		char *line[], int *i);
+
+#endif
