@@ -1,33 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   builtin_echo.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/16 14:41:58 by aautin           ###   ########.fr       */
+/*   Created: 2024/03/16 12:21:27 by aautin            #+#    #+#             */
+/*   Updated: 2024/03/16 13:38:53 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
+#ifndef BUILTIN_ECHO_H
+# define BUILTIN_ECHO_H
 
-#include "libft/libft.h"
+int	builtin_echo(char **argv);
 
-#include "builtin_echo.h"
-
-int	main(void)
-{
-	char *line = readline("prompt>");
-	while (line)
-	{
-		char **split = ft_split(line, ' ');
-		builtin_echo(split);
-		free(line);
-		free(split);
-		line = readline("prompt>");
-	}
-	return (EXIT_SUCCESS);
-}
+#endif

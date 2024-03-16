@@ -15,7 +15,8 @@ GOTO_B	:=	\e[1A\e[K
 
 DEFAULT	:=	\e(B\e[m
 
-FILES		:=	main.c
+FILES		:=	main.c			\
+				builtin_echo.c
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
@@ -30,7 +31,7 @@ CC			:=	cc
 CFLAGS		:=	-Wall -Wextra -Werror
 GDB			:=	-g3
 export GDB
-INC_PATH	:=	include
+INC_PATH	:=	inc
 INCS		:=	-I. -I$(INC_PATH)
 
 FT		:=	ft
@@ -46,7 +47,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@make --silent -C $(FT_PATH)
 	@echo "$(ORANGE)$(ITA)Linking$(NOITA) into $(BOLD)$@$(DEFAULT)..."
-	@$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) \
+	@$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS) \
 		&& echo "$(GOTO_B)$(GREEN)Successfully $(ITA)linked$(NOITA) into $(BOLD)$@$(DEFAULT)"
 
 -include $(DEPS)
