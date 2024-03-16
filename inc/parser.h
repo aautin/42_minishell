@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 19:50:09 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/16 11:56:58 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,6 @@
 # define NO_QUOTE 0
 # define SG_QUOTE 1
 # define DB_QUOTE 2
-
-// expansion.c
-int	expansion(char *pathname, char *parsed_data, char *mode, unsigned int *i);
-int	expansion_len(char *pathname, char *mode, unsigned int *i);
-
-// parse_tokens.c
-int	parse_tokens(t_list *tokens);
 
 typedef enum e_token_type
 {

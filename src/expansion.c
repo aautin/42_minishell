@@ -6,11 +6,10 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/15 19:40:05 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/16 11:58:53 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "libft/libft.h"
