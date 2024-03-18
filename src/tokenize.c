@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 17:57:03 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 13:34:06 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,16 @@ static int	parse_line(t_list **tokens, char line[], t_token *token, int i)
 		action = apply_rules_first_part(tokens, &token, &line, &i);
 		if (action == A_NONE)
 			action = rule_4(token, line[i], &i, &quoted);
-		if (action == A_NONE)
-		{
-			if (quoted == NO_QUOTE)
-				action = rule_6_7(tokens, &token, &line, &i);
-		}
+		if (action == A_NONE && quoted == NO_QUOTE)
+			action = rule_6_7(tokens, &token, &line, &i);
 		if (action == A_NONE)
 			action = rule_8_9_10(&token, line, &i);
-		if (action == A_CONTINUE)
-			continue ;
 		if (action == A_BREAK)
 			break ;
 		if (action == A_RETURN)
-			return (0);
+			return (2);
 	}
-	return (quoted == NO_QUOTE);
+	return (quoted != NO_QUOTE);
 }
 
 int	tokenize(t_list **tokens, char line[])
@@ -67,7 +62,7 @@ int	tokenize(t_list **tokens, char line[])
 	if (token == NULL)
 	{
 		perror("tokenize():ft_calloc()");
-		return (0);
+		return (2);
 	}
 	token->type = T_NONE;
 	while (ft_isspace(*line))

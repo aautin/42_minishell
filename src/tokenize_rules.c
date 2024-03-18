@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 17:57:47 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 13:48:50 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_action	rule_1(t_list **tokens, t_token *token, char line[], int i)
 		return (A_BREAK);
 	}
 	token->data = ft_substr(line, 0, i);
-	if (!add_to_list(tokens, token))
+	if (add_to_list(tokens, token))
 		return (A_RETURN);
 	return (A_BREAK);
 }
@@ -69,7 +69,7 @@ t_action	rule_4(t_token *token, char c, int *i, int *quoted)
 		else if (*quoted == DB_QUOTE)
 			*quoted = NO_QUOTE;
 	}
-	token->type = T_WORD;
+	token->type = T_WORD | T_QUOTED;
 	(*i)++;
 	return (A_CONTINUE);
 }

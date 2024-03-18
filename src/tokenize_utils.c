@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:43:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 17:57:24 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 13:50:00 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,17 @@ int	add_to_list(t_list **tokens, t_token *token)
 	if (node == NULL)
 	{
 		perror("add_to_list():ft_lstnew()");
-		return (0);
+		return (1);
 	}
 	ft_lstadd_back(tokens, node);
-	return (1);
+	return (0);
 }
 
 t_token	*store_and_create_token(t_list **tokens, t_token *token,
 		char line[], int len)
 {
 	token->data = ft_substr(line, 0, len);
-	if (!add_to_list(tokens, token))
+	if (add_to_list(tokens, token))
 		return (NULL);
 	token = ft_calloc(1, sizeof(*token));
 	if (token == NULL)
@@ -47,7 +47,7 @@ t_token	*store_and_create_token(t_list **tokens, t_token *token,
 t_action	append_redirect_operator(t_token *token, char c, int *i)
 {
 	if (ft_strchr(REDIRECT_OPERATOR, c) == NULL)
-		return (0);
+		return (A_NONE);
 	if (c == '>')
 	{
 		if (token->type & T_REDIRECT_OUTPUT)
