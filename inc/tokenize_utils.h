@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:44:13 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 17:57:56 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:58:32 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,18 @@ typedef enum e_action
 	A_RETURN
 }	t_action;
 
-int	add_to_list(t_list **tokens, t_token *token);
-t_token	*store_and_create_token(t_list **tokens, t_token *token,
-		char line[], int len);
-t_action	append_redirect_operator(t_token *token, char c, int *i);
-t_action	new_operator(t_list **tokens, t_token **token,
-		char *line[], int *i);
-t_action	ignore_blank(t_list **tokens, t_token **token,
-		char *line[], int *i);
+typedef struct s_line_part
+{
+	char	*line;
+	int		index;
+	int		mode;
+	t_token	*token;
+}	t_line_part;
+
+int			add_to_list(t_list **tokens, t_token *token);
+void		store_and_create_token(t_list **tokens, t_line_part *line_part);
+t_action	append_redirect_operator(t_line_part *line_part);
+t_action	new_operator(t_list **tokens, t_line_part *line_part);
+t_action	ignore_blank(t_list **tokens, t_line_part *line_part);
 
 #endif

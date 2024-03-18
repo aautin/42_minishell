@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/15 19:50:30 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 16:06:15 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,12 @@ void	free_tokens(void *content)
 void	print_token(void *content)
 {
 	if (((t_token *)content)->type & T_WORD)
-		printf("WORD : ");
+	{
+		printf("WORD ");
+		if (((t_token *)content)->type & T_QUOTED)
+			printf("QUOTED ");
+		printf(":");
+	}
 	else
 	{
 		if (((t_token *)content)->type == T_NONE)
@@ -64,7 +69,7 @@ int	main(void)
 			break ;
 		if (*line != '\0')
 			add_history(line);
-		if (tokenize(&tokens, line))
+		if (!tokenize(&tokens, line))
 			printf("LINE : %s\n", line);
 		ft_lstiter(tokens, &print_token);
 		ft_lstclear(&tokens, &free_tokens);
