@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 14:47:01 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 18:50:07 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include <unistd.h>
 
 #include "libft/libft.h"
+
+int	execute_line(t_list *tokens);
 
 char	*ask_input(char const prompt[])
 {
