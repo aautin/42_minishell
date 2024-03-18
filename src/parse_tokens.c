@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/16 11:58:21 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/18 14:50:50 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "libft/libft.h"
 
 #include "parser.h"
-#include "parse_tokens.h"
+#include "expansion.h"
 
 static void	change_mode(char a, char *mode, unsigned int *i, int add_to_i)
 {

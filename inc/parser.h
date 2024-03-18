@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/16 11:56:58 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/18 14:50:26 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,7 @@ typedef struct s_token
 	char			*data;
 	t_token_type	type;
 }	t_token;
+
+int	parse_tokens(t_list *tokens);
 
 #endif
