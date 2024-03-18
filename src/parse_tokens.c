@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/18 14:50:50 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/18 14:57:35 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "parser.h"
 #include "expansion.h"
 
-static void	change_mode(char a, char *mode, unsigned int *i, int add_to_i)
+static void	change_mode(char a, char *mode, int *i, int add_to_i)
 {
 	if (a == '"' && *mode != SG_QUOTE)
 	{
@@ -40,9 +40,9 @@ static void	change_mode(char a, char *mode, unsigned int *i, int add_to_i)
 
 static void	parse_data(char *data, char *parsed_data)
 {
-	unsigned int	i;
-	unsigned int	parsed_i;
-	char			mode;
+	int		i;
+	int		parsed_i;
+	char	mode;
 
 	mode = NO_QUOTE;
 	i = 0;
@@ -67,8 +67,8 @@ static void	parse_data(char *data, char *parsed_data)
 
 static int	parse_data_len(char *data, int data_len)
 {
-	unsigned int	i;
-	char			mode;
+	int		i;
+	char	mode;
 
 	mode = NO_QUOTE;
 	i = 0;
@@ -76,7 +76,7 @@ static int	parse_data_len(char *data, int data_len)
 	{
 		if ((data[i] == '"' && mode != SG_QUOTE)
 			|| (data[i] == '\'' && mode != DB_QUOTE))
-			change_mode(data[i], &mode, (unsigned int *) &data_len, -1);
+			change_mode(data[i], &mode, &data_len, -1);
 		else if (data[i] == '$' && mode != SG_QUOTE)
 			data_len += expansion_len(&data[i + 1], &mode, &i);
 		i++;
@@ -86,8 +86,8 @@ static int	parse_data_len(char *data, int data_len)
 
 static int	parse_token(t_token *token)
 {
-	unsigned int	len;
-	char			*parsed_data;
+	int		len;
+	char	*parsed_data;
 
 	len = parse_data_len(token->data, ft_strlen(token->data));
 	parsed_data = malloc((len + 1) * sizeof(char));

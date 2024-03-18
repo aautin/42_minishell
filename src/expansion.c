@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/16 11:58:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/18 14:56:20 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,9 @@
 
 #include "parser.h"
 
-static unsigned int	pathname_len(char *pathname)
+static int	pathname_len(char *pathname)
 {
-	unsigned int	len;
+	int	len;
 
 	len = 0;
 	if (!ft_isalpha(pathname[len]))
@@ -28,11 +28,11 @@ static unsigned int	pathname_len(char *pathname)
 	return (len);
 }
 
-int	expansion(char *data, char *parsed_data, char *mode, unsigned int *parsed_i)
+int	expansion(char *data, char *parsed_data, char *mode, int *parsed_i)
 {
-	unsigned int	len;
-	char			temp;
-	char			*var_value;
+	int		len;
+	char	temp;
+	char	*var_value;
 
 	if (*mode == DB_QUOTE && (data[0] == '\'' || data[0] == '"'))
 	{
@@ -56,11 +56,11 @@ int	expansion(char *data, char *parsed_data, char *mode, unsigned int *parsed_i)
 	return (*parsed_i += ft_strlen(var_value), len + 1);
 }
 
-int	expansion_len(char *pathname, char *mode, unsigned int *i)
+int	expansion_len(char *pathname, char *mode, int *i)
 {
-	unsigned int	len;
-	char			temp;
-	char			*var_value;
+	int		len;
+	char	temp;
+	char	*var_value;
 
 	if (*mode == DB_QUOTE && pathname[0] == '\'')
 		return (*i += 1, 0);
