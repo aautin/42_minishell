@@ -6,57 +6,55 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 12:20:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/16 15:02:52 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/18 15:38:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "libft/libft.h"
 
-#define	SIMPLE_STRING 0
-#define	NEWLINE_OPTION 1
-#define	ANOTHER_OPTION 2
+#define NORMAL_MODE 0
+#define NO_NEWLINE_MODE 1
 
 static int	get_status(char *arg)
 {
 	if (*arg != '-')
-		return (SIMPLE_STRING);
-	while ('n' == *(arg + 1))
+		return (NORMAL_MODE);
+	arg++;
+	if (*arg == '\0')
+		return (NORMAL_MODE);
+	while ('n' == *arg)
 		arg++;
-	if ((ft_isspace(*(arg + 1)) || !*(arg + 1)) && *arg != '-')
-		return (NEWLINE_OPTION);
-	return (SIMPLE_STRING);
+	if (*arg == '\0')
+		return (NO_NEWLINE_MODE);
+	return (NORMAL_MODE);
 }
 
 static char	*join_string_argv(char **argv, char format)
 {
-	char			*output;
-	unsigned int	len;
-	unsigned int	i;
+	char	*output;
+	int		len;
+	int		i;
 
 	i = 0;
 	len = 0;
 	while (argv[i])
 		len += ft_strlen(argv[i++]);
-	output = malloc((len + i + (format != NEWLINE_OPTION)) * sizeof(char));
-	printf("[echo] output's size: %d\n", len + i + (format != NEWLINE_OPTION));
+	len = len + i + (format == NORMAL_MODE);
+	output = malloc(len * sizeof(char));
 	if (output == NULL)
 		return (NULL);
-	len = 0;
+	output[0] = '\0';
 	while (*argv)
 	{
-		i = 0;
-		while ((*argv)[i])
-			output[len++] = (*argv)[i++];
-		if (*(argv + 1))
-			output[len++] = ' ';
-		argv++;
+		ft_strlcat(output, *(argv++), len);
+		if (*argv)
+			ft_strlcat(output, " ", len);
 	}
-	if (format != NEWLINE_OPTION)
-		output[len++] = '\n';
-	return (output[len] = '\0', output);
+	if (format == NORMAL_MODE)
+		ft_strlcat(output, "\n", len);
+	return (output);
 }
 
 int	builtin_echo(char **argv)
@@ -64,19 +62,19 @@ int	builtin_echo(char **argv)
 	char	format;
 	char	*output;
 
-	format = SIMPLE_STRING;
+	format = NORMAL_MODE;
 	while (*argv)
 	{
-		if (get_status(*argv) != NEWLINE_OPTION)
+		if (get_status(*argv) != NO_NEWLINE_MODE)
 			break ;
 		else
-			format = NEWLINE_OPTION;
+			format = NO_NEWLINE_MODE;
 		argv++;
 	}
 	output = join_string_argv(argv, format);
 	if (output == NULL)
 		return (1);
-	printf("%s", output);
+	ft_putstr_fd(output, 1);
 	free(output);
 	return (0);
 }
