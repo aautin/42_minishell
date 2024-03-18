@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 13:48:50 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:14:32 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,91 +17,98 @@
 #include "parser.h"
 #include "tokenize_utils.h"
 
-t_action	rule_1(t_list **tokens, t_token *token, char line[], int i)
+t_action	rule_1(t_list **tokens, t_line_part *line_part)
 {
-	if (line[i] != '\0')
+	char const	c = line_part->line[line_part->index];
+
+	if (c != '\0')
 		return (A_NONE);
-	if (token->type == T_NONE)
+	if (line_part->token->type == T_NONE)
 	{
-		free(token);
+		free(line_part->token);
+		line_part->token = NULL;
 		return (A_BREAK);
 	}
-	token->data = ft_substr(line, 0, i);
-	if (add_to_list(tokens, token))
+	line_part->token->data = ft_substr(line_part->line, 0, line_part->index);
+	if (add_to_list(tokens, line_part->token))
 		return (A_RETURN);
 	return (A_BREAK);
 }
 
-t_action	rule_2_3(t_list **tokens, t_token **token, char *line[], int *i)
+t_action	rule_2_3(t_list **tokens, t_line_part *line_part)
 {
 	t_action	action;
 
 	action = A_NONE;
-	if (!((*token)->type & T_OPERATOR))
+	if (!(line_part->token->type & T_OPERATOR))
 		return (A_NONE);
-	if ((*token)->type & T_REDIRECT_OPERATOR)
-		action = append_redirect_operator(*token, (*line)[*i], i);
+	if (line_part->token->type & T_REDIRECT_OPERATOR)
+		action = append_redirect_operator(line_part);
 	if (action != A_NONE)
 		return (action);
-	*token = store_and_create_token(tokens, *token, *line, *i);
-	if (*token == NULL)
+	store_and_create_token(tokens, line_part);
+	if (line_part->token == NULL)
 		return (A_RETURN);
-	*line += *i;
-	*i = 0;
+	line_part->line += line_part->index;
+	line_part->index = 0;
 	return (A_CONTINUE);
 }
 
-t_action	rule_4(t_token *token, char c, int *i, int *quoted)
+t_action	rule_4(t_line_part *line_part)
 {
+	char const	c = line_part->line[line_part->index];
+
 	if (ft_strchr(QUOTE_CHARS, c) == NULL)
 		return (A_NONE);
 	if (c == '\'')
 	{
-		if (*quoted == NO_QUOTE)
-			*quoted = SG_QUOTE;
-		else if (*quoted == SG_QUOTE)
-			*quoted = NO_QUOTE;
+		if (line_part->mode == NO_QUOTE)
+			line_part->mode = SG_QUOTE;
+		else if (line_part->mode == SG_QUOTE)
+			line_part->mode = NO_QUOTE;
 	}
 	else if (c == '"')
 	{
-		if (*quoted == NO_QUOTE)
-			*quoted = DB_QUOTE;
-		else if (*quoted == DB_QUOTE)
-			*quoted = NO_QUOTE;
+		if (line_part->mode == NO_QUOTE)
+			line_part->mode = DB_QUOTE;
+		else if (line_part->mode == DB_QUOTE)
+			line_part->mode = NO_QUOTE;
 	}
-	token->type = T_WORD | T_QUOTED;
-	(*i)++;
+	line_part->token->type = T_WORD | T_QUOTED;
+	line_part->index++;
 	return (A_CONTINUE);
 }
 
-t_action	rule_6_7(t_list **tokens, t_token **token, char *line[], int *i)
+t_action	rule_6_7(t_list **tokens, t_line_part *line_part)
 {
 	t_action	action;
 
-	action = new_operator(tokens, token, line, i);
+	action = new_operator(tokens, line_part);
 	if (action != A_NONE)
 		return (action);
-	action = ignore_blank(tokens, token, line, i);
+	action = ignore_blank(tokens, line_part);
 	return (action);
 }
 
-t_action	rule_8_9_10(t_token **token, char line[], int *i)
+t_action	rule_8_9_10(t_line_part *line_part)
 {
-	if ((*token)->type & T_WORD)
+	char const	c = line_part->line[line_part->index];
+
+	if (line_part->token->type & T_WORD)
 	{
-		(*i)++;
+		line_part->index++;
 		return (A_CONTINUE);
 	}
-	if (line[*i] == '#')
+	if (c == '#')
 	{
-		if ((*token)->type == T_NONE)
+		if (line_part->token->type == T_NONE)
 		{
-			free(*token);
-			*token = NULL;
+			free(line_part->token);
+			line_part->token = NULL;
 		}
 		return (A_BREAK);
 	}
-	(*token)->type = T_WORD;
-	(*i)++;
+	line_part->token->type = T_WORD;
+	line_part->index++;
 	return (A_CONTINUE);
 }

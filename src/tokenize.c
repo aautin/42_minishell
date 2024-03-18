@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 13:34:06 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 15:05:42 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +18,53 @@
 #include "tokenize_rules.h"
 #include "tokenize_utils.h"
 
-static t_action	apply_rules_first_part(t_list **tokens, t_token **token,
-		char *line[], int *i)
+static t_action	apply_rules_first_part(t_list **tokens, t_line_part *line_part)
 {
 	t_action	action;
 
-	action = rule_1(tokens, *token, *line, *i);
+	action = rule_1(tokens, line_part);
 	if (action != A_NONE)
 		return (action);
-	action = rule_2_3(tokens, token, line, i);
+	action = rule_2_3(tokens, line_part);
 	return (action);
 }
 
-static int	parse_line(t_list **tokens, char line[], t_token *token, int i)
+static int	parse_line(t_list **tokens, t_line_part *line_part)
 {
-	int			quoted;
 	t_action	action;
 
-	quoted = NO_QUOTE;
 	while (1)
 	{
-		action = apply_rules_first_part(tokens, &token, &line, &i);
+		action = apply_rules_first_part(tokens, line_part);
 		if (action == A_NONE)
-			action = rule_4(token, line[i], &i, &quoted);
-		if (action == A_NONE && quoted == NO_QUOTE)
-			action = rule_6_7(tokens, &token, &line, &i);
+			action = rule_4(line_part);
+		if (action == A_NONE && line_part->mode == NO_QUOTE)
+			action = rule_6_7(tokens, line_part);
 		if (action == A_NONE)
-			action = rule_8_9_10(&token, line, &i);
+			action = rule_8_9_10(line_part);
 		if (action == A_BREAK)
 			break ;
 		if (action == A_RETURN)
 			return (2);
 	}
-	return (quoted != NO_QUOTE);
+	return (line_part->mode != NO_QUOTE);
 }
 
 int	tokenize(t_list **tokens, char line[])
 {
-	t_token		*token;
-	int			i;
+	t_line_part	line_part;	
 
-	token = ft_calloc(1, sizeof(t_token));
-	if (token == NULL)
+	line_part.token = ft_calloc(1, sizeof(t_token));
+	if (line_part.token == NULL)
 	{
 		perror("tokenize():ft_calloc()");
 		return (2);
 	}
-	token->type = T_NONE;
-	while (ft_isspace(*line))
-		line++;
-	i = 0;
-	return (parse_line(tokens, line, token, i));
+	line_part.token->type = T_NONE;
+	line_part.line = line;
+	while (ft_isspace(*line_part.line))
+		line_part.line++;
+	line_part.index = 0;
+	line_part.mode = NO_QUOTE;
+	return (parse_line(tokens, &line_part));
 }
