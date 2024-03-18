@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 18:29:34 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/18 21:09:14 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ int	exec_prog(char **argv, char **envp)
 	char	*pathname;
 	int		exit_code;
 
-	if (argv[0] == NULL)
+	if (argv[0] == NULL || argv[0][0] == '\0')
 		return (0);
 //	if (is_a_builtin(argv[0]))
 //		return (do_thing(argv, envp));
@@ -72,7 +72,7 @@ static void	my_perror(char const name[], char const msg[])
 	full_msg = ft_strjoin(name, msg);
 	if (full_msg == NULL)
 	{
-		perror("my_perror():malloc()");
+		perror("my_perror():ft_strjoin()");
 		return ;
 	}
 	ft_putstr_fd(full_msg, STDERR_FILENO);
@@ -111,15 +111,13 @@ static char	**get_paths(char **envp)
 {
 	char	**paths;
 
-//	if (envp == NULL)
-//		return (NULL);
-//	while (*envp != NULL && ft_strncmp(*envp, "PATH=", 5) != 0)
-//		envp++;
-//	if (*envp == NULL)
-//		return (NULL);
-	//paths = ft_split(*envp + 5, ':');
-	(void)envp;
-	paths = ft_split(getenv("PATH"), ':');
+	if (envp == NULL)
+		return (NULL);
+	while (*envp != NULL && ft_strncmp(*envp, "PATH=", 5) != 0)
+		envp++;
+	if (*envp == NULL)
+		return (NULL);
+	paths = ft_split(*envp + 5, ':');
 	if (paths == NULL)
 		perror("get_paths():ft_split()");
 	return (paths);

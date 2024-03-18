@@ -18,7 +18,9 @@ DEFAULT	:=	\e(B\e[m
 FILES		:=	\
 				exec_cmd.c			\
 				execution.c			\
+				files.c				\
 				main.c				\
+				redirections.c		\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
