@@ -10,8 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSE_TOKENS_H
-# define PARSE_TOKENS_H
+#ifndef EXPANSION_H
+# define EXPANSION_H
 
 int	expansion(char *data, char *parsed_data, char *mode, int *parsed_i);
 int	expansion_len(char *pathname, char *mode, int *i);

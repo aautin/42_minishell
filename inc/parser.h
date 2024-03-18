@@ -38,9 +38,8 @@ typedef struct s_token
 	t_token_type	type;
 }	t_token;
 
-int	parse_tokens(t_list *tokens);
-int	tokenize(t_list **tokens, char line[]);
-
-#endif
+void	parse_quotes(char *content);
+int		parse_token(t_token *token);
+int		tokenize(t_list **tokens, char line[]);
 
 #endif
