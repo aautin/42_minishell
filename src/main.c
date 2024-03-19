@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 18:39:26 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/19 13:38:09 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,18 @@ int	main(int argc, char **argv, char **envp)
 	printf("$_ = %s\n", ft_getenv(new_envp, "_"));
 	printf("$SYSTEMD_EXEC_PID = %s\n", ft_getenv(new_envp, "SYSTEMD_EXEC_PID"));
 	printf("$SYSTEMD_EXEC_PID = %s\n", ft_getenv(new_envp, "SYSTEMD_EXEC_PID"));
+	remove_env(&new_envp, new_envp, "SYSTEMD_EXEC_PID");
+	remove_env(&new_envp, new_envp, "DISPLAY");
+	remove_env(&new_envp, new_envp, "OLDPWD");
+	remove_env(&new_envp, new_envp, "GNOME_TERMINAL_SCREEN");
+	modify_env(new_envp, "ZSH", ft_strdup("bonsoir"));
+	printf("\nAFTER REMOVES AND MODIFICATIONS\n");
+	node = new_envp;
+	while (node)
+	{
+		printf("%s\n", (char *) node->content);
+		node = node->next;
+	}
 	ft_lstclear(&new_envp, &free);
 	return (EXIT_SUCCESS);
 }

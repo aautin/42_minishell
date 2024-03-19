@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/18 19:11:24 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/19 14:18:16 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,39 +66,60 @@ char	*ft_getenv(t_list *envp, char *to_find)
 	return (NULL);
 }
 
-void	remove_env(t_list **envp, char *to_find)
+void	remove_env(t_list **envp, t_list *head, char *to_find)
 {
-	t_list	*head;
-	t_list	*node;
+	t_list	*previous;
+	t_list	*current;
 	char	*str;
 
-	str = ft_strchr((char *) (*envp)->content, '=');
-	*str = '\0';
-
-	head = *envp;
-	while (*envp)
+	str = ft_getenv(*envp, to_find) - ft_strlen(to_find) - 1;
+	previous = *envp;
+	current = (*envp)->next;
+	if (!ft_strncmp(((char *)(*envp)->content), str, ft_strlen(str)))
 	{
-		str = ft_strchr((char *) (*envp)->content, '=');
-		*str = '\0';
-		if (ft_strncmp(to_find, (char *) (*envp)->content,
-				ft_strlen((char *) (*envp)->content)) == 0)
+		ft_lstdelone(previous, &free);
+		*envp = current;
+		return ;
+	}
+	while (current)
+	{
+		if (!ft_strncmp(((char *)current->content), str, ft_strlen(str)))
 		{
-			if (*envp == head)
-			{
-				node = *envp;
-				head = (*envp)->next;
-				ft_lstdelone(node, &free);
-			}
-			else
-			{
-				node = *envp;
-				 = (*envp)->next;
-				ft_lstdelone(node, &free);
-			}
+			head = current->next;
+			ft_lstdelone(current, &free);
+			previous->next = head;
 			return ;
 		}
-		*str = '=';
-		*envp = (*envp)->next;
+		previous = current;
+		current = current->next;
 	}
-	*envp = head;
+}
+
+int	modify_env(t_list *envp, char *to_find, char *result)
+{
+	char	*content;
+	char	*new_content;
+
+	content = ft_getenv(envp, to_find) - ft_strlen(to_find) - 1;
+	while (envp)
+	{
+		if (!ft_strncmp(((char *)envp->content), content, ft_strlen(content)))
+		{
+			free(envp->content);
+			new_content = malloc((ft_strlen(to_find) + ft_strlen(result) + 2)
+					* sizeof(char));
+			if (new_content == NULL)
+				return (1);
+			new_content[0] = 0;
+			ft_strlcat(new_content, to_find,
+				ft_strlen(to_find) + ft_strlen(result) + 2);
+			ft_strlcat(new_content, "=",
+				ft_strlen(to_find) + ft_strlen(result) + 2);
+			ft_strlcat(new_content, result,
+				ft_strlen(to_find) + ft_strlen(result) + 2);
+			return (envp->content = new_content, 0);
+		}
+		envp = envp->next;
+	}
+	return (-1);
 }
