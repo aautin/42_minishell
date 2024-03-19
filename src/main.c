@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 16:06:15 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/19 20:24:53 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ int	main(void)
 			add_history(line);
 		if (!tokenize(&tokens, line))
 			printf("LINE : %s\n", line);
+		parse_token((t_token *) tokens->content);
 		ft_lstiter(tokens, &print_token);
 		ft_lstclear(&tokens, &free_tokens);
 		tokens = NULL;
