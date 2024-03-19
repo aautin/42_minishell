@@ -30,7 +30,7 @@ CC			:=	cc
 CFLAGS		:=	-Wall -Wextra -Werror
 GDB			:=	-g3
 export GDB
-INC_PATH	:=	include
+INC_PATH	:=	inc
 INCS		:=	-I. -I$(INC_PATH)
 
 FT		:=	ft
@@ -46,7 +46,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	@make --silent -C $(FT_PATH)
 	@echo "$(ORANGE)$(ITA)Linking$(NOITA) into $(BOLD)$@$(DEFAULT)..."
-	@$(CC) $(LDFLAGS) -o $@ $< $(LDLIBS) \
+	@$(CC) $(LDFLAGS) -o $@ $^ $(LDLIBS) \
 		&& echo "$(GOTO_B)$(GREEN)Successfully $(ITA)linked$(NOITA) into $(BOLD)$@$(DEFAULT)"
 
 -include $(DEPS)
@@ -81,7 +81,7 @@ norm:
 	@echo "$(CYAN)libft :$(DEFAULT)"
 	@make --silent norm -C $(FT_PATH)
 	@echo "$(CYAN)minishell :$(DEFAULT)"
-	@norminette -R CheckForbiddenSourceHeader $(SRC_BONUS)
+	@norminette -R CheckForbiddenSourceHeader $(SRCS)
 	@norminette -R CheckDefine $(INC_PATH)
 
 cleanlib:
