@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/09 14:10:30 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/01/22 15:14:58 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/19 10:13:09 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	ft_lstdelone(t_list *lst, void (*del)(void *))
 {
 	if (lst == NULL)
 		return ;
-	del(lst->content);
+	if (del != NULL)
+		del(lst->content);
 	free(lst);
 }
