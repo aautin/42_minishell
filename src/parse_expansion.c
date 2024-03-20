@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/20 19:19:27 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/20 20:32:45 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,8 @@ int	expand_len(char data[])
 		}
 		else
 			expanded_len++;
-		data++;
+		if (*data)
+			data++;
 	}
 	return (expanded_len);
 }
@@ -125,6 +126,7 @@ void	expand_data(char data[], char new_data[])
 		}
 		else
 			*(new_data++) = *data;
-		data++;
+		if (*data)
+			data++;
 	}
 }
