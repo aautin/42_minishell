@@ -6,28 +6,28 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 21:06:48 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 18:15:28 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
 
 #include "files.h"
 #include "parser.h"
+#include "pipeline.h"
 #include "redirections.h"
+
+#define SIG_RETURN 128
 
 int		add_to_list(t_list **tokens, t_token *token);
 int		exec_prog(char **argv, char **envp);
 void	free_token(void *content);
-
-void	dummy(void *content)
-{
-	(void)content;
-}
 
 typedef struct s_process
 {
@@ -43,14 +43,12 @@ typedef struct s_simple_cmd
 	t_process	proc;
 }	t_simple_cmd;
 
-static t_list	*find_args(t_list *current, t_list *last)
+static int	find_args(t_list *current, t_list *last, t_list **args)
 {
 	int		is_redirection;
 	t_token	*token;
-	t_list	*argv;
 
 	is_redirection = 0;
-	argv = NULL;
 	while (current != last)
 	{
 		token = current->content;
@@ -58,16 +56,16 @@ static t_list	*find_args(t_list *current, t_list *last)
 			is_redirection = 1;
 		else if (token->type & T_WORD)
 		{
-			if (!is_redirection && !add_to_list(&argv, token))
+			if (!is_redirection && add_to_list(args, token))
 			{
-				ft_lstclear(&argv, &dummy);
-				return (NULL);
+				ft_lstclear(args, NULL);
+				return (1);
 			}
 			is_redirection = 0;
 		}
 		current = current->next;
 	}
-	return (argv);
+	return (0);
 }
 
 static t_list	*get_control_operator(t_list *current)
@@ -151,9 +149,10 @@ static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 	}
 	if (simple_cmd->proc.pid == 0)
 	{
-		apply_pipe_redirections(&simple_cmd->pipeline);
-		apply_redirections(simple_cmd->first, simple_cmd->last);
-		exit_status = exec_prog(argv, envp);
+		exit_status = EXIT_FAILURE;
+		if (!apply_pipe_redirections(&simple_cmd->pipeline)
+			&& !apply_normal_redirections(simple_cmd->first, simple_cmd->last))
+			exit_status = exec_prog(argv, envp);
 		ft_lstclear(&tokens, &free_token);
 		free(argv);
 		exit(exit_status);
@@ -168,11 +167,11 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd, char **
 
 	simple_cmd->proc.pid = -1;
 	simple_cmd->proc.exit_status = 0;
-	args = find_args(simple_cmd->first, simple_cmd->last);
-	if (args == NULL)
+	args = NULL;
+	if (find_args(simple_cmd->first, simple_cmd->last, &args))
 		return ;
 	argv = list_to_tabstr(args);
-	ft_lstclear(&args, &dummy);
+	ft_lstclear(&args, NULL);
 	if (argv == NULL)
 		return ;
 	if (!is_a_builtin(argv[0]) || simple_cmd->pipeline.mode != P_NONE)
@@ -180,18 +179,28 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd, char **
 	free(argv);
 }
 
-static void	close_pipes(t_pipe *pipeline)
+void	wait_all(t_simple_cmd *simple_cmd)
 {
-	if (pipeline->mode & P_INPUT)
+	t_list *const	last = simple_cmd->last;
+	t_token			*token;
+	pid_t			proc_waited;
+
+	if (simple_cmd->proc.pid == -1)
+		return ;
+	token = NULL;
+	if (last != NULL)
+		token = last->content;
+	if (token == NULL || !(token->type & T_PIPE))
 	{
-		if (close(pipeline->prev_fd_in) == -1)
-			perror("close_pipes():close()");
-	}
-	if (pipeline->mode & P_OUTPUT)
-	{
-		if (close(pipeline->fd[1]) == -1)
-			perror("close_pipes():close()");
-		pipeline->prev_fd_in = pipeline->fd[0];
+		proc_waited = waitpid(-1, &simple_cmd->proc.exit_status, WUNTRACED);
+		while (proc_waited != simple_cmd->proc.pid && errno != ECHILD)
+			proc_waited = waitpid(-1, &simple_cmd->proc.exit_status, WUNTRACED);
+		while (errno != ECHILD)
+			wait(NULL);
+		if (WIFEXITED(simple_cmd->proc.exit_status))
+			simple_cmd->proc.exit_status = WEXITSTATUS(simple_cmd->proc.exit_status);
+		else if (WIFSIGNALED(simple_cmd->proc.exit_status))
+			simple_cmd->proc.exit_status = SIG_RETURN + WTERMSIG(simple_cmd->proc.exit_status);
 	}
 }
 
@@ -199,6 +208,7 @@ int	execute_line(t_list *tokens, char **envp)
 {
 	t_simple_cmd	simple_cmd;
 
+	ft_bzero(&simple_cmd, sizeof(simple_cmd));
 	simple_cmd.first = tokens;
 	while (simple_cmd.first != NULL)
 	{
@@ -214,6 +224,8 @@ int	execute_line(t_list *tokens, char **envp)
 		}
 		execute_simple_cmd(tokens, &simple_cmd, envp);
 		close_pipes(&simple_cmd.pipeline);
+		wait_all(&simple_cmd);
+		printf("EXIT STATUS : %d\n", simple_cmd.proc.exit_status);
 		simple_cmd.first = simple_cmd.last;
 	}
 	return (0);
