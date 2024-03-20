@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/20 19:13:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/20 19:19:27 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	}
 }
 
-static int	expand_len(char data[])
+int	expand_len(char data[])
 {
 	int		mode;
 	int		expanded_len;
@@ -100,7 +100,7 @@ static int	expand_len(char data[])
 	return (expanded_len);
 }
 
-static void	expand_data(char data[], char new_data[])
+void	expand_data(char data[], char new_data[])
 {
 	int		mode;
 
@@ -127,22 +127,4 @@ static void	expand_data(char data[], char new_data[])
 			*(new_data++) = *data;
 		data++;
 	}
-}
-
-int	expansion(t_token *token)
-{
-	char	*expanded_data;
-	int		expanded_len;
-
-	expanded_len = expand_len(token->data);
-	expanded_data = ft_calloc(expanded_len + 1, sizeof(char));
-	if (expanded_data == NULL)
-	{
-		perror("parse_token():malloc()");
-		return (1);
-	}
-	expand_data(token->data, expanded_data);
-	free(token->data);
-	token->data = expanded_data;
-	return (0);
 }
