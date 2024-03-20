@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 16:05:44 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 15:49:21 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,6 @@ typedef struct s_token
 void	parse_quotes(char *content);
 int		parse_token(t_token *token);
 int		tokenize(t_list **tokens, char line[]);
+t_list	*verify_tokens(t_list *tokens);
 
 #endif
