@@ -20,8 +20,14 @@ FILES		:=	\
 				execution.c			\
 				files.c				\
 				main.c				\
+				parse_expansion.c	\
+				parse_token.c		\
+				parse_utils.c		\
 				pipeline.c			\
 				redirections.c		\
+				tokenize_rules.c	\
+				tokenize_utils.c	\
+				tokenize.c			\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
