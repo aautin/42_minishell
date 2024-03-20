@@ -6,12 +6,14 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 15:49:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 19:30:09 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PARSER_H
 # define PARSER_H
+
+#include "libft/libft.h"
 
 # define NO_QUOTE 0
 # define SG_QUOTE 1
@@ -38,7 +40,8 @@ typedef struct s_token
 	t_token_type	type;
 }	t_token;
 
-void	parse_quotes(char *content);
+void	unquote(char data[]);
+int		expansion(t_token *token);
 int		parse_token(t_token *token);
 int		tokenize(t_list **tokens, char line[]);
 t_list	*verify_tokens(t_list *tokens);

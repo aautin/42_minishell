@@ -1,19 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expansion.h                                        :+:      :+:    :+:   */
+/*   parser_utils.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/16 11:55:18 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/18 14:58:26 by aautin           ###   ########.fr       */
+/*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/03/20 19:20:17 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef EXPANSION_H
-# define EXPANSION_H
+#ifndef PARSER_UTILS_H
+# define PARSER_UTILS_H
 
-int	expansion(char *data, char *parsed_data, char *mode, int *parsed_i);
-int	expansion_len(char *pathname, char *mode, int *i);
+int		change_quote_mode(char data, int *mode);
+int		pathname_len(char *pathname);
+int		expand_len(char data[]);
+void	expand_data(char data[], char new_data[]);
 
 #endif
