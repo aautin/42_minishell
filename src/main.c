@@ -6,10 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 19:52:59 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/20 20:04:39 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/history.h>
 #include <readline/readline.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -19,7 +20,7 @@
 #include "parser.h"
 #include "utils.h"
 
-void	free_tokens(void *content)
+void	free_token(void *content)
 {
 	free(((t_token *)content)->data);
 	free(content);
@@ -73,14 +74,15 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		if (tokenize(&tokens, line) || tokens == NULL)
 		{
-			ft_lstclear(&tokens, &free_tokens);
+			ft_lstclear(&tokens, &free_token);
 			continue ;
 		}
 		bad_node = verify_tokens(tokens);
-		if (bad_node != NULL)
+		if (bad_node == NULL)
 			execute_line(tokens, envp);
 		else
 			printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
+		ft_lstclear(&tokens, &free_token);
 	}
 	rl_clear_history();
 	return (EXIT_SUCCESS);
