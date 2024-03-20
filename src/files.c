@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 20:47:30 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 16:38:14 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	open_infile(t_token *redirect, t_token *word)
 	else if (redirect->type & T_REDIRECT_HERE_DOC)
 		fd = do_heredoc(word);
 	else
-		return (-1);
+		return (-2);
 	return (fd);
 }
 
@@ -48,7 +48,7 @@ int	open_outfile(t_token *redirect, t_token *word)
 	else if (redirect->type & T_REDIRECT_APPEND)
 		flags |= O_APPEND;
 	else
-		return (-1);
+		return (-2);
 	parse_token(word);
 	fd = open(word->data, flags, mode);
 	if (fd == -1)

@@ -20,6 +20,7 @@ FILES		:=	\
 				execution.c			\
 				files.c				\
 				main.c				\
+				pipeline.c			\
 				redirections.c		\
 
 SRC_PATH	:=	src
