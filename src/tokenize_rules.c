@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 15:14:32 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 15:19:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ t_action	rule_1(t_list **tokens, t_line_part *line_part)
 	line_part->token->data = ft_substr(line_part->line, 0, line_part->index);
 	if (add_to_list(tokens, line_part->token))
 		return (A_RETURN);
+	line_part->token = NULL;
 	return (A_BREAK);
 }
 
@@ -83,6 +84,8 @@ t_action	rule_6_7(t_list **tokens, t_line_part *line_part)
 {
 	t_action	action;
 
+	if (line_part->mode != NO_QUOTE)
+		return (A_NONE);
 	action = new_operator(tokens, line_part);
 	if (action != A_NONE)
 		return (action);

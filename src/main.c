@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 15:20:00 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/20 15:42:39 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	print_token(void *content)
 		printf("WORD ");
 		if (((t_token *)content)->type & T_QUOTED)
 			printf("QUOTED ");
-		printf(":");
+		printf(": ");
 	}
 	else
 	{
@@ -58,6 +58,7 @@ int	main(void)
 {
 	char	*line;
 	t_list	*tokens;
+	t_list	*bad_node;
 
 	tokens = NULL;
 	while (1)
@@ -69,10 +70,13 @@ int	main(void)
 			add_history(line);
 		if (!tokenize(&tokens, line))
 			printf("LINE : %s\n", line);
+		free(line);
+		bad_node = verify_tokens(tokens);
+		if (bad_node != NULL)
+			printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
 		ft_lstiter(tokens, &print_token);
 		ft_lstclear(&tokens, &free_tokens);
 		tokens = NULL;
-		free(line);
 	}
 	rl_clear_history();
 	return (EXIT_SUCCESS);
