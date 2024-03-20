@@ -1,42 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 19:23:37 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/03/20 19:14:23 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #include "libft/libft.h"
 
-#include "utils.h"
-
-int	execute_line(t_list *tokens, char **envp);
-
-int	main(int argc, char **argv, char **envp)
+char	*ask_input(char const prompt[])
 {
-	(void)argc;
-	(void)argv;
-	(void)envp;
 	char	*line;
+	char	*line_with_nl;
 
-	while (1)
+	if (isatty(STDIN_FILENO))
 	{
-		line = ask_input("minishell> ");
+		line = readline(prompt);
 		if (line == NULL)
-			break ;
-		*ft_strrchr(line, '\n') = '\0';
-		if (*line != '\0')
-			add_history(line);
+			return (NULL);
+		line_with_nl = ft_strjoin(line, "\n");
+		if (line_with_nl == NULL)
+			perror("ask_input():ft_strjoin()");
 		free(line);
 	}
-	rl_clear_history();
-	return (EXIT_SUCCESS);
+	else
+		line_with_nl = get_next_line(STDIN_FILENO);
+	return (line_with_nl);
 }
