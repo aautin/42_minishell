@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 20:04:39 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/20 20:14:18 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,11 @@ int	main(int argc, char **argv, char **envp)
 			add_history(line);
 		if (tokenize(&tokens, line) || tokens == NULL)
 		{
+			free(line);
 			ft_lstclear(&tokens, &free_token);
 			continue ;
 		}
+		free(line);
 		bad_node = verify_tokens(tokens);
 		if (bad_node == NULL)
 			execute_line(tokens, envp);
