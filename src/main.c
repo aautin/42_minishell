@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 15:42:39 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 15:48:43 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 #include "libft/libft.h"
 
 #include "parser.h"
-
-int	tokenize(t_list **tokens, char line[]);
 
 void	free_tokens(void *content)
 {
@@ -56,27 +54,31 @@ void	print_token(void *content)
 
 int	main(void)
 {
+	int		status;
 	char	*line;
 	t_list	*tokens;
 	t_list	*bad_node;
 
-	tokens = NULL;
 	while (1)
 	{
+		tokens = NULL;
 		line = readline("minishell> ");
 		if (line == NULL)
 			break ;
 		if (*line != '\0')
 			add_history(line);
-		if (!tokenize(&tokens, line))
-			printf("LINE : %s\n", line);
+		status = tokenize(&tokens, line);
 		free(line);
-		bad_node = verify_tokens(tokens);
-		if (bad_node != NULL)
-			printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
-		ft_lstiter(tokens, &print_token);
+		if (!status)
+		{
+			bad_node = verify_tokens(tokens);
+			if (bad_node != NULL)
+				printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
+			ft_lstiter(tokens, &print_token);
+		}
+		else if (status == 1)
+			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
 		ft_lstclear(&tokens, &free_tokens);
-		tokens = NULL;
 	}
 	rl_clear_history();
 	return (EXIT_SUCCESS);
