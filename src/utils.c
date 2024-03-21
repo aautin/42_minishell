@@ -6,13 +6,14 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 19:14:23 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 14:17:06 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "libft/libft.h"
 
