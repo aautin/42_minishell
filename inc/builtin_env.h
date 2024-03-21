@@ -1,20 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   builtin_env.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 17:12:07 by aautin           ###   ########.fr       */
+/*   Created: 2024/03/21 16:45:36 by aautin            #+#    #+#             */
+/*   Updated: 2024/03/21 17:10:16 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef BUILTIN_ENV_H
+# define BUILTIN_ENV_H
 
-int	main(void)
-{
-	printf("Initial Release !\n");
-	return (EXIT_SUCCESS);
-}
+int	builtin_env(t_list *envp);
+
+#endif
