@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:06:07 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:38:27 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include "parser.h"
 #include "pipeline.h"
 #include "redirections.h"
+#include "utils.h"
 
 #define SIG_RETURN 128
 
@@ -100,7 +101,7 @@ static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 		exit_status = EXIT_FAILURE;
 		if (!apply_pipe_redirections(&simple_cmd->pipeline)
 			&& !apply_normal_redirections(simple_cmd->first, simple_cmd->last))
-			exit_status = exec_prog(argv, envl);
+			exit_status = prepare_cmd(argv, envl);
 		ft_lstclear(&tokens, &free_token);
 		ft_lstclear(envl, &free);
 		free(argv);

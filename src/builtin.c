@@ -6,9 +6,13 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 19:53:48 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:59:08 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "libft/libft.h"
+
+#include "builtin_echo.h"
 
 int	execute_builtin(char **argv, t_list **envl)
 {
@@ -16,7 +20,7 @@ int	execute_builtin(char **argv, t_list **envl)
 	(void)envl;
 	size_t const	len_cmd = ft_strlen(argv[0]);
 	if (ft_strncmp(argv[0], "echo", len_cmd) == 0)
-		builtin_echo(argv);
+		return (builtin_echo(argv));
 	return (1);
 }
 

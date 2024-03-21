@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:00:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:16:01 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:37:55 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define EXECUTION_UTILS_H
 
 # include "libft/libft.h"
+
+# include "pipeline.h"
 
 typedef struct s_process
 {
