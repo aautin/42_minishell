@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   getenv_utils.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 16:41:22 by aautin           ###   ########.fr       */
+/*   Created: 2024/03/18 18:06:53 by aautin            #+#    #+#             */
+/*   Updated: 2024/03/21 16:36:17 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef GETENV_UTILS_H
+# define GETENV_UTILS_H
 
 #include "libft/libft.h"
 
-#include "getenv.h"
+void	ft_remove(t_list **head, t_list *prev, t_list *cur);
+int		modify(t_list *envp, const char key[], const char new_value[]);
 
-int	main(int argc, char **argv, char **envp)
-{
-	(void) argc;
-	(void) argv;
-	(void) envp;
-
-	return (EXIT_SUCCESS);
-}
+#endif

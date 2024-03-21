@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/19 14:18:16 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/21 16:37:15 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <stdlib.h>
 
 #include "libft/libft.h"
+
+#include "getenv_utils.h"
 
 t_list	*create_env(char **envp)
 {
@@ -24,7 +26,7 @@ t_list	*create_env(char **envp)
 	new_envp = NULL;
 	while (*envp)
 	{
-		env_copy = ft_strdup((const char *) *envp);
+		env_copy = ft_strdup(*envp);
 		if (env_copy == NULL)
 		{
 			ft_lstclear(&new_envp, &free);
@@ -44,18 +46,19 @@ t_list	*create_env(char **envp)
 	return (new_envp);
 }
 
-char	*ft_getenv(t_list *envp, char *to_find)
+char	*ft_getenv(t_list *envp, const char key[])
 {
 	char	*temp;
+	char	*content;
 
 	while (envp)
 	{
-		temp = ft_strchr((char *) envp->content, '=');
+		content = (char *) envp->content;
+		temp = ft_strchr(content, '=');
 		if (temp == NULL)
 			return (NULL);
 		*temp = '\0';
-		if (ft_strncmp(to_find, (char *) envp->content,
-				ft_strlen((char *) envp->content)) == 0)
+		if (ft_strncmp(key, content, ft_strlen(content)) == 0)
 		{
 			*temp = '=';
 			return (temp + 1);
@@ -66,60 +69,54 @@ char	*ft_getenv(t_list *envp, char *to_find)
 	return (NULL);
 }
 
-void	remove_env(t_list **envp, t_list *head, char *to_find)
+int	remove_env(t_list **envp, const char key[])
 {
-	t_list	*previous;
-	t_list	*current;
-	char	*str;
+	t_list	*node;
+	char	*value;
+	int		value_len;
 
-	str = ft_getenv(*envp, to_find) - ft_strlen(to_find) - 1;
-	previous = *envp;
-	current = (*envp)->next;
-	if (!ft_strncmp(((char *)(*envp)->content), str, ft_strlen(str)))
+	value = ft_getenv(*envp, key);
+	if (value == NULL)
+		return (1);
+	value -= ft_strlen(key) + 1;
+	value_len = ft_strlen(value);
+	node = *envp;
+	if (!ft_strncmp(((char *)node->content), value, value_len))
 	{
-		ft_lstdelone(previous, &free);
-		*envp = current;
-		return ;
+		ft_remove(envp, node, node);
+		return (0);
 	}
-	while (current)
+	while (node->next)
 	{
-		if (!ft_strncmp(((char *)current->content), str, ft_strlen(str)))
+		if (!ft_strncmp(((char *)node->next->content), value, value_len))
 		{
-			head = current->next;
-			ft_lstdelone(current, &free);
-			previous->next = head;
-			return ;
+			ft_remove(envp, node, node->next);
+			return (0);
 		}
-		previous = current;
-		current = current->next;
+		node = node->next;
 	}
+	return (1);
 }
 
-int	modify_env(t_list *envp, char *to_find, char *result)
+int	modify_env(t_list *envp, const char key[], const char new_value[])
 {
-	char	*content;
-	char	*new_content;
+	char	*value;
+	int		key_len;
 
-	content = ft_getenv(envp, to_find) - ft_strlen(to_find) - 1;
+	value = ft_getenv(envp, key);
+	if (value == NULL)
+		return (1);
+	key_len = ft_strlen(key);
+	value -= key_len + 1;
 	while (envp)
 	{
-		if (!ft_strncmp(((char *)envp->content), content, ft_strlen(content)))
+		if (!ft_strncmp(((char *)envp->content), value, key_len + 1))
 		{
-			free(envp->content);
-			new_content = malloc((ft_strlen(to_find) + ft_strlen(result) + 2)
-					* sizeof(char));
-			if (new_content == NULL)
-				return (1);
-			new_content[0] = 0;
-			ft_strlcat(new_content, to_find,
-				ft_strlen(to_find) + ft_strlen(result) + 2);
-			ft_strlcat(new_content, "=",
-				ft_strlen(to_find) + ft_strlen(result) + 2);
-			ft_strlcat(new_content, result,
-				ft_strlen(to_find) + ft_strlen(result) + 2);
-			return (envp->content = new_content, 0);
+			if (modify(envp, key, new_value))
+				return (2);
+			return (0);
 		}
 		envp = envp->next;
 	}
-	return (-1);
+	return (1);
 }
