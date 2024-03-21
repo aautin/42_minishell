@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 15:32:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 15:40:36 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_token
 	t_token_type	type;
 }	t_token;
 
-int		tokenize(t_list **tokens, char line[]);
+int		tokenize(t_list **tokens, char const line[]);
 t_list	*verify_tokens(t_list *tokens);
 
 #endif
