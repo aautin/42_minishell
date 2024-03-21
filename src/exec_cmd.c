@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:14:19 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:34:40 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #define NOT_FOUND_CODE 127
 #define NO_ACCESS_CODE 126
 
+static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *current);
 static int	execute_cmd(char const pathname[], char **argv, t_list *envp);
 
@@ -58,6 +59,19 @@ int	prepare_cmd(char **argv, t_list **envl)
 	return (exit_code);
 }
 
+static char	**get_paths(t_list *envl)
+{
+	char *const	env_path = ft_getenv(envl, "PATH");
+	char		**paths;
+
+	if (env_path == NULL)
+		return (NULL);
+	paths = ft_split(env_path, ':');
+	if (paths == NULL)
+		perror("get_paths():ft_split()");
+	return (paths);
+}
+
 static char	**liststr_to_tabstr(t_list *current)
 {
 	int				i;
@@ -80,7 +94,7 @@ static char	**liststr_to_tabstr(t_list *current)
 	return (tab);
 }
 
-static int	execute_cmd(char const pathname[], char **argv, t_list *envp)
+static int	execute_cmd(char const pathname[], char **argv, t_list *envl)
 {
 	int				exit_code;
 	char **const	envp = liststr_to_tabstr(envl);

@@ -1,20 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_cmd_utils.c                                   :+:      :+:    :+:   */
+/*   check_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:07:57 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:08:32 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:41:20 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-static char	**get_paths(t_list *envl)
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+#include "libft/libft.h"
+
 static char	*join_path(char const path[], char const exec_name[]);
 
-char	*check_exec(char const exec_name[],
-	char const *const *paths, int mode)
+char	*check_exec(char const exec_name[], char **paths, int mode)
 {
 	int		i;
 	char	*pathname;
@@ -26,7 +30,7 @@ char	*check_exec(char const exec_name[],
 		exec_name = ft_strdup(exec_name);
 		if (exec_name == NULL)
 			perror("check_cmd():ft_strdup()");
-		return (exec_name);
+		return ((char *)exec_name);
 	}
 	if (paths == NULL)
 		return (NULL);
@@ -40,19 +44,6 @@ char	*check_exec(char const exec_name[],
 		i++;
 	}
 	return (NULL);
-}
-
-static char	**get_paths(t_list *envl)
-{
-	char *const	env_path = ft_getenv(envl, "PATH");
-	char		**paths;
-
-	if (env_path == NULL)
-		return (NULL);
-	paths = ft_split(env_path, ':');
-	if (paths == NULL)
-		perror("get_paths():ft_split()");
-	return (paths);
 }
 
 static char	*join_path(char const path[], char const exec_name[])
