@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 18:20:11 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 19:20:49 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 char	*ask_input(char const prompt[])
 {
 	char	*line;
-	char	*line_with_nl;
 
 	if (isatty(STDIN_FILENO))
 		line = readline(prompt);
@@ -41,4 +40,17 @@ void	free_token(void *content)
 	free(token->data);
 	token->data = NULL;
 	free(token);
+}
+
+void	my_perror(char const name[], char const msg[])
+{
+	char *const	full_msg = ft_strjoin(name, msg);
+
+	if (full_msg == NULL)
+	{
+		perror("my_perror():ft_strjoin()");
+		return ;
+	}
+	ft_putstr_fd(full_msg, STDERR_FILENO);
+	free(full_msg);
 }
