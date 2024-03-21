@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 18:14:43 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:29:57 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #include "pipeline.h"
 #include "redirections.h"
 #include "utils.h"
+
+#define HERE_DOC_WARNING "warning: here_document delimited by end-of-file"
 
 static int	do_heredoc(t_token *word);
 static int	read_heredoc(int pipefd_write_end, t_token *word);
@@ -109,7 +111,7 @@ static int	read_heredoc(int pipefd_write_end, t_token *word)
 	if (save_std_fd(std_fd))
 		return (0);
 	if (!redirect_fd(STDERR_FILENO, STDOUT_FILENO))
-		printf("warning: here_document delimited by end-of-file (wanted '%s')\n", delim);
+		printf(HERE_DOC_WARNING " (wanted '%s')\n", delim);
 	if (reset_std_fd(std_fd))
 		return (1);
 	return (0);

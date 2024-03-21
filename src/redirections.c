@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 18:09:57 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:30:37 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int	apply_normal_redirections(t_list *current, t_list *last)
 static int	redirect_to_file(t_list *operator, int fd[2])
 {
 	t_token *const	redirect = operator->content;
-	t_token	*const	word = operator->next->content;
+	t_token *const	word = operator->next->content;
 	int				fd_in;
 	int				fd_out;
 
