@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 15:36:14 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 15:39:50 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 static int	parse_line(t_list **tokens, t_line_part *line_part);
 
-int	tokenize(t_list **tokens, char line[])
+int	tokenize(t_list **tokens, char const line[])
 {
 	t_line_part	line_part;	
 
