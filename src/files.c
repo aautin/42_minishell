@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 18:29:57 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 21:13:46 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,14 +93,13 @@ static int	read_heredoc(int pipefd_write_end, t_token *word)
 	char			*line;
 	int				std_fd[3];
 	char *const		delim = word->data;
-	size_t const	len_delim = ft_strlen(delim);
+	size_t const	size_delim = ft_strlen(delim) + 1;
 
 	while (1)
 	{
 		line = ask_input("> ");
 		if (line == NULL
-			|| (ft_strncmp(line, delim, len_delim) == 0
-				&& line[len_delim] == '\n')
+			|| ft_strncmp(line, delim, size_delim) == 0
 			|| parse_line_heredoc(line, word, pipefd_write_end))
 			break ;
 		free(line);
