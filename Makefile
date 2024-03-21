@@ -16,8 +16,11 @@ GOTO_B	:=	\e[1A\e[K
 DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
+				builtin.c			\
+				check_exec.c		\
 				exec_cmd.c			\
 				execution.c			\
+				execution_utils.c	\
 				files.c				\
 				main.c				\
 				pipeline.c			\
