@@ -6,14 +6,14 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:55:46 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 17:02:58 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 20:16:09 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPELINE_H
 # define PIPELINE_H
 
-#include "libft/libft.h"
+# include "libft/libft.h"
 
 enum e_pipe_mode
 {
