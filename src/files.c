@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 16:20:49 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:14:43 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include "utils.h"
 
 static int	do_heredoc(t_token *word);
-static int	read_heredoc(int pipefd_read_end, t_token *word);
+static int	read_heredoc(int pipefd_write_end, t_token *word);
 static int	parse_line_heredoc(char const line[], t_token *word, int fd);
 
 int	open_infile(t_token *redirect, t_token *word)
@@ -86,7 +86,7 @@ static int	do_heredoc(t_token *word)
 	return (pipefd[0]);
 }
 
-static int	read_heredoc(int pipefd_read_end, t_token *word)
+static int	read_heredoc(int pipefd_write_end, t_token *word)
 {
 	char			*line;
 	int				std_fd[3];
@@ -99,19 +99,19 @@ static int	read_heredoc(int pipefd_read_end, t_token *word)
 		if (line == NULL
 			|| (ft_strncmp(line, delim, len_delim) == 0
 				&& line[len_delim] == '\n')
-			|| parse_line_heredoc(line, word, pipefd_read_end))
+			|| parse_line_heredoc(line, word, pipefd_write_end))
 			break ;
 		free(line);
 	}
 	free(line);
-	if (line == NULL)
-	{
-		if (save_std_fd(std_fd))
-			return (1);
-		if (!redirect_fd(STDOUT_FILENO, STDERR_FILENO))
-			printf("warning: here_document delimited by end-of-file (wanted '%s')", delim);
-		reset_std_fd(std_fd);
-	}
+	if (line != NULL)
+		return (0);
+	if (save_std_fd(std_fd))
+		return (0);
+	if (!redirect_fd(STDERR_FILENO, STDOUT_FILENO))
+		printf("warning: here_document delimited by end-of-file (wanted '%s')\n", delim);
+	if (reset_std_fd(std_fd))
+		return (1);
 	return (0);
 }
 
@@ -136,5 +136,6 @@ static int	parse_line_heredoc(char const line[], t_token *word, int fd)
 		current = current->next;
 	}
 	ft_lstclear(&tokens, &free_token);
+	ft_putchar_fd('\n', fd);
 	return (0);
 }

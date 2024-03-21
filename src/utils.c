@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 15:20:57 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 18:15:48 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <unistd.h>
 
 #include "libft/libft.h"
+
+#include "parser.h"
 
 char	*ask_input(char const prompt[])
 {
@@ -39,9 +41,8 @@ char	*ask_input(char const prompt[])
 
 void	free_token(void *content)
 {
-	t_token	*token;
+	t_token *const	token = content;
 
-	token = content;
 	free(token->data);
 	token->data = NULL;
 	free(token);
