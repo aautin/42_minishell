@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:26:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 17:04:18 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 14:48:46 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 
 # include "libft/libft.h"
 
-int	apply_normal_redirections(t_list *current, t_list *last);
 int	redirect_fd(int oldfd, int newfd);
+int	save_std_fd(int std_fd[3]);
+int	reset_std_fd(int std_fd[3]);
+int	apply_normal_redirections(t_list *current, t_list *last);
 
 #endif

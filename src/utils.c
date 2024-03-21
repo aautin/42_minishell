@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 14:17:06 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 15:20:57 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,14 @@ char	*ask_input(char const prompt[])
 	else
 		line_with_nl = get_next_line(STDIN_FILENO);
 	return (line_with_nl);
+}
+
+void	free_token(void *content)
+{
+	t_token	*token;
+
+	token = content;
+	free(token->data);
+	token->data = NULL;
+	free(token);
 }
