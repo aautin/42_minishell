@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 18:30:37 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/21 21:14:04 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	redirect_fd(int oldfd, int newfd)
 		perror("redirect_fd():dup2()");
 		return (1);
 	}
-	if (oldfd != STDIN_FILNO
+	if (oldfd != STDIN_FILENO
 		&& oldfd != STDOUT_FILENO
 		&& oldfd != STDERR_FILENO)
 	{
@@ -139,7 +139,7 @@ static int	redirect_to_file(t_list *operator, int fd[2])
 	{
 		if (fd[1] >= 0 && close(fd[1]) == -1)
 			perror("redirect_to_file():close(fd[1])");
-		fd[1] = fd_in;
+		fd[1] = fd_out;
 	}
 	return (0);
 }
