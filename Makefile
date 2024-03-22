@@ -25,6 +25,7 @@ FILES		:=	\
 				main.c				\
 				pipeline.c			\
 				redirections.c		\
+				utils.c				\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
