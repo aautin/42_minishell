@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 21:13:46 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:17:58 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,25 +118,19 @@ static int	read_heredoc(int pipefd_write_end, t_token *word)
 
 static int	parse_line_heredoc(char const line[], t_token *word, int fd)
 {
-	t_list	*tokens;
-	t_list	*current;
-	t_token	*token;
+	t_token	token;
 
-	tokens = NULL;
-	tokenize(&tokens, line);
-	current = tokens;
-	while (current != NULL)
+	token.data = ft_strdup(line);
+	token.type = T_WORD;
+	if (!(word->type & T_QUOTED))
 	{
-		token = current->content;
-		if (token->type & T_WORD && !(word->type & T_QUOTED))
+		if (expansion(&token))
 		{
-			if (expansion(token))
-				return (1);
+			free(token.data);
+			return (1);
 		}
-		ft_putstr_fd(token->data, fd);
-		current = current->next;
 	}
-	ft_lstclear(&tokens, &free_token);
-	ft_putchar_fd('\n', fd);
+	ft_putendl_fd(token.data, fd);
+	free(token.data);
 	return (0);
 }
