@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 19:04:37 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:35:04 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 
 #include "execution.h"
 #include "parser.h"
+#include "handle_signals.h"
 #include "utils.h"
 
 int	main(int argc, char **argv, char **envp)

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signal.c                                           :+:      :+:    :+:   */
+/*   handle_signals.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 16:57:48 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 18:41:17 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:16:52 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,31 @@
 #include <signal.h>
 #include <unistd.h>
 
+static void	sigint_handler(int signum);
+
 void	init_signals(int is_child)
 {
 	struct sigaction	act;
 
 	if (sigaction(SIGINT, NULL, &act) != -1)
 	{
-		if (act.sa_handler != SIG_IGN)
+		if (act.sa_handler != SIG_IGN || is_child)
 		{
 			act.sa_handler = &sigint_handler;
 			if (is_child)
-				act.sa_handler = SIG_FDL;
-			sigemptyset(act.sa_mask);
+				act.sa_handler = SIG_DFL;
+			sigemptyset(&act.sa_mask);
 			sigaction(SIGINT, &act, NULL);
 		}
 	}
 	if (sigaction(SIGQUIT, NULL, &act) != -1)
 	{
-		if (act.sa_handler != SIG_IGN)
+		if (act.sa_handler != SIG_IGN || is_child)
 		{
 			act.sa_handler = SIG_IGN;
 			if (is_child)
-				act.sa_handler = SIG_FDL;
-			sigemptyset(act.sa_mask);
+				act.sa_handler = SIG_DFL;
+			sigemptyset(&act.sa_mask);
 			sigaction(SIGQUIT, &act, NULL);
 		}
 	}

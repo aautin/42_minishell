@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 19:04:24 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:34:53 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 #include "parser.h"
 #include "pipeline.h"
 #include "redirections.h"
-#include "signal"
+#include "handle_signals.h"
 #include "utils.h"
 
 #define SIG_RETURN 128
@@ -142,8 +142,9 @@ static int	get_exit_status(int wstatus)
 {
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
-	if (WIFSIGNALED(wstatus))
+	else if (WIFSIGNALED(wstatus))
 		return (SIG_RETURN + WTERMSIG(wstatus));
-	if (WIFSTOPPED(wstatus))
+	else if (WIFSTOPPED(wstatus))
 		return (SIG_RETURN + WSTOPSIG(wstatus));
+	return (0);
 }
