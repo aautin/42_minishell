@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 15:48:43 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:53:58 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int	main(void)
 		{
 			bad_node = verify_tokens(tokens);
 			if (bad_node != NULL)
-				printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
-			ft_lstiter(tokens, &print_token);
+				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
+			ft_lstiter(&tokens, &print_token);
 		}
 		else if (status == 1)
 			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
