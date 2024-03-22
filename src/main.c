@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 21:13:14 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 19:04:37 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ int	main(int argc, char **argv, char **envp)
 	int		status;
 	t_list	*tokens;
 
+	init_signals(0);
 	while (1)
 	{
 		tokens = NULL;

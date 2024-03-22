@@ -25,6 +25,7 @@ FILES		:=	\
 				main.c				\
 				pipeline.c			\
 				redirections.c		\
+				signal.c			\
 				utils.c				\
 
 SRC_PATH	:=	src
