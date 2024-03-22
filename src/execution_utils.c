@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:41:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:15:59 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ int	find_args(t_list *current, t_list *last, t_list **args)
 		{
 			if (!is_redirection)
 			{
-				if (add_to_list(args, token))
+				parse_token(token);
+				if (*token->data != '\0' && add_to_list(args, token))
 				{
 					ft_lstclear(args, NULL);
 					return (1);
@@ -77,7 +78,6 @@ char	**listtoken_to_tabstr(t_list *current)
 	while (i < size)
 	{
 		token = current->content;
-		parse_token(token);
 		tab[i] = token->data;
 		current = current->next;
 		i++;

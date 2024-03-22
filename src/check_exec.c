@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:07:57 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:41:20 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 15:57:35 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,33 +17,51 @@
 #include "libft/libft.h"
 
 static char	*join_path(char const path[], char const exec_name[]);
+static char	*find_cmd(char const exec_name[], char *const *paths);
 
-char	*check_exec(char const exec_name[], char **paths, int mode)
+char	*check_exec(char const exec_name[], char *const *paths)
 {
-	int		i;
 	char	*pathname;
 
 	if (ft_strchr(exec_name, '/') != NULL)
 	{
-		if (access(exec_name, mode) == -1)
+		if (access(exec_name, F_OK) == -1)
 			return (NULL);
-		exec_name = ft_strdup(exec_name);
-		if (exec_name == NULL)
+		pathname = ft_strdup(exec_name);
+		if (pathname == NULL)
 			perror("check_cmd():ft_strdup()");
-		return ((char *)exec_name);
+		return (pathname);
 	}
 	if (paths == NULL)
 		return (NULL);
+	return (find_cmd(exec_name, paths));
+}
+
+static char	*find_cmd(char const exec_name[], char *const *paths)
+{
+	int		i;
+	char	*pathname;
+	char	*second_chance;
+
 	i = 0;
+	second_chance = NULL;
 	while (paths[i] != NULL)
 	{
 		pathname = join_path(paths[i], exec_name);
-		if (pathname == NULL || access(pathname, mode) != -1)
+		if (pathname == NULL)
+			return (NULL);
+		if (access(pathname, F_OK | X_OK) != -1)
 			return (pathname);
-		free(pathname);
+		if (access(pathname, F_OK) != -1)
+		{
+			free(second_chance);
+			second_chance = pathname;
+		}
+		else
+			free(pathname);
 		i++;
 	}
-	return (NULL);
+	return (second_chance);
 }
 
 static char	*join_path(char const path[], char const exec_name[])
@@ -64,4 +82,3 @@ static char	*join_path(char const path[], char const exec_name[])
 	ft_memcpy(pathname + len_path + 1, exec_name, len_cmd);
 	return (pathname);
 }
-

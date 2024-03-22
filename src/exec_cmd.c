@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:34:40 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:09:44 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,12 @@ int	prepare_cmd(char **argv, t_list **envl)
 	char	*pathname;
 	int		exit_code;
 
-	if (argv[0] == NULL || argv[0][0] == '\0')
+	if (argv[0] == NULL)
 		return (0);
 	if (is_a_builtin(argv[0]))
 		return (execute_builtin(argv, envl));
 	paths = get_paths(*envl);
-	pathname = check_exec(argv[0], paths, F_OK | X_OK);
-	if (pathname == NULL)
-		pathname = check_exec(argv[0], paths, F_OK);
+	pathname = check_exec(argv[0], paths);
 	if (paths != NULL)
 		ft_freeall(paths);
 	if (pathname == NULL)
