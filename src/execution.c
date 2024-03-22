@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:38:27 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/22 16:30:59 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
 static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 				char **argv, t_list **envl);
 static void	wait_all(t_simple_cmd *simple_cmd);
+static int	get_exit_status(int wstatus);
 
 int	execute_line(t_list *tokens, t_list **envl)
 {
@@ -56,10 +57,11 @@ int	execute_line(t_list *tokens, t_list **envl)
 		execute_simple_cmd(tokens, &simple_cmd, envl);
 		close_pipes(&simple_cmd.pipeline);
 		wait_all(&simple_cmd);
-		printf("EXIT STATUS : %d\n", simple_cmd.proc.exit_status);
+		if (simple_cmd.last == NULL || !(((t_token *)simple_cmd.last->content)->type & T_PIPE))
+			printf("EXIT STATUS : %d\n", simple_cmd.proc.exit_status);
 		simple_cmd.first = simple_cmd.last;
 	}
-	return (0);
+	return (simple_cmd.proc.exit_status);
 }
 
 static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
@@ -69,7 +71,7 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
 	char		**argv;
 
 	simple_cmd->proc.pid = -1;
-	simple_cmd->proc.exit_status = 0;
+	simple_cmd->proc.exit_status = EXIT_FAILURE;
 	args = NULL;
 	if (find_args(simple_cmd->first, simple_cmd->last, &args))
 		return ;
@@ -87,8 +89,6 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
 static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 		char **argv, t_list **envl)
 {
-	int			exit_status;
-
 	simple_cmd->proc.pid = fork();
 	if (simple_cmd->proc.pid == -1)
 	{
@@ -98,22 +98,22 @@ static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 	}
 	if (simple_cmd->proc.pid == 0)
 	{
-		exit_status = EXIT_FAILURE;
 		if (!apply_pipe_redirections(&simple_cmd->pipeline)
 			&& !apply_normal_redirections(simple_cmd->first, simple_cmd->last))
-			exit_status = prepare_cmd(argv, envl);
+			simple_cmd->proc.exit_status = prepare_cmd(argv, envl);
 		ft_lstclear(&tokens, &free_token);
 		ft_lstclear(envl, &free);
 		free(argv);
-		exit(exit_status);
+		exit(simple_cmd->proc.exit_status);
 	}
-	simple_cmd->proc.exit_status = 0;
 }
 
 static void	wait_all(t_simple_cmd *simple_cmd)
 {
+	int				wstatus;
 	t_token			*token;
 	pid_t			proc_waited;
+	pid_t			last_pid;
 	t_list *const	last = simple_cmd->last;
 
 	if (simple_cmd->proc.pid == -1)
@@ -121,18 +121,27 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 	token = NULL;
 	if (last != NULL)
 		token = last->content;
-	if (token == NULL || !(token->type & T_PIPE))
+	if (token != NULL && (token->type & T_PIPE))
+		return ;
+	proc_waited = waitpid(-1, &wstatus, WUNTRACED);
+	while (proc_waited <= 0 && proc_waited != simple_cmd->proc.pid)
+		proc_waited = waitpid(-1, &wstatus, WUNTRACED);
+	proc_waited = waitpid(-1, NULL, WUNTRACED);
+	last_pid = proc_waited;
+	while (proc_waited != last_pid)
 	{
-		proc_waited = waitpid(-1, &simple_cmd->proc.exit_status, WUNTRACED);
-		while (proc_waited != simple_cmd->proc.pid && errno != ECHILD)
-			proc_waited = waitpid(-1, &simple_cmd->proc.exit_status, WUNTRACED);
-		while (errno != ECHILD)
-			wait(NULL);
-		if (WIFEXITED(simple_cmd->proc.exit_status))
-			simple_cmd->proc.exit_status
-				= WEXITSTATUS(simple_cmd->proc.exit_status);
-		else if (WIFSIGNALED(simple_cmd->proc.exit_status))
-			simple_cmd->proc.exit_status
-				= SIG_RETURN + WTERMSIG(simple_cmd->proc.exit_status);
+		last_pid = proc_waited;
+		proc_waited = waitpid(-1, NULL, WUNTRACED);
 	}
+	simple_cmd->proc.exit_status = get_exit_status(wstatus);
+}
+
+static int	get_exit_status(int wstatus)
+{
+	if (WIFEXITED(wstatus))
+		return (WEXITSTATUS(wstatus));
+	if (WIFSIGNALED(wstatus))
+		return (SIG_RETURN + WTERMSIG(wstatus));
+	if (WIFSTOPPED(wstatus))
+		return (SIG_RETURN + WSTOPSIG(wstatus));
 }
