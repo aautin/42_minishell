@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 15:15:59 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:34:11 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,14 @@
 
 #include "libft/libft.h"
 
+#include "minishell.h"
 #include "parser.h"
 
 int		add_to_list(t_list **tokens, t_token *token);
 
-int	find_args(t_list *current, t_list *last, t_list **args)
+int	find_args(t_list **args, t_minishell *ms, t_list *current, t_list *last)
 {
+	(void)ms;
 	int		is_redirection;
 	t_token	*token;
 

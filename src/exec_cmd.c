@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 16:09:44 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:39:14 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "builtin.h"
 #include "check_exec.h"
 #include "getenv.h"
+#include "minishell.h"
 #include "utils.h"
 
 #define NOT_FOUND_MSG ": command not found\n"
@@ -30,7 +31,7 @@ static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *current);
 static int	execute_cmd(char const pathname[], char **argv, t_list *envp);
 
-int	prepare_cmd(char **argv, t_list **envl)
+int	prepare_cmd(t_minishell *ms, char **argv)
 {
 	char	**paths;
 	char	*pathname;
@@ -39,8 +40,8 @@ int	prepare_cmd(char **argv, t_list **envl)
 	if (argv[0] == NULL)
 		return (0);
 	if (is_a_builtin(argv[0]))
-		return (execute_builtin(argv, envl));
-	paths = get_paths(*envl);
+		return (execute_builtin(argv, ms));
+	paths = get_paths(ms->envl);
 	pathname = check_exec(argv[0], paths);
 	if (paths != NULL)
 		ft_freeall(paths);
@@ -52,7 +53,7 @@ int	prepare_cmd(char **argv, t_list **envl)
 			my_perror(argv[0], NOT_FOUND_MSG);
 		return (NOT_FOUND_CODE);
 	}
-	exit_code = execute_cmd(pathname, argv, *envl);
+	exit_code = execute_cmd(pathname, argv, ms->envl);
 	free(pathname);
 	return (exit_code);
 }

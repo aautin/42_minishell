@@ -6,13 +6,15 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:04:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:04:42 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:37:34 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXEC_CMD_H
 # define EXEC_CMD_H
 
-int		prepare_cmd(char **argv, t_list **envl);
+# include "minishell.h"
+
+int		prepare_cmd(t_minishell *ms, char **argv);
 
 #endif

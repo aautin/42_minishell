@@ -6,21 +6,19 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:59:08 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:40:41 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
-#include "builtin_echo.h"
+#include "minishell.h"
 
-int	execute_builtin(char **argv, t_list **envl)
+int	execute_builtin(char **argv, t_minishell *ms)
 {
-	(void)argv;
-	(void)envl;
 	size_t const	len_cmd = ft_strlen(argv[0]);
-	if (ft_strncmp(argv[0], "echo", len_cmd) == 0)
-		return (builtin_echo(argv));
+
+	(void)ms;
 	return (1);
 }
 
@@ -37,7 +35,7 @@ int	is_a_builtin(char const cmd[])
 	int					i;
 	size_t				len;
 
-	if (cmd == NULL || *cmd == '\0')
+	if (cmd == NULL)
 		return (0);
 	len = ft_strlen(cmd);
 	i = 0;

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 19:34:53 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/24 18:35:54 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,23 @@
 #include "pipeline.h"
 #include "redirections.h"
 #include "handle_signals.h"
+#include "minishell.h"
 #include "utils.h"
 
 #define SIG_RETURN 128
 
-static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
-				t_list **envl);
-static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
-				char **argv, t_list **envl);
+static void	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd);
+static void	create_process(t_minishell *ms, t_simple_cmd *simple_cmd,
+				char **argv);
 static void	wait_all(t_simple_cmd *simple_cmd);
 static int	get_exit_status(int wstatus);
 
-int	execute_line(t_list *tokens, t_list **envl)
+int	execute_line(t_minishell *ms)
 {
 	t_simple_cmd	simple_cmd;
 
 	ft_bzero(&simple_cmd, sizeof(simple_cmd));
-	simple_cmd.first = tokens;
+	simple_cmd.first = ms->tokens;
 	while (simple_cmd.first != NULL)
 	{
 		simple_cmd.last = get_control_operator(simple_cmd.first->next);
@@ -55,18 +55,17 @@ int	execute_line(t_list *tokens, t_list **envl)
 				return (EXIT_FAILURE);
 			}
 		}
-		execute_simple_cmd(tokens, &simple_cmd, envl);
+		execute_simple_cmd(ms, &simple_cmd);
 		close_pipes(&simple_cmd.pipeline);
 		wait_all(&simple_cmd);
 		if (simple_cmd.last == NULL || !(((t_token *)simple_cmd.last->content)->type & T_PIPE))
-			printf("EXIT STATUS : %d\n", simple_cmd.proc.exit_status);
+			ms->last_exit_status = simple_cmd.proc.exit_status;
 		simple_cmd.first = simple_cmd.last;
 	}
 	return (simple_cmd.proc.exit_status);
 }
 
-static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
-		t_list **envl)
+static void	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd)
 {
 	t_list		*args;
 	char		**argv;
@@ -74,21 +73,21 @@ static void	execute_simple_cmd(t_list *tokens, t_simple_cmd *simple_cmd,
 	simple_cmd->proc.pid = -1;
 	simple_cmd->proc.exit_status = EXIT_FAILURE;
 	args = NULL;
-	if (find_args(simple_cmd->first, simple_cmd->last, &args))
+	if (find_args(&args, ms, simple_cmd->first, simple_cmd->last))
 		return ;
 	argv = listtoken_to_tabstr(args);
 	ft_lstclear(&args, NULL);
 	if (argv == NULL)
 		return ;
 	if (!is_a_builtin(argv[0]) || simple_cmd->pipeline.mode != P_NONE)
-		create_process(tokens, simple_cmd, argv, envl);
+		create_process(ms, simple_cmd, argv);
 	else
-		simple_cmd->proc.exit_status = execute_builtin(argv, envl);
+		simple_cmd->proc.exit_status = execute_builtin(ms, argv);
 	free(argv);
 }
 
-static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
-		char **argv, t_list **envl)
+static void	create_process(t_minishell *ms, t_simple_cmd *simple_cmd,
+		char **argv)
 {
 	simple_cmd->proc.pid = fork();
 	if (simple_cmd->proc.pid == -1)
@@ -102,9 +101,9 @@ static void	create_process(t_list *tokens, t_simple_cmd *simple_cmd,
 		init_signals(1);
 		if (!apply_pipe_redirections(&simple_cmd->pipeline)
 			&& !apply_normal_redirections(simple_cmd->first, simple_cmd->last))
-			simple_cmd->proc.exit_status = prepare_cmd(argv, envl);
-		ft_lstclear(&tokens, &free_token);
-		ft_lstclear(envl, &free);
+			simple_cmd->proc.exit_status = prepare_cmd(ms, argv);
+		ft_lstclear(&ms->tokens, &free_token);
+		ft_lstclear(&ms->envl, &free);
 		free(argv);
 		exit(simple_cmd->proc.exit_status);
 	}
