@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 15:39:50 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:26:47 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,9 @@
 #include "tokenize_rules.h"
 #include "tokenize_utils.h"
 
-static int	parse_line(t_list **tokens, t_line_part *line_part);
+static int		parse_line(t_list **tokens, t_line_part *line_part);
+static t_list	*get_invalid_redirection_token(t_list *redirect);
+static t_list	*get_invalid_control_token(t_list *control);
 
 int	tokenize(t_list **tokens, char const line[])
 {
@@ -37,31 +39,27 @@ int	tokenize(t_list **tokens, char const line[])
 	return (parse_line(tokens, &line_part));
 }
 
-t_list	*verify_tokens(t_list *tokens)
+t_list	*verify_tokens(t_list *current_token)
 {
 	t_token	*token;
-	t_list	*next;
-	int		is_redirect;
+	t_list	*bad_node;
 
-	token = tokens->content;
+	token = current_token->content;
 	if (token->type & T_CONTROL_OPERATOR)
-		return (tokens);
-	is_redirect = 0;
-	while (tokens != NULL)
+		return (current_token);
+	bad_node = NULL;
+	while (current_token != NULL)
 	{
-		token = tokens->content;
-		if (is_redirect && !(token->type & T_WORD))
-			break ;
+		token = current_token->content;
 		if (token->type & T_REDIRECT_OPERATOR)
-			is_redirect = 1;
-		else
-			is_redirect = 0;
-		next = tokens->next;
-		if (next == NULL && is_redirect)
-			break ;
-		tokens = tokens->next;
+			bad_node = get_invalid_redirection_token(current_token);
+		else if (token->type & T_CONTROL_OPERATOR)
+			bad_node = get_invalid_control_token(current_token);
+		if (bad_node != NULL)
+			return (bad_node);
+		current_token = current_token->next;
 	}
-	return (tokens);
+	return (NULL);
 }
 
 static int	parse_line(t_list **tokens, t_line_part *line_part)
@@ -85,4 +83,30 @@ static int	parse_line(t_list **tokens, t_line_part *line_part)
 			return (2);
 	}
 	return (line_part->mode != NO_QUOTE);
+}
+
+static t_list	*get_invalid_redirection_token(t_list *redirect)
+{
+	t_token			*token;
+	t_list *const	next_token = redirect->next;
+
+	if (next_token == NULL)
+		return (redirect);
+	token = next_token->content;
+	if (!(token->type & T_WORD))
+		return (next_token);
+	return (NULL);
+}
+
+static t_list	*get_invalid_control_token(t_list *control)
+{
+	t_token			*token;
+	t_list *const	next_token = control->next;
+
+	if (next_token == NULL)
+		return (control);
+	token = next_token->content;
+	if (token->type & T_CONTROL_OPERATOR)
+		return (next_token);
+	return (NULL);
 }

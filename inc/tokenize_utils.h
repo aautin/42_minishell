@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:44:13 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 15:40:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:26:34 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_line_part
 	t_token		*token;
 }	t_line_part;
 
-int			add_to_list(t_list **tokens, t_token *token);
 void		store_and_create_token(t_list **tokens, t_line_part *line_part);
 t_action	append_redirect_operator(t_line_part *line_part);
 t_action	new_operator(t_list **tokens, t_line_part *line_part);

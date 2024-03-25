@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 16:15:33 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:27:34 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,12 +75,12 @@ int	main(void)
 		{
 			bad_node = verify_tokens(tokens);
 			if (bad_node != NULL)
-				printf("Unexpected token '%s'\n", (char *)((t_token *)bad_node->content)->data);
-			ft_lstiter(tokens, &print_token);
+				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
+			ft_lstiter(&tokens, &print_token);
 		}
 		else if (status == 1)
 			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
-		ft_lstclear(&tokens, &free_token);
+		ft_lstclear(&tokens, &free_tokens);
 	}
 	rl_clear_history();
 	return (EXIT_SUCCESS);
