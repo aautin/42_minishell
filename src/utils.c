@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 19:20:49 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:51:07 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,27 @@ void	my_perror(char const name[], char const msg[])
 	}
 	ft_putstr_fd(full_msg, STDERR_FILENO);
 	free(full_msg);
+}
+
+int	add_to_list(t_list **list, void *content)
+{
+	t_list	*node;
+
+	node = ft_lstnew(content);
+	if (node == NULL)
+	{
+		perror("add_to_list():ft_lstnew()");
+		return (1);
+	}
+	ft_lstadd_back(list, node);
+	return (0);
+}
+
+void	free_here_doc(void *content)
+{
+	char *const	filename = content;
+
+	if (unlink(filename) == -1)
+		perror(filename);
+	free(content);
 }

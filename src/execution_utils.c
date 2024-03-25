@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/24 18:34:11 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:08:52 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,18 @@
 
 #include "minishell.h"
 #include "parser.h"
+#include "utils.h"
 
-int		add_to_list(t_list **tokens, t_token *token);
-
-int	find_args(t_list **args, t_minishell *ms, t_list *current, t_list *last)
+int	find_args(t_list **args, t_minishell *ms, t_list *current_token, t_list *last_token)
 {
 	(void)ms;
 	int		is_redirection;
 	t_token	*token;
 
 	is_redirection = 0;
-	while (current != last)
+	while (current_token != last_token)
 	{
-		token = current->content;
+		token = current_token->content;
 		if (token->type & T_REDIRECT_OPERATOR)
 			is_redirection = 1;
 		else if (token->type & T_WORD)
@@ -45,30 +44,30 @@ int	find_args(t_list **args, t_minishell *ms, t_list *current, t_list *last)
 			}
 			is_redirection = 0;
 		}
-		current = current->next;
+		current_token = current_token->next;
 	}
 	return (0);
 }
 
-t_list	*get_control_operator(t_list *current)
+t_list	*get_control_operator(t_list *current_token)
 {
 	t_token	*token;
 
-	while (current != NULL)
+	while (current_token != NULL)
 	{
-		token = current->content;
+		token = current_token->content;
 		if (token->type & T_CONTROL_OPERATOR)
 			break ;
-		current = current->next;
+		current_token = current_token->next;
 	}
-	return (current);
+	return (current_token);
 }
 
-char	**listtoken_to_tabstr(t_list *current)
+char	**listtoken_to_tabstr(t_list *current_token)
 {
 	int				i;
 	t_token			*token;
-	int const		size = ft_lstsize(current);
+	int const		size = ft_lstsize(current_token);
 	char **const	tab = malloc((size + 1) * sizeof(char *));
 
 	if (tab == NULL)
@@ -79,11 +78,27 @@ char	**listtoken_to_tabstr(t_list *current)
 	i = 0;
 	while (i < size)
 	{
-		token = current->content;
+		token = current_token->content;
 		tab[i] = token->data;
-		current = current->next;
+		current_token = current_token->next;
 		i++;
 	}
 	tab[i] = NULL;
 	return (tab);
+}
+
+void	goto_next_here_doc(t_minishell *ms, t_list *current_token, t_list *last_token)
+{
+	t_token	*token;
+
+	while (current_token != last_token)
+	{
+		token = current_token->content;
+		if (token->type & T_REDIRECT_HERE_DOC)
+		{
+			ms->current_here_doc = ms->current_here_doc->next;
+			current_token = current_token->next;
+		}
+		current_token = current_token->next;
+	}
 }

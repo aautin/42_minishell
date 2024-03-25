@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 21:14:04 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:50:52 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "parser.h"
 #include "redirections.h"
 
-static int	redirect_to_file(t_list *tokens, int fd[2]);
+static int	redirect_to_file(t_list *tokens, t_list **current_here_doc, int fd[2]);
 
 int	redirect_fd(int oldfd, int newfd)
 {
@@ -87,26 +87,27 @@ int	reset_std_fd(int std_fd[3])
 	return (status);
 }
 
-int	apply_normal_redirections(t_list *current, t_list *last)
+int	apply_normal_redirections(t_list *current_token, t_list *last_token,
+		t_list **current_here_doc)
 {
 	int	fd[2];
 	int	status;
 
 	fd[0] = -1;
 	fd[1] = -1;
-	while (current != last)
+	while (current_token != last_token)
 	{
-		if (((t_token *)current->content)->type & T_REDIRECT_OPERATOR)
+		if (((t_token *)current_token->content)->type & T_REDIRECT_OPERATOR)
 		{
-			if (redirect_to_file(current, fd))
+			if (redirect_to_file(current_token, current_here_doc, fd))
 			{
 				close(fd[0]);
 				close(fd[1]);
 				return (1);
 			}
-			current = current->next;
+			current_token = current_token->next;
 		}
-		current = current->next;
+		current_token = current_token->next;
 	}
 	status = 0;
 	if (fd[0] >= 0)
@@ -116,14 +117,14 @@ int	apply_normal_redirections(t_list *current, t_list *last)
 	return (status);
 }
 
-static int	redirect_to_file(t_list *operator, int fd[2])
+static int	redirect_to_file(t_list *operator, t_list **current_here_doc, int fd[2])
 {
 	t_token *const	redirect = operator->content;
 	t_token *const	word = operator->next->content;
 	int				fd_in;
 	int				fd_out;
 
-	fd_in = open_infile(redirect, word);
+	fd_in = open_infile(redirect, word, current_here_doc);
 	if (fd_in == -1)
 		return (1);
 	fd_out = open_outfile(redirect, word);

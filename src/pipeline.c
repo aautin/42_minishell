@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:53:32 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 17:04:57 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:13:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,18 @@
 #include "pipeline.h"
 #include "redirections.h"
 
-enum e_pipe_mode	get_pipe_mode(t_list *first, t_list *last)
+enum e_pipe_mode	get_pipe_mode(t_list *first_token, t_list *last_token)
 {
 	t_token				*token;
 	enum e_pipe_mode	mode;
 
 	mode = P_NONE;
-	token = first->content;
+	token = first_token->content;
 	if (token->type & T_PIPE)
 		mode |= P_INPUT;
-	if (last == NULL)
+	if (last_token == NULL)
 		return (mode);
-	token = last->content;
+	token = last_token->content;
 	if (token->type & T_PIPE)
 		mode |= P_OUTPUT;
 	return (mode);

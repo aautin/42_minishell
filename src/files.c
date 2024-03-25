@@ -6,31 +6,21 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 16:17:58 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:50:03 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 
 #include "libft/libft.h"
 
 #include "parser.h"
-#include "pipeline.h"
-#include "redirections.h"
-#include "utils.h"
 
-#define HERE_DOC_WARNING "warning: here_document delimited by end-of-file"
-
-static int	do_heredoc(t_token *word);
-static int	read_heredoc(int pipefd_write_end, t_token *word);
-static int	parse_line_heredoc(char const line[], t_token *word, int fd);
-
-int	open_infile(t_token *redirect, t_token *word)
+int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc)
 {
-	int	fd;
+	int		fd;
+	char	*filename;
 
 	if (redirect->type & T_REDIRECT_INPUT)
 	{
@@ -40,7 +30,13 @@ int	open_infile(t_token *redirect, t_token *word)
 			perror(word->data);
 	}
 	else if (redirect->type & T_REDIRECT_HERE_DOC)
-		fd = do_heredoc(word);
+	{
+		filename = (*current_here_doc)->content;
+		fd = open(filename, O_RDONLY);
+		if (fd == -1)
+			perror(filename);
+		*current_here_doc = (*current_here_doc)->next;
+	}
 	else
 		return (-2);
 	return (fd);
@@ -64,73 +60,4 @@ int	open_outfile(t_token *redirect, t_token *word)
 	if (fd == -1)
 		perror(word->data);
 	return (fd);
-}
-
-static int	do_heredoc(t_token *word)
-{
-	int	pipefd[2];
-	int	status;
-
-	unquote(word->data);
-	if (pipe(pipefd) == -1)
-	{
-		perror("do_heredoc():pipe()");
-		return (-1);
-	}
-	status = read_heredoc(pipefd[1], word);
-	if (close(pipefd[1]) == -1)
-		perror("do_heredoc():close()");
-	if (status)
-	{
-		close(pipefd[0]);
-		return (-1);
-	}
-	return (pipefd[0]);
-}
-
-static int	read_heredoc(int pipefd_write_end, t_token *word)
-{
-	char			*line;
-	int				std_fd[3];
-	char *const		delim = word->data;
-	size_t const	size_delim = ft_strlen(delim) + 1;
-
-	while (1)
-	{
-		line = ask_input("> ");
-		if (line == NULL
-			|| ft_strncmp(line, delim, size_delim) == 0
-			|| parse_line_heredoc(line, word, pipefd_write_end))
-			break ;
-		free(line);
-	}
-	free(line);
-	if (line != NULL)
-		return (0);
-	if (save_std_fd(std_fd))
-		return (0);
-	if (!redirect_fd(STDERR_FILENO, STDOUT_FILENO))
-		printf(HERE_DOC_WARNING " (wanted '%s')\n", delim);
-	if (reset_std_fd(std_fd))
-		return (1);
-	return (0);
-}
-
-static int	parse_line_heredoc(char const line[], t_token *word, int fd)
-{
-	t_token	token;
-
-	token.data = ft_strdup(line);
-	token.type = T_WORD;
-	if (!(word->type & T_QUOTED))
-	{
-		if (expansion(&token))
-		{
-			free(token.data);
-			return (1);
-		}
-	}
-	ft_putendl_fd(token.data, fd);
-	free(token.data);
-	return (0);
 }

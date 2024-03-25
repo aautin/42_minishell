@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:55:46 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 20:16:09 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:20:12 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct s_pipe
 	enum e_pipe_mode	mode;
 }	t_pipe;
 
-enum e_pipe_mode	get_pipe_mode(t_list *first, t_list *last);
+enum e_pipe_mode	get_pipe_mode(t_list *first_token, t_list *last_token);
 int					apply_pipe_redirections(t_pipe *pipeline);
 void				close_pipes(t_pipe *pipeline);
 int					apply_pipe_redirections(t_pipe *pipeline);
