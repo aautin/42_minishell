@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/24 18:40:41 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:30:41 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 
 #include "minishell.h"
 
-int	execute_builtin(char **argv, t_minishell *ms)
+int	execute_builtin(t_minishell *ms, char **argv)
 {
-	size_t const	len_cmd = ft_strlen(argv[0]);
-
 	(void)ms;
+	size_t len_cmd;
+
+	if (argv[0] == NULL)
+		return (0);
+	len_cmd = ft_strlen(argv[0]);
 	return (1);
 }
 
@@ -36,7 +39,7 @@ int	is_a_builtin(char const cmd[])
 	size_t				len;
 
 	if (cmd == NULL)
-		return (0);
+		return (1);
 	len = ft_strlen(cmd);
 	i = 0;
 	while (builtin_names[i] != NULL)

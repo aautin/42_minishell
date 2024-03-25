@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/24 18:39:14 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:15:40 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	prepare_cmd(t_minishell *ms, char **argv)
 	if (argv[0] == NULL)
 		return (0);
 	if (is_a_builtin(argv[0]))
-		return (execute_builtin(argv, ms));
+		return (execute_builtin(ms, argv));
 	paths = get_paths(ms->envl);
 	pathname = check_exec(argv[0], paths);
 	if (paths != NULL)
