@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:50:34 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:11:05 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "libft/libft.h"
 
+#include "builtin_echo.h"
 #include "execution.h"
 #include "getenv.h"
 #include "handle_signals.h"

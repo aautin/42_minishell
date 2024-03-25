@@ -17,6 +17,7 @@ DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
 				builtin.c			\
+				builtin_echo.c		\
 				check_exec.c		\
 				exec_cmd.c			\
 				execution.c			\

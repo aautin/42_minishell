@@ -6,12 +6,13 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:30:41 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:14:27 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
+#include "builtin_echo.h"
 #include "minishell.h"
 
 int	execute_builtin(t_minishell *ms, char **argv)
@@ -22,6 +23,8 @@ int	execute_builtin(t_minishell *ms, char **argv)
 	if (argv[0] == NULL)
 		return (0);
 	len_cmd = ft_strlen(argv[0]);
+	if (strncmp(argv[0], "echo", len_cmd) == 0)
+		builtin_echo(&argv[1]);
 	return (1);
 }
 
