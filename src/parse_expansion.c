@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/20 20:32:45 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/25 14:56:31 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	path_len = pathname_len(*data);
 	if (path_len == -1)
 	{
-		*(*new_data++) = '$';
-		*(*new_data++) = **data;
+		*((*new_data)++) = '$';
+		*((*new_data)++) = **data;
 	}
 	else
 	{
@@ -74,11 +74,12 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	}
 }
 
-int	expand_len(char data[])
+int	expand_len(char data[], int quote, unsigned char exit)
 {
 	int		mode;
 	int		expanded_len;
 
+	(void) quote;
 	mode = NO_QUOTE;
 	expanded_len = 0;
 	while (*data)
@@ -89,7 +90,7 @@ int	expand_len(char data[])
 		{
 			data++;
 			if (*data == '?')
-				expanded_len++;
+				expanded_len += nbr_len((unsigned char) exit);
 			else
 				expand_len_insertion(&data, &expanded_len, &mode);
 		}
@@ -101,10 +102,11 @@ int	expand_len(char data[])
 	return (expanded_len);
 }
 
-void	expand_data(char data[], char new_data[])
+void	expand_data(char data[], char new_data[], int quote, unsigned char exit)
 {
 	int		mode;
 
+	(void) quote;
 	mode = NO_QUOTE;
 	while (*data)
 	{
@@ -112,9 +114,8 @@ void	expand_data(char data[], char new_data[])
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
-			data++;
-			if (*data == '?')
-				*(new_data++) = '0';
+			if (*(++data) == '?')
+				nbr_data(&new_data, exit, nbr_len(exit));
 			else if (mode == DB_QUOTE && *data == '"')
 			{
 				mode = NO_QUOTE;

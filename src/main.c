@@ -71,7 +71,7 @@ int	main(void)
 			add_history(line);
 		if (!tokenize(&tokens, line))
 			printf("LINE : %s\n", line);
-		parse_token((t_token *) tokens->content);
+		parse_token((t_token *) tokens->content, 100);
 		ft_lstiter(tokens, &print_token);
 		ft_lstclear(&tokens, &free_tokens);
 		tokens = NULL;
