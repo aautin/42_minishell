@@ -28,7 +28,7 @@
 #define NO_ACCESS_CODE 126
 
 static char	**get_paths(t_list *envl);
-static char	**liststr_to_tabstr(t_list *current);
+static char	**liststr_to_tabstr(t_list *envl);
 static int	execute_cmd(char const pathname[], char **argv, t_list *envp);
 
 int	prepare_cmd(t_minishell *ms, char **argv)
@@ -71,10 +71,10 @@ static char	**get_paths(t_list *envl)
 	return (paths);
 }
 
-static char	**liststr_to_tabstr(t_list *current)
+static char	**liststr_to_tabstr(t_list *envl)
 {
 	int				i;
-	int const		size = ft_lstsize(current);
+	int const		size = ft_lstsize(envl);
 	char **const	tab = malloc((size + 1) * sizeof(char *));
 
 	if (tab == NULL)
@@ -85,8 +85,8 @@ static char	**liststr_to_tabstr(t_list *current)
 	i = 0;
 	while (i < size)
 	{
-		tab[i] = current->content;
-		current = current->next;
+		tab[i] = envl->content;
+		envl = envl->next;
 		i++;
 	}
 	tab[i] = NULL;
