@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/22 15:13:36 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:17:02 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,25 +39,25 @@ int	tokenize(t_list **tokens, char const line[])
 	return (parse_line(tokens, &line_part));
 }
 
-t_list	*verify_tokens(t_list *current)
+t_list	*verify_tokens(t_list *current_token)
 {
 	t_token	*token;
 	t_list	*bad_node;
 
-	token = current->content;
+	token = current_token->content;
 	if (token->type & T_CONTROL_OPERATOR)
-		return (current);
+		return (current_token);
 	bad_node = NULL;
-	while (current != NULL)
+	while (current_token != NULL)
 	{
-		token = current->content;
+		token = current_token->content;
 		if (token->type & T_REDIRECT_OPERATOR)
-			bad_node = get_invalid_redirection_token(current);
+			bad_node = get_invalid_redirection_token(current_token);
 		else if (token->type & T_CONTROL_OPERATOR)
-			bad_node = get_invalid_control_token(current);
+			bad_node = get_invalid_control_token(current_token);
 		if (bad_node != NULL)
 			return (bad_node);
-		current = current->next;
+		current_token = current_token->next;
 	}
 	return (NULL);
 }

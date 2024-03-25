@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/20 15:19:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 19:55:16 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include "parser.h"
 #include "tokenize_utils.h"
+#include "utils.h"
 
 t_action	rule_1(t_list **tokens, t_line_part *line_part)
 {

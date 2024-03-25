@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:43:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/18 15:07:29 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 16:21:42 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,7 @@
 
 #include "parser.h"
 #include "tokenize_utils.h"
-
-int	add_to_list(t_list **tokens, t_token *token)
-{
-	t_list	*node;
-
-	node = ft_lstnew(token);
-	if (node == NULL)
-	{
-		perror("add_to_list():ft_lstnew()");
-		return (1);
-	}
-	ft_lstadd_back(tokens, node);
-	return (0);
-}
+#include "utils.h"
 
 void	store_and_create_token(t_list **tokens, t_line_part *line_part)
 {
