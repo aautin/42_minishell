@@ -155,11 +155,17 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 
 static int	get_exit_status(int wstatus)
 {
+	int	status;
+
 	if (WIFEXITED(wstatus))
 		return (WEXITSTATUS(wstatus));
-	else if (WIFSIGNALED(wstatus))
-		return (SIG_RETURN + WTERMSIG(wstatus));
 	else if (WIFSTOPPED(wstatus))
 		return (SIG_RETURN + WSTOPSIG(wstatus));
+	else if (WIFSIGNALED(wstatus))
+	{
+		status = WTERMSIG(wstatus);
+		print_signal_msg(status);
+		return (SIG_RETURN + status);
+	}
 	return (0);
 }
