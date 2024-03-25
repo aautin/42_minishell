@@ -22,17 +22,12 @@ FILES		:=	\
 				execution.c			\
 				execution_utils.c	\
 				files.c				\
-				getenv.c			\
-				getenv_utils.c		\
 				handle_signals.c	\
 				here_doc.c			\
 				here_doc_utils.c	\
 				main.c				\
 				pipeline.c			\
 				redirections.c		\
-				tokenize.c			\
-				tokenize_rules.c	\
-				tokenize_utils.c	\
 				utils.c				\
 
 SRC_PATH	:=	src
