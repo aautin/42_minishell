@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:49:55 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/25 20:35:23 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 	while (proc_waited >= 0 && proc_waited != simple_cmd->proc.pid)
 		proc_waited = waitpid(-1, &wstatus, WUNTRACED);
 	proc_waited = waitpid(-1, NULL, WUNTRACED);
-	last_pid = proc_waited;
+	last_pid = -1;
 	while (proc_waited != last_pid)
 	{
 		last_pid = proc_waited;
