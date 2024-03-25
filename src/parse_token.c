@@ -60,7 +60,7 @@ int	expansion(t_token *token, int ignore_quotes, int exit_status)
 		return (1);
 	}
 	expand_data(token->data, expanded_data, ignore_quotes,
-			(unsigned char) exit_status);
+		(unsigned char) exit_status);
 	free(token->data);
 	token->data = expanded_data;
 	return (0);

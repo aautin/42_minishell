@@ -79,12 +79,11 @@ int	expand_len(char data[], int quote, unsigned char exit)
 	int		mode;
 	int		expanded_len;
 
-	(void) quote;
 	mode = NO_QUOTE;
 	expanded_len = 0;
 	while (*data)
 	{
-		if (*data == '\'' || *data == '"')
+		if (quote && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
@@ -106,11 +105,10 @@ void	expand_data(char data[], char new_data[], int quote, unsigned char exit)
 {
 	int		mode;
 
-	(void) quote;
 	mode = NO_QUOTE;
 	while (*data)
 	{
-		if (*data == '\'' || *data == '"')
+		if (quote && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
