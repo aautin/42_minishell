@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 19:34:37 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 19:37:03 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	execute_builtin(t_minishell *ms, char **argv)
 	if (argv[0] == NULL)
 		return (0);
 	len_cmd = ft_strlen(argv[0]);
-	if (strncmp(argv[0], "echo", len_cmd) == 0)
+	if (ft_strncmp(argv[0], "echo", len_cmd) == 0)
 		return (builtin_echo(&argv[1]));
 	return (1);
 }
