@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:50:03 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:35:22 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@
 
 #include "parser.h"
 
-int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc)
+int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc, int last_exit_status)
 {
 	int		fd;
 	char	*filename;
 
 	if (redirect->type & T_REDIRECT_INPUT)
 	{
-		parse_token(word);
+		parse_token(word, last_exit_status);
 		fd = open(word->data, O_RDONLY);
 		if (fd == -1)
 			perror(word->data);
@@ -42,7 +42,7 @@ int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc)
 	return (fd);
 }
 
-int	open_outfile(t_token *redirect, t_token *word)
+int	open_outfile(t_token *redirect, t_token *word, int last_exit_status)
 {
 	int				fd;
 	int				flags;
@@ -55,7 +55,7 @@ int	open_outfile(t_token *redirect, t_token *word)
 		flags |= O_APPEND;
 	else
 		return (-2);
-	parse_token(word);
+	parse_token(word, last_exit_status);
 	fd = open(word->data, flags, mode);
 	if (fd == -1)
 		perror(word->data);

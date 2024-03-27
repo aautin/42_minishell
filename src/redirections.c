@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:50:52 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:42:03 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "parser.h"
 #include "redirections.h"
 
-static int	redirect_to_file(t_list *tokens, t_list **current_here_doc, int fd[2]);
+static int	redirect_to_file(t_list *tokens, t_list **current_here_doc, int last_exit_status, int fd[2]);
 
 int	redirect_fd(int oldfd, int newfd)
 {
@@ -88,7 +88,7 @@ int	reset_std_fd(int std_fd[3])
 }
 
 int	apply_normal_redirections(t_list *current_token, t_list *last_token,
-		t_list **current_here_doc)
+		t_list **current_here_doc, int last_exit_status)
 {
 	int	fd[2];
 	int	status;
@@ -99,7 +99,7 @@ int	apply_normal_redirections(t_list *current_token, t_list *last_token,
 	{
 		if (((t_token *)current_token->content)->type & T_REDIRECT_OPERATOR)
 		{
-			if (redirect_to_file(current_token, current_here_doc, fd))
+			if (redirect_to_file(current_token, current_here_doc, last_exit_status, fd))
 			{
 				close(fd[0]);
 				close(fd[1]);
@@ -117,17 +117,17 @@ int	apply_normal_redirections(t_list *current_token, t_list *last_token,
 	return (status);
 }
 
-static int	redirect_to_file(t_list *operator, t_list **current_here_doc, int fd[2])
+static int	redirect_to_file(t_list *operator, t_list **current_here_doc, int last_exit_status, int fd[2])
 {
 	t_token *const	redirect = operator->content;
 	t_token *const	word = operator->next->content;
 	int				fd_in;
 	int				fd_out;
 
-	fd_in = open_infile(redirect, word, current_here_doc);
+	fd_in = open_infile(redirect, word, current_here_doc, last_exit_status);
 	if (fd_in == -1)
 		return (1);
-	fd_out = open_outfile(redirect, word);
+	fd_out = open_outfile(redirect, word, last_exit_status);
 	if (fd_out == -1)
 		return (1);
 	if (fd_in >= 0)

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:08:52 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:33:08 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	find_args(t_list **args, t_minishell *ms, t_list *current_token, t_list *las
 		{
 			if (!is_redirection)
 			{
-				parse_token(token);
+				parse_token(token, ms->last_exit_status);
 				if (*token->data != '\0' && add_to_list(args, token))
 				{
 					ft_lstclear(args, NULL);

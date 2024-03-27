@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 16:34:54 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:36:24 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,33 @@
 #include "libft/libft.h"
 
 #include "here_doc_utils.h"
+#include "minishell.h"
 #include "parser.h"
 #include "redirections.h"
 #include "utils.h"
 
 #define HERE_DOC_WARNING "warning: here_document delimited by end-of-file"
 
-static char	*do_heredoc(t_token *word);
-static int	read_heredoc(int fd, char const delim[], int delim_quoted);
-static int	parse_line_heredoc(int fd, char const line[], int delim_quoted);
+static char	*do_heredoc(t_token *word, int last_exit_status);
+static int	read_heredoc(int fd, char const delim[], int last_exit_status, int delim_quoted);
+static int	parse_line_heredoc(int fd, char const line[], int last_exit_status, int delim_quoted);
 
-int	retrieve_heredoc(t_list **here_docs, t_list *tokens)
+int	retrieve_heredoc(t_minishell *ms)
 {
 	t_token	*token;
+	t_list	*tokens;
 	char	*filename;
 
+	tokens = ms->tokens;
 	while (tokens != NULL)
 	{
 		token = tokens->content;
 		if (token->type & T_REDIRECT_HERE_DOC)
 		{
-			filename = do_heredoc(tokens->next->content);
-			if (filename == NULL || add_to_list(here_docs, filename))
+			filename = do_heredoc(tokens->next->content, ms->last_exit_status);
+			if (filename == NULL || add_to_list(&ms->head_here_doc, filename))
 			{
-				ft_lstclear(here_docs, &free_here_doc);
+				ft_lstclear(&ms->head_here_doc, &free_here_doc);
 				return (1);
 			}
 			tokens = tokens->next;
@@ -51,7 +54,7 @@ int	retrieve_heredoc(t_list **here_docs, t_list *tokens)
 	return (0);
 }
 
-static char	*do_heredoc(t_token *word)
+static char	*do_heredoc(t_token *word, int last_exit_status)
 {
 	int		fd;
 	char	*filename;
@@ -67,7 +70,7 @@ static char	*do_heredoc(t_token *word)
 		free(filename);
 		return (NULL);
 	}
-	if (read_heredoc(fd, word->data, word->type & T_QUOTED))
+	if (read_heredoc(fd, word->data, last_exit_status, word->type & T_QUOTED))
 	{
 		close(fd);
 		unlink(filename);
@@ -79,7 +82,7 @@ static char	*do_heredoc(t_token *word)
 	return (filename);
 }
 
-static int	read_heredoc(int fd, char const delim[], int delim_quoted)
+static int	read_heredoc(int fd, char const delim[], int last_exit_status, int delim_quoted)
 {
 	char			*line;
 	int				std_fd[3];
@@ -90,7 +93,7 @@ static int	read_heredoc(int fd, char const delim[], int delim_quoted)
 		line = ask_input("> ");
 		if (line == NULL
 			|| ft_strncmp(line, delim, size_delim) == 0
-			|| parse_line_heredoc(fd, line, delim_quoted))
+			|| parse_line_heredoc(fd, line, last_exit_status, delim_quoted))
 			break ;
 		free(line);
 	}
@@ -106,7 +109,7 @@ static int	read_heredoc(int fd, char const delim[], int delim_quoted)
 	return (0);
 }
 
-static int	parse_line_heredoc(int fd, char const line[], int delim_quoted)
+static int	parse_line_heredoc(int fd, char const line[], int last_exit_status, int delim_quoted)
 {
 	t_token	token;
    
@@ -115,7 +118,7 @@ static int	parse_line_heredoc(int fd, char const line[], int delim_quoted)
 
 	if (!delim_quoted)
 	{
-		if (expansion(&token))
+		if (expansion(&token, 1, last_exit_status))
 		{
 			free(token.data);
 			return (1);

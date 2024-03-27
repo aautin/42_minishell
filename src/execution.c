@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:49:55 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 19:14:21 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ static int	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd)
 		if (!save_std_fd(std_fd))
 		{
 			if (!apply_normal_redirections(simple_cmd->first_token, simple_cmd->last_token,
-						&ms->current_here_doc))
+						&ms->current_here_doc, ms->last_exit_status))
 				simple_cmd->proc.exit_status = execute_builtin(ms, argv);
 			status = reset_std_fd(std_fd);
 		}
@@ -115,7 +115,7 @@ static void	create_process(t_minishell *ms, t_simple_cmd *simple_cmd,
 		init_signals(1);
 		if (!apply_pipe_redirections(&simple_cmd->pipeline)
 			&& !apply_normal_redirections(simple_cmd->first_token, simple_cmd->last_token,
-				&ms->current_here_doc))
+				&ms->current_here_doc, ms->last_exit_status))
 			simple_cmd->proc.exit_status = prepare_cmd(ms, argv);
 		ft_lstclear(&ms->tokens, &free_token);
 		ft_lstclear(&ms->envl, &free);
@@ -144,7 +144,7 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 	while (proc_waited >= 0 && proc_waited != simple_cmd->proc.pid)
 		proc_waited = waitpid(-1, &wstatus, WUNTRACED);
 	proc_waited = waitpid(-1, NULL, WUNTRACED);
-	last_pid = proc_waited;
+	last_pid = -1;
 	while (proc_waited != last_pid)
 	{
 		last_pid = proc_waited;
