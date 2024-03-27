@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:35:32 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 17:07:09 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/27 18:35:06 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 # include "parser.h"
 
-int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc);
-int	open_outfile(t_token *redirect, t_token *word);
+int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc, int last_exit_status);
+int	open_outfile(t_token *redirect, t_token *word, int last_exit_status);
 
 #endif
