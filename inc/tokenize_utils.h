@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:44:13 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 16:21:29 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:07:47 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_line_part
 	int			index;
 	int			mode;
 	t_token		*token;
+	t_list		*last_node;
 }	t_line_part;
 
 void		store_and_create_token(t_list **tokens, t_line_part *line_part);

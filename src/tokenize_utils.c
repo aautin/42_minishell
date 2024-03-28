@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:43:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 16:21:42 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 09:12:09 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,19 @@
 
 void	store_and_create_token(t_list **tokens, t_line_part *line_part)
 {
+	t_list	**last_node;
+
+	if (*tokens == NULL)
+		last_node = tokens;
+	else
+		last_node = &line_part->last_node;
 	line_part->token->data = ft_substr(line_part->line, 0, line_part->index);
-	if (add_to_list(tokens, line_part->token))
+	if (add_to_list(last_node, line_part->token))
 	{
 		line_part->token = NULL;
 		return ;
 	}
+	line_part->last_node = ft_lstlast(*last_node);
 	line_part->token = ft_calloc(1, sizeof(*line_part->token));
 	if (line_part->token == NULL)
 		perror("store_and_create_token():ft_calloc()");
