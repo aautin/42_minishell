@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:51:07 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 13:55:52 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ char	*ask_input(char const prompt[])
 	else
 	{
 		line = get_next_line(STDIN_FILENO);
-		*ft_strrchr(line, '\n') = '\0';
+		if (line != NULL)
+			*ft_strrchr(line, '\n') = '\0';
 	}
 	return (line);
 }
