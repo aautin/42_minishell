@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 18:36:24 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 17:30:11 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #include "libft/libft.h"
 
+#include "handle_signals.h"
 #include "here_doc_utils.h"
 #include "minishell.h"
 #include "parser.h"
@@ -34,6 +35,7 @@ int	retrieve_heredoc(t_minishell *ms)
 	t_token	*token;
 	t_list	*tokens;
 	char	*filename;
+	int		std_fd[3];
 
 	tokens = ms->tokens;
 	while (tokens != NULL)
@@ -41,8 +43,17 @@ int	retrieve_heredoc(t_minishell *ms)
 		token = tokens->content;
 		if (token->type & T_REDIRECT_HERE_DOC)
 		{
+			if (save_std_fd(std_fd))
+			{
+				ft_lstclear(&ms->head_here_doc, &free_here_doc);
+				return (1);
+			}
+			init_signal_heredoc();
 			filename = do_heredoc(tokens->next->content, ms->last_exit_status);
-			if (filename == NULL || add_to_list(&ms->head_here_doc, filename))
+			init_signals(0);
+			if (reset_std_fd(std_fd)
+					|| filename == NULL
+					|| add_to_list(&ms->head_here_doc, filename))
 			{
 				ft_lstclear(&ms->head_here_doc, &free_here_doc);
 				return (1);
@@ -100,6 +111,8 @@ static int	read_heredoc(int fd, char const delim[], int last_exit_status, int de
 	free(line);
 	if (line != NULL)
 		return (0);
+	if (g_sig == SIGINT)
+		return (1);
 	if (save_std_fd(std_fd))
 		return (0);
 	if (!redirect_fd(STDERR_FILENO, STDOUT_FILENO))

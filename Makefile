@@ -27,6 +27,7 @@ FILES		:=	\
 				here_doc_utils.c	\
 				main.c				\
 				pipeline.c			\
+				print_signals.c		\
 				redirections.c		\
 				utils.c				\
 

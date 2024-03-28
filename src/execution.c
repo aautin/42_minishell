@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 19:14:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 16:27:43 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 #include "minishell.h"
 #include "parser.h"
 #include "pipeline.h"
+#include "print_signals.h"
 #include "redirections.h"
 #include "utils.h"
 
