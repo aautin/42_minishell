@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 18:42:03 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 14:57:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ int	redirect_fd(int oldfd, int newfd)
 		perror("redirect_fd():dup2()");
 		return (1);
 	}
-	if (oldfd != STDIN_FILENO
-		&& oldfd != STDOUT_FILENO
-		&& oldfd != STDERR_FILENO)
+	if (!isatty(oldfd))
 	{
 		if (close(oldfd) == -1)
 			perror("redirect_fd():close()");
@@ -57,8 +55,7 @@ int	save_std_fd(int std_fd[3])
 	if (std_fd[2] == -1)
 	{
 		perror("save_std_fd():dup(std_fd[2])");
-		close(std_fd[0]);
-		close(std_fd[1]);
+		close(std_fd[0]), close(std_fd[1]);
 		return (1);
 	}
 	return (0);
@@ -69,9 +66,9 @@ int	reset_std_fd(int std_fd[3])
 	int	status;
 
 	status = 0;
-	if (redirect_fd(std_fd[0], STDIN_FILENO))
+	if (redirect_fd(std_fd[2], STDERR_FILENO))
 	{
-		close(std_fd[0]);
+		close(std_fd[2]);
 		status = 1;
 	}
 	if (redirect_fd(std_fd[1], STDOUT_FILENO))
@@ -79,9 +76,9 @@ int	reset_std_fd(int std_fd[3])
 		close(std_fd[1]);
 		status = 1;
 	}
-	if (redirect_fd(std_fd[2], STDERR_FILENO))
+	if (redirect_fd(std_fd[0], STDIN_FILENO))
 	{
-		close(std_fd[2]);
+		close(std_fd[0]);
 		status = 1;
 	}
 	return (status);
@@ -99,12 +96,9 @@ int	apply_normal_redirections(t_list *current_token, t_list *last_token,
 	{
 		if (((t_token *)current_token->content)->type & T_REDIRECT_OPERATOR)
 		{
-			if (redirect_to_file(current_token, current_here_doc, last_exit_status, fd))
-			{
-				close(fd[0]);
-				close(fd[1]);
+			if (redirect_to_file(current_token, current_here_doc,
+						last_exit_status, fd))
 				return (1);
-			}
 			current_token = current_token->next;
 		}
 		current_token = current_token->next;
@@ -125,11 +119,12 @@ static int	redirect_to_file(t_list *operator, t_list **current_here_doc, int las
 	int				fd_out;
 
 	fd_in = open_infile(redirect, word, current_here_doc, last_exit_status);
-	if (fd_in == -1)
-		return (1);
 	fd_out = open_outfile(redirect, word, last_exit_status);
-	if (fd_out == -1)
+	if (fd_in == -1 || fd_out == -1)
+	{
+		close(fd[0]), close(fd[1]);
 		return (1);
+	}
 	if (fd_in >= 0)
 	{
 		if (fd[0] >= 0 && close(fd[0]) == -1)
