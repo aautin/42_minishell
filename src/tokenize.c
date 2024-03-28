@@ -6,11 +6,12 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:39:44 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:17:02 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/03/28 10:21:27 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "libft/libft.h"
 
@@ -26,10 +27,10 @@ int	tokenize(t_list **tokens, char const line[])
 {
 	t_line_part	line_part;	
 
-	line_part.token = ft_calloc(1, sizeof(t_token));
+	line_part.token = malloc(sizeof(*line_part.token));
 	if (line_part.token == NULL)
 	{
-		perror("tokenize():ft_calloc()");
+		perror("tokenize():malloc()");
 		return (2);
 	}
 	line_part.token->type = T_NONE;
