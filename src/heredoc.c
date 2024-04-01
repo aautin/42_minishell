@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc.c                                         :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 17:30:11 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:49:26 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -18,50 +19,68 @@
 #include "libft/libft.h"
 
 #include "handle_signals.h"
-#include "here_doc_utils.h"
+#include "heredoc_utils.h"
 #include "minishell.h"
 #include "parser.h"
 #include "redirections.h"
 #include "utils.h"
 
-#define HERE_DOC_WARNING "warning: here_document delimited by end-of-file"
+#define HEREDOC_WARNING "warning: here_document delimited by end-of-file"
 
+static int	process_heredoc(t_minishell *ms, t_token *token,
+		t_list **last_node);
 static char	*do_heredoc(t_token *word, int last_exit_status);
-static int	read_heredoc(int fd, char const delim[], int last_exit_status, int delim_quoted);
-static int	parse_line_heredoc(int fd, char const line[], int last_exit_status, int delim_quoted);
+static int	read_heredoc(int fd, char const delim[],
+		int last_exit_status, int delim_quoted);
+static int	parse_line_heredoc(int fd, char const line[],
+		int last_exit_status, int delim_quoted);
 
 int	retrieve_heredoc(t_minishell *ms)
 {
 	t_token	*token;
 	t_list	*tokens;
-	char	*filename;
-	int		std_fd[3];
+	t_list	*last_node;
+	int		status;
 
 	tokens = ms->tokens;
 	while (tokens != NULL)
 	{
 		token = tokens->content;
-		if (token->type & T_REDIRECT_HERE_DOC)
+		if (token->type & T_REDIRECT_HEREDOC)
 		{
-			if (save_std_fd(std_fd))
-			{
-				ft_lstclear(&ms->head_here_doc, &free_here_doc);
-				return (1);
-			}
-			init_signal_heredoc();
-			filename = do_heredoc(tokens->next->content, ms->last_exit_status);
-			init_signals(0);
-			if (reset_std_fd(std_fd)
-					|| filename == NULL
-					|| add_to_list(&ms->head_here_doc, filename))
-			{
-				ft_lstclear(&ms->head_here_doc, &free_here_doc);
-				return (1);
-			}
+			status = process_heredoc(ms, tokens->next->content, &last_node);
+			if (status)
+				return (status);
 			tokens = tokens->next;
 		}
 		tokens = tokens->next;
 	}
+	return (0);
+}
+
+static int	process_heredoc(t_minishell *ms, t_token *token, t_list **last_node)
+{
+	char	*filename;
+	int		std_fd[3];
+	t_list	**last_heredoc;
+
+	if (save_std_fd(std_fd))
+		return (1);
+	init_signal_heredoc();
+	filename = do_heredoc(token, ms->last_exit_status);
+	init_signals(0);
+	if (reset_std_fd(std_fd))
+	{
+		free(filename);
+		return (2);
+	}
+	if (ms->head_heredoc == NULL)
+		last_heredoc = &ms->head_heredoc;
+	else
+		last_heredoc = last_node;
+	if (filename == NULL || add_to_list(last_heredoc, filename))
+		return (1);
+	*last_node = ft_lstlast(*last_heredoc);
 	return (0);
 }
 
@@ -93,7 +112,8 @@ static char	*do_heredoc(t_token *word, int last_exit_status)
 	return (filename);
 }
 
-static int	read_heredoc(int fd, char const delim[], int last_exit_status, int delim_quoted)
+static int	read_heredoc(int fd, char const delim[],
+		int last_exit_status, int delim_quoted)
 {
 	char			*line;
 	int				std_fd[3];
@@ -116,19 +136,21 @@ static int	read_heredoc(int fd, char const delim[], int last_exit_status, int de
 	if (save_std_fd(std_fd))
 		return (0);
 	if (!redirect_fd(STDERR_FILENO, STDOUT_FILENO))
-		printf(HERE_DOC_WARNING " (wanted '%s')\n", delim);
+		printf(HEREDOC_WARNING " (wanted '%s')\n", delim);
 	if (reset_std_fd(std_fd))
 		return (1);
 	return (0);
 }
 
-static int	parse_line_heredoc(int fd, char const line[], int last_exit_status, int delim_quoted)
+static int	parse_line_heredoc(int fd, char const line[],
+		int last_exit_status, int delim_quoted)
 {
 	t_token	token;
    
 	token.data = ft_strdup(line);
+	if (token.data == NULL)
+		return (1);
 	token.type = T_WORD;
-
 	if (!delim_quoted)
 	{
 		if (expansion(&token, 1, last_exit_status))

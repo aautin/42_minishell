@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc_utils.h                                   :+:      :+:    :+:   */
+/*   heredoc.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/25 16:11:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 16:12:02 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/25 16:36:59 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/01 16:56:17 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HERE_DOC_UTILS_H
-# define HERE_DOC_UTILS_H
+#ifndef HEREDOC_H
+# define HEREDOC_H
 
-char	*get_random_filename(char const delim[]);
+# include "libft/libft.h"
+
+# include "minishell.h"
+
+int	retrieve_heredoc(t_minishell *ms);
 
 #endif

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   here_doc_utils.c                                   :+:      :+:    :+:   */
+/*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:07:11 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 16:20:50 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/01 16:58:53 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 #include "libft/libft.h"
 
+#define RANDOM_FILE "/dev/random"
+
 static void	replace_slashes_by_underscores(char filename[]);
 static char	*append_random_char(int fd, char const filename[]);
 
@@ -24,11 +26,11 @@ char	*get_random_filename(char const delim[])
 {
 	char		*filename;
 	char		*temp;
-	int const	fd = open("/dev/random", O_RDONLY);
+	int const	fd = open(RANDOM_FILE, O_RDONLY);
 
 	if (fd == -1)
 	{
-		perror("/dev/random");
+		perror(RANDOM_FILE);
 		return (NULL);
 	}
 	filename = ft_strjoin(".", delim);
@@ -42,7 +44,7 @@ char	*get_random_filename(char const delim[])
 		filename = temp;
 	}
 	if (close(fd) == -1)
-		perror("/dev/random");
+		perror(RANDOM_FILE);
 	return (filename);
 }
 

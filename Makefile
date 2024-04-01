@@ -23,8 +23,8 @@ FILES		:=	\
 				execution_utils.c	\
 				files.c				\
 				handle_signals.c	\
-				here_doc.c			\
-				here_doc_utils.c	\
+				heredoc.c			\
+				heredoc_utils.c		\
 				main.c				\
 				pipeline.c			\
 				print_signals.c		\
