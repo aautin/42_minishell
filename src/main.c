@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/01 17:00:52 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:49:05 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ int	main(int argc, char **argv, char **envp)
 						break ;
 				}
 			}
-			ft_lstclear(&ms.head_heredoc, &free_heredoc);
 			if (g_sig != 0)
 				ms.last_exit_status = 128 + g_sig;
 			g_sig = 0;
+			ft_lstclear(&ms.head_heredoc, &free_heredoc);
 		}
 		else if (status == 1)
 			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
