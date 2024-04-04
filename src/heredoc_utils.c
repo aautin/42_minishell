@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:07:11 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:13:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 20:17:21 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ char	*get_random_filename(char const delim[])
 		perror(RANDOM_FILE);
 		return (NULL);
 	}
-	filename = ft_strjoin(".", delim);
+	filename = ft_strjoin(".temp-", delim);
 	replace_slashes_by_underscores(filename);
 	while (access(filename, F_OK) != -1)
 	{
