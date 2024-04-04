@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:43:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 10:40:14 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:53:30 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_action	append_redirect_operator(t_line_part *line_part)
 	if (c == '<' && (line_part->token->type & T_REDIRECT_INPUT))
 	{
 		line_part->token->type &= ~T_REDIRECT_INPUT;
-		line_part->token->type |= T_REDIRECT_HERE_DOC;
+		line_part->token->type |= T_REDIRECT_HEREDOC;
 		line_part->index++;
 		return (A_CONTINUE);
 	}

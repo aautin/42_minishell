@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 15:40:36 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:53:21 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef enum e_token_type
 	T_CONTROL_OPERATOR = (1u << 4),
 	T_REDIRECT_OUTPUT = (1u << 5),
 	T_REDIRECT_INPUT = (1u << 6),
-	T_REDIRECT_HERE_DOC = (1u << 7),
+	T_REDIRECT_HEREDOC = (1u << 7),
 	T_REDIRECT_APPEND = (1u << 8),
 	T_PIPE = (1u << 9)
 }	t_token_type;
