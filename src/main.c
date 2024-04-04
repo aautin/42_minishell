@@ -6,10 +6,11 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 20:27:43 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 20:44:42 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
 #include <unistd.h>
