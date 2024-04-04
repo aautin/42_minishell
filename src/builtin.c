@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:14:38 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 20:31:46 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ int	execute_builtin(t_minishell *ms, char **argv)
 
 int	is_a_builtin(char const cmd[])
 {
+	size_t				i;
+	size_t				len;
 	char const *const	builtin_names[] = {
 		ECHO_BUILTIN,
 		CD_BUILTIN,
@@ -45,16 +47,16 @@ int	is_a_builtin(char const cmd[])
 		EXPORT_BUILTIN,
 		UNSET_BUILTIN,
 		ENV_BUILTIN,
-		EXIT_BUILTIN
+		EXIT_BUILTIN,
 	};
-	int					i;
-	size_t				len;
+	size_t const		size_builtin = sizeof(builtin_names)
+		/ sizeof(*builtin_names);
 
 	if (cmd == NULL)
 		return (1);
 	len = ft_strlen(cmd);
 	i = 0;
-	while (i < sizeof(builtin_names))
+	while (i < size_builtin)
 	{
 		if (ft_strncmp(cmd, builtin_names[i], len) == 0)
 			return (1);
