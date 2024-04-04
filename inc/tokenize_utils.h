@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:44:13 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 20:26:34 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:56:44 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@ typedef enum e_action
 typedef struct s_line_part
 {
 	char const	*line;
-	int			index;
+	size_t		index;
 	int			mode;
 	t_token		*token;
+	t_list		*last_node;
 }	t_line_part;
 
 void		store_and_create_token(t_list **tokens, t_line_part *line_part);
