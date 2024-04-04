@@ -6,35 +6,47 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 18:37:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:30:41 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:14:38 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
+#include "builtin_echo.h"
 #include "minishell.h"
+
+#define ECHO_BUILTIN	"echo"
+#define CD_BUILTIN		"cd"
+#define PWD_BUILTIN		"pwd"
+#define EXPORT_BUILTIN	"export"
+#define UNSET_BUILTIN	"unset"
+#define ENV_BUILTIN		"env"
+#define EXIT_BUILTIN	"exit"
 
 int	execute_builtin(t_minishell *ms, char **argv)
 {
 	(void)ms;
-	size_t len_cmd;
+	size_t	len_cmd;
 
 	if (argv[0] == NULL)
 		return (0);
 	len_cmd = ft_strlen(argv[0]);
+	if (ft_strncmp(argv[0], ECHO_BUILTIN, len_cmd) == 0)
+		return (builtin_echo(argv));
 	return (1);
 }
 
 int	is_a_builtin(char const cmd[])
 {
-	char const *const	builtin_names[] = {"echo",
-		"cd",
-		"pwd",
-		"export",
-		"unset",
-		"env",
-		"exit",
-		NULL};
+	char const *const	builtin_names[] = {
+		ECHO_BUILTIN,
+		CD_BUILTIN,
+		PWD_BUILTIN,
+		EXPORT_BUILTIN,
+		UNSET_BUILTIN,
+		ENV_BUILTIN,
+		EXIT_BUILTIN
+	};
 	int					i;
 	size_t				len;
 
@@ -42,7 +54,7 @@ int	is_a_builtin(char const cmd[])
 		return (1);
 	len = ft_strlen(cmd);
 	i = 0;
-	while (builtin_names[i] != NULL)
+	while (i < sizeof(builtin_names))
 	{
 		if (ft_strncmp(cmd, builtin_names[i], len) == 0)
 			return (1);
