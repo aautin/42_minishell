@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:07:11 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/01 16:58:53 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:13:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 #include "libft/libft.h"
 
-#define RANDOM_FILE "/dev/random"
+#define RANDOM_FILE	"/dev/random"
 
 static void	replace_slashes_by_underscores(char filename[]);
 static char	*append_random_char(int fd, char const filename[]);

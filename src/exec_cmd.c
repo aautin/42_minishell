@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:15:40 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:13:05 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 #include "minishell.h"
 #include "utils.h"
 
-#define NOT_FOUND_MSG ": command not found\n"
-#define NOT_FOUND_CODE 127
-#define NO_ACCESS_CODE 126
+#define NOT_FOUND_MSG	": command not found\n"
+#define NOT_FOUND_CODE	127
+#define NO_ACCESS_CODE	126
 
 static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *envl);

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 14:09:17 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:06:38 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include "utils.h"
 
 static int	add_to_args(t_list **args, t_list **last_node,
-		t_token *token, t_minishell *ms);
+				t_token *token, t_minishell *ms);
 
 int	find_args(t_list **args, t_minishell *ms,
 		t_list *current_token, t_list *last_token)

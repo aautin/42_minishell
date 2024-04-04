@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 18:50:54 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 19:13:19 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #include "redirections.h"
 #include "utils.h"
 
-#define SIG_RETURN 128
+#define SIG_RETURN	128
 
 static int	execute_cmd(t_minishell *ms, t_cmd *cmd);
 static int	create_process(t_minishell *ms, t_cmd *cmd, char **argv);
@@ -62,7 +62,7 @@ int	execute_line(t_minishell *ms)
 		goto_next_heredoc(ms, cmd.first_token, cmd.last_token);
 		wait_all(&cmd);
 		if (cmd.last_token == NULL
-				|| !(((t_token *)cmd.last_token->content)->type & T_PIPE))
+			|| !(((t_token *)cmd.last_token->content)->type & T_PIPE))
 			ms->last_exit_status = cmd.proc.exit_status;
 		cmd.first_token = cmd.last_token;
 	}
