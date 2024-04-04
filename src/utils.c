@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 19:12:56 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 13:55:52 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 13:49:22 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,11 @@ int	add_to_list(t_list **list, void *content)
 	return (0);
 }
 
-void	free_here_doc(void *content)
+void	free_heredoc(void *content)
 {
 	char *const	filename = content;
 
 	if (unlink(filename) == -1)
 		perror(filename);
-	free(content);
+	free(filename);
 }

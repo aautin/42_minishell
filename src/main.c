@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 17:56:07 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/01 17:00:52 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "execution.h"
 #include "getenv.h"
 #include "handle_signals.h"
-#include "here_doc.h"
+#include "heredoc.h"
 #include "minishell.h"
 #include "parser.h"
 #include "utils.h"
@@ -38,7 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		ms.last_exit_status = 0;
 		ms.tokens = NULL;
-		ms.head_here_doc = NULL;
+		ms.head_heredoc = NULL;
 		line = ask_input("minishell> ");
 		if (g_sig != 0)
 			ms.last_exit_status = 128 + g_sig;
@@ -58,11 +58,14 @@ int	main(int argc, char **argv, char **envp)
 				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
 			if (!retrieve_heredoc(&ms))
 			{
-				ms.current_here_doc = ms.head_here_doc;
-				if (bad_node == NULL && execute_line(&ms))
-					break ;
-				ft_lstclear(&ms.head_here_doc, &free_here_doc);
+				ms.current_heredoc = ms.head_heredoc;
+				if (bad_node == NULL)
+				{
+					if (execute_line(&ms))
+						break ;
+				}
 			}
+			ft_lstclear(&ms.head_heredoc, &free_heredoc);
 			if (g_sig != 0)
 				ms.last_exit_status = 128 + g_sig;
 			g_sig = 0;
@@ -73,7 +76,9 @@ int	main(int argc, char **argv, char **envp)
 		printf("EXIT STATUS IS %d\n", ms.last_exit_status);
 	}
 	ft_lstclear(&ms.tokens, &free_token);
+	ft_lstclear(&ms.head_heredoc, &free_heredoc);
 	ft_lstclear(&ms.envl, &free);
-	rl_clear_history();
+	if (isatty(STDIN_FILENO))
+		rl_clear_history();
 	return (ms.last_exit_status);
 }

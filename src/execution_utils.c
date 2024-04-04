@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 18:33:08 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 14:09:17 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,18 @@
 #include "parser.h"
 #include "utils.h"
 
-int	find_args(t_list **args, t_minishell *ms, t_list *current_token, t_list *last_token)
+static int	add_to_args(t_list **args, t_list **last_node,
+		t_token *token, t_minishell *ms);
+
+int	find_args(t_list **args, t_minishell *ms,
+		t_list *current_token, t_list *last_token)
 {
-	(void)ms;
 	int		is_redirection;
 	t_token	*token;
+	t_list	*last_node;
 
 	is_redirection = 0;
+	last_node = NULL;
 	while (current_token != last_token)
 	{
 		token = current_token->content;
@@ -35,17 +40,32 @@ int	find_args(t_list **args, t_minishell *ms, t_list *current_token, t_list *las
 		{
 			if (!is_redirection)
 			{
-				parse_token(token, ms->last_exit_status);
-				if (*token->data != '\0' && add_to_list(args, token))
-				{
-					ft_lstclear(args, NULL);
+				if (add_to_args(args, &last_node, token, ms))
 					return (1);
-				}
 			}
 			is_redirection = 0;
 		}
 		current_token = current_token->next;
 	}
+	return (0);
+}
+
+static int	add_to_args(t_list **args, t_list **last_node,
+		t_token *token, t_minishell *ms)
+{
+	t_list	**last_arg;
+
+	if (*args == NULL)
+		last_arg = args;
+	else
+		last_arg = last_node;
+	parse_token(token, ms->last_exit_status);
+	if (*token->data != '\0' && add_to_list(last_arg, token))
+	{
+		ft_lstclear(args, NULL);
+		return (1);
+	}
+	*last_node = ft_lstlast(*last_arg);
 	return (0);
 }
 
@@ -63,11 +83,11 @@ t_list	*get_control_operator(t_list *current_token)
 	return (current_token);
 }
 
-char	**listtoken_to_tabstr(t_list *current_token)
+char	**listtoken_to_tabstr(t_list *args)
 {
 	int				i;
 	t_token			*token;
-	int const		size = ft_lstsize(current_token);
+	int const		size = ft_lstsize(args);
 	char **const	tab = malloc((size + 1) * sizeof(char *));
 
 	if (tab == NULL)
@@ -78,25 +98,26 @@ char	**listtoken_to_tabstr(t_list *current_token)
 	i = 0;
 	while (i < size)
 	{
-		token = current_token->content;
+		token = args->content;
 		tab[i] = token->data;
-		current_token = current_token->next;
+		args = args->next;
 		i++;
 	}
 	tab[i] = NULL;
 	return (tab);
 }
 
-void	goto_next_here_doc(t_minishell *ms, t_list *current_token, t_list *last_token)
+void	goto_next_heredoc(t_minishell *ms,
+		t_list *current_token, t_list *last_token)
 {
 	t_token	*token;
 
 	while (current_token != last_token)
 	{
 		token = current_token->content;
-		if (token->type & T_REDIRECT_HERE_DOC)
+		if (token->type & T_REDIRECT_HEREDOC)
 		{
-			ms->current_here_doc = ms->current_here_doc->next;
+			ms->current_heredoc = ms->current_heredoc->next;
 			current_token = current_token->next;
 		}
 		current_token = current_token->next;

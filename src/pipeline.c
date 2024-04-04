@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:53:32 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/25 19:13:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 13:03:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	close_pipes(t_pipe *pipeline)
 	}
 }
 
-int	apply_pipe_redirections(t_pipe *pipeline)
+int	redirect_pipes(t_pipe *pipeline)
 {
 	if (pipeline->mode == P_NONE)
 		return (0);

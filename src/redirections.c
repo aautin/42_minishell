@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 14:57:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:52:22 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 #include "parser.h"
 #include "redirections.h"
 
-static int	redirect_to_file(t_list *tokens, t_list **current_here_doc, int last_exit_status, int fd[2]);
+static int	open_file(t_list *tokens, t_list **current_heredoc,
+				int last_exit_status, int fd[2]);
 
 int	redirect_fd(int oldfd, int newfd)
 {
@@ -55,7 +56,7 @@ int	save_std_fd(int std_fd[3])
 	if (std_fd[2] == -1)
 	{
 		perror("save_std_fd():dup(std_fd[2])");
-		close(std_fd[0]), close(std_fd[1]);
+		close_files(std_fd[0], std_fd[1]);
 		return (1);
 	}
 	return (0);
@@ -84,8 +85,8 @@ int	reset_std_fd(int std_fd[3])
 	return (status);
 }
 
-int	apply_normal_redirections(t_list *current_token, t_list *last_token,
-		t_list **current_here_doc, int last_exit_status)
+int	redirect_files(t_list *current_token, t_list *last_token,
+		t_list **current_heredoc, int last_exit_status)
 {
 	int	fd[2];
 	int	status;
@@ -96,8 +97,8 @@ int	apply_normal_redirections(t_list *current_token, t_list *last_token,
 	{
 		if (((t_token *)current_token->content)->type & T_REDIRECT_OPERATOR)
 		{
-			if (redirect_to_file(current_token, current_here_doc,
-						last_exit_status, fd))
+			if (open_file(current_token, current_heredoc,
+					last_exit_status, fd))
 				return (1);
 			current_token = current_token->next;
 		}
@@ -106,35 +107,38 @@ int	apply_normal_redirections(t_list *current_token, t_list *last_token,
 	status = 0;
 	if (fd[0] >= 0)
 		status += redirect_fd(fd[0], STDIN_FILENO);
-	if (fd[1] >= 0)
+	if (!status && fd[1] >= 0)
 		status += redirect_fd(fd[1], STDOUT_FILENO);
+	if (status)
+		close_files(fd[0], fd[1]);
 	return (status);
 }
 
-static int	redirect_to_file(t_list *operator, t_list **current_here_doc, int last_exit_status, int fd[2])
+static int	open_file(t_list *operator, t_list **current_heredoc,
+		int last_exit_status, int fd[2])
 {
 	t_token *const	redirect = operator->content;
 	t_token *const	word = operator->next->content;
 	int				fd_in;
 	int				fd_out;
 
-	fd_in = open_infile(redirect, word, current_here_doc, last_exit_status);
+	fd_in = open_infile(redirect, word, current_heredoc, last_exit_status);
 	fd_out = open_outfile(redirect, word, last_exit_status);
 	if (fd_in == -1 || fd_out == -1)
 	{
-		close(fd[0]), close(fd[1]);
+		close_files(fd[0], fd[1]);
 		return (1);
 	}
 	if (fd_in >= 0)
 	{
 		if (fd[0] >= 0 && close(fd[0]) == -1)
-			perror("redirect_to_file():close(fd[0])");
+			perror("open_file():close(fd[0])");
 		fd[0] = fd_in;
 	}
 	if (fd_out >= 0)
 	{
 		if (fd[1] >= 0 && close(fd[1]) == -1)
-			perror("redirect_to_file():close(fd[1])");
+			perror("open_file():close(fd[1])");
 		fd[1] = fd_out;
 	}
 	return (0);

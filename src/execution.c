@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 16:27:43 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:50:54 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,69 +31,70 @@
 
 #define SIG_RETURN 128
 
-static int	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd);
-static void	create_process(t_minishell *ms, t_simple_cmd *simple_cmd,
-				char **argv);
-static void	wait_all(t_simple_cmd *simple_cmd);
+static int	execute_cmd(t_minishell *ms, t_cmd *cmd);
+static int	create_process(t_minishell *ms, t_cmd *cmd, char **argv);
+static void	wait_all(t_cmd *cmd);
 static int	get_exit_status(int wstatus);
 
 int	execute_line(t_minishell *ms)
 {
-	t_simple_cmd	simple_cmd;
+	t_cmd	cmd;
+	int		status;
 
-	ft_bzero(&simple_cmd, sizeof(simple_cmd));
-	simple_cmd.first_token = ms->tokens;
-	while (simple_cmd.first_token != NULL)
+	ft_bzero(&cmd, sizeof(cmd));
+	cmd.first_token = ms->tokens;
+	while (cmd.first_token != NULL)
 	{
-		simple_cmd.last_token = get_control_operator(simple_cmd.first_token->next);
-		simple_cmd.pipeline.mode
-			= get_pipe_mode(simple_cmd.first_token, simple_cmd.last_token);
-		if (simple_cmd.pipeline.mode & P_OUTPUT)
+		cmd.last_token = get_control_operator(cmd.first_token->next);
+		cmd.pipeline.mode = get_pipe_mode(cmd.first_token, cmd.last_token);
+		if (cmd.pipeline.mode & P_OUTPUT)
 		{
-			if (pipe(simple_cmd.pipeline.fd) == -1)
+			if (pipe(cmd.pipeline.fd) == -1)
 			{
 				perror("execute_line():pipe()");
 				return (EXIT_FAILURE);
 			}
 		}
-		if (execute_simple_cmd(ms, &simple_cmd))
+		status = execute_cmd(ms, &cmd);
+		close_pipes(&cmd.pipeline);
+		if (status)
 			return (1);
-		close_pipes(&simple_cmd.pipeline);
-		goto_next_here_doc(ms, simple_cmd.first_token, simple_cmd.last_token);
-		wait_all(&simple_cmd);
-		if (simple_cmd.last_token == NULL || !(((t_token *)simple_cmd.last_token->content)->type & T_PIPE))
-			ms->last_exit_status = simple_cmd.proc.exit_status;
-		simple_cmd.first_token = simple_cmd.last_token;
+		goto_next_heredoc(ms, cmd.first_token, cmd.last_token);
+		wait_all(&cmd);
+		if (cmd.last_token == NULL
+				|| !(((t_token *)cmd.last_token->content)->type & T_PIPE))
+			ms->last_exit_status = cmd.proc.exit_status;
+		cmd.first_token = cmd.last_token;
 	}
 	return (0);
 }
 
-static int	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd)
+static int	execute_cmd(t_minishell *ms, t_cmd *cmd)
 {
 	t_list		*args;
 	char		**argv;
 	int			std_fd[3];
 	int			status;
 
-	simple_cmd->proc.pid = -1;
-	simple_cmd->proc.exit_status = EXIT_FAILURE;
 	args = NULL;
-	if (find_args(&args, ms, simple_cmd->first_token, simple_cmd->last_token))
+	if (find_args(&args, ms, cmd->first_token, cmd->last_token))
 		return (1);
 	argv = listtoken_to_tabstr(args);
 	ft_lstclear(&args, NULL);
 	if (argv == NULL)
 		return (1);
+	cmd->proc.pid = -1;
+	cmd->proc.exit_status = EXIT_FAILURE;
 	status = 0;
-	if (!is_a_builtin(argv[0]) || simple_cmd->pipeline.mode != P_NONE)
-		create_process(ms, simple_cmd, argv);
+	if (!is_a_builtin(argv[0]) || cmd->pipeline.mode != P_NONE)
+		status = create_process(ms, cmd, argv);
 	else
 	{
 		if (!save_std_fd(std_fd))
 		{
-			if (!apply_normal_redirections(simple_cmd->first_token, simple_cmd->last_token,
-						&ms->current_here_doc, ms->last_exit_status))
-				simple_cmd->proc.exit_status = execute_builtin(ms, argv);
+			if (!redirect_files(cmd->first_token, cmd->last_token,
+					&ms->current_heredoc, ms->last_exit_status))
+				cmd->proc.exit_status = execute_builtin(ms, argv);
 			status = reset_std_fd(std_fd);
 		}
 	}
@@ -101,40 +102,40 @@ static int	execute_simple_cmd(t_minishell *ms, t_simple_cmd *simple_cmd)
 	return (status);
 }
 
-static void	create_process(t_minishell *ms, t_simple_cmd *simple_cmd,
-		char **argv)
+static int	create_process(t_minishell *ms, t_cmd *cmd, char **argv)
 {
-	simple_cmd->proc.pid = fork();
-	if (simple_cmd->proc.pid == -1)
+	cmd->proc.pid = fork();
+	if (cmd->proc.pid == -1)
 	{
 		perror("create_process():fork()");
-		simple_cmd->proc.exit_status = 1;
-		return ;
+		cmd->proc.exit_status = 1;
+		return (1);
 	}
-	if (simple_cmd->proc.pid == 0)
+	if (cmd->proc.pid == 0)
 	{
 		init_signals(1);
-		if (!apply_pipe_redirections(&simple_cmd->pipeline)
-			&& !apply_normal_redirections(simple_cmd->first_token, simple_cmd->last_token,
-				&ms->current_here_doc, ms->last_exit_status))
-			simple_cmd->proc.exit_status = prepare_cmd(ms, argv);
+		if (!redirect_pipes(&cmd->pipeline)
+			&& !redirect_files(cmd->first_token, cmd->last_token,
+				&ms->current_heredoc, ms->last_exit_status))
+			cmd->proc.exit_status = prepare_cmd(ms, argv);
 		ft_lstclear(&ms->tokens, &free_token);
 		ft_lstclear(&ms->envl, &free);
-		ft_lstclear(&ms->head_here_doc, &free);
+		ft_lstclear(&ms->head_heredoc, &free);
 		free(argv);
-		exit(simple_cmd->proc.exit_status);
+		exit(cmd->proc.exit_status);
 	}
+	return (0);
 }
 
-static void	wait_all(t_simple_cmd *simple_cmd)
+static void	wait_all(t_cmd *cmd)
 {
 	int				wstatus;
 	t_token			*token;
 	pid_t			proc_waited;
 	pid_t			last_pid;
-	t_list *const	last_token = simple_cmd->last_token;
+	t_list *const	last_token = cmd->last_token;
 
-	if (simple_cmd->proc.pid == -1)
+	if (cmd->proc.pid == -1)
 		return ;
 	token = NULL;
 	if (last_token != NULL)
@@ -142,7 +143,7 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 	if (token != NULL && (token->type & T_PIPE))
 		return ;
 	proc_waited = waitpid(-1, &wstatus, WUNTRACED);
-	while (proc_waited >= 0 && proc_waited != simple_cmd->proc.pid)
+	while (proc_waited >= 0 && proc_waited != cmd->proc.pid)
 		proc_waited = waitpid(-1, &wstatus, WUNTRACED);
 	proc_waited = waitpid(-1, NULL, WUNTRACED);
 	last_pid = -1;
@@ -151,7 +152,7 @@ static void	wait_all(t_simple_cmd *simple_cmd)
 		last_pid = proc_waited;
 		proc_waited = waitpid(-1, NULL, WUNTRACED);
 	}
-	simple_cmd->proc.exit_status = get_exit_status(wstatus);
+	cmd->proc.exit_status = get_exit_status(wstatus);
 }
 
 static int	get_exit_status(int wstatus)

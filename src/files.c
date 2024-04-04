@@ -6,18 +6,20 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/27 18:35:22 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 18:51:41 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #include "libft/libft.h"
 
 #include "parser.h"
 
-int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc, int last_exit_status)
+int	open_infile(t_token *redirect, t_token *word,
+		t_list **current_heredoc, int last_exit_status)
 {
 	int		fd;
 	char	*filename;
@@ -29,13 +31,13 @@ int	open_infile(t_token *redirect, t_token *word, t_list **current_here_doc, int
 		if (fd == -1)
 			perror(word->data);
 	}
-	else if (redirect->type & T_REDIRECT_HERE_DOC)
+	else if (redirect->type & T_REDIRECT_HEREDOC)
 	{
-		filename = (*current_here_doc)->content;
+		filename = (*current_heredoc)->content;
 		fd = open(filename, O_RDONLY);
 		if (fd == -1)
 			perror(filename);
-		*current_here_doc = (*current_here_doc)->next;
+		*current_heredoc = (*current_heredoc)->next;
 	}
 	else
 		return (-2);
@@ -60,4 +62,12 @@ int	open_outfile(t_token *redirect, t_token *word, int last_exit_status)
 	if (fd == -1)
 		perror(word->data);
 	return (fd);
+}
+
+void	close_files(int fd1, int fd2)
+{
+	if (fd1 >= 0)
+		close(fd1);
+	if (fd2 >= 0)
+		close(fd2);
 }
