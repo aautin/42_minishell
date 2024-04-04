@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:49:05 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/04 20:27:43 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ int	main(int argc, char **argv, char **envp)
 	char		*line;
 	int			status;
 	t_minishell	ms;
+	t_list		*bad_node;
 
 	ms.envl = create_env(envp);
 	init_signals(0);
