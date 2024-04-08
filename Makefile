@@ -30,6 +30,7 @@ FILES		:=	\
 				print_signals.c		\
 				redirections.c		\
 				utils.c				\
+				wait_cmds.c			\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
