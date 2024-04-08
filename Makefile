@@ -21,7 +21,7 @@ FILES		:=	main.c				\
 				parse_token.c		\
 				tokenize.c			\
 				tokenize_rules.c	\
-				tokenize_utils.c
+				tokenize_utils.c	\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))

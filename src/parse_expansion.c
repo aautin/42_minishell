@@ -74,7 +74,7 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	}
 }
 
-int	expand_len(char data[], int quote, unsigned char exit)
+int	expand_len(char data[], int ignore_quotes, unsigned char exit)
 {
 	int		mode;
 	int		expanded_len;
@@ -83,7 +83,7 @@ int	expand_len(char data[], int quote, unsigned char exit)
 	expanded_len = 0;
 	while (*data)
 	{
-		if (quote && (*data == '\'' || *data == '"'))
+		if (!ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
@@ -101,14 +101,15 @@ int	expand_len(char data[], int quote, unsigned char exit)
 	return (expanded_len);
 }
 
-void	expand_data(char data[], char new_data[], int quote, unsigned char exit)
+void	expand_data(char data[], char new_data[], int ignore_quotes,
+	unsigned char exit)
 {
 	int		mode;
 
 	mode = NO_QUOTE;
 	while (*data)
 	{
-		if (quote && (*data == '\'' || *data == '"'))
+		if (!ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
