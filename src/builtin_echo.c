@@ -63,13 +63,12 @@ int	builtin_echo(char **argv)
 	char	*output;
 
 	format = NORMAL_MODE;
-	while (*argv)
+	while (*(++argv))
 	{
 		if (get_status(*argv) != NO_NEWLINE_MODE)
 			break ;
 		else
 			format = NO_NEWLINE_MODE;
-		argv++;
 	}
 	output = join_string_argv(argv, format);
 	if (output == NULL)
