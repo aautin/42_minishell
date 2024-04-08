@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/20 19:19:27 by aautin           ###   ########.fr       */
+/*   Updated: 2024/03/25 14:56:31 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,8 +56,8 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	path_len = pathname_len(*data);
 	if (path_len == -1)
 	{
-		*(*new_data++) = '$';
-		*(*new_data++) = **data;
+		*((*new_data)++) = '$';
+		*((*new_data)++) = **data;
 	}
 	else
 	{
@@ -74,7 +74,7 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	}
 }
 
-int	expand_len(char data[])
+int	expand_len(char data[], int ignore_quotes, unsigned char exit)
 {
 	int		mode;
 	int		expanded_len;
@@ -83,37 +83,38 @@ int	expand_len(char data[])
 	expanded_len = 0;
 	while (*data)
 	{
-		if (*data == '\'' || *data == '"')
+		if (!ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
 			data++;
 			if (*data == '?')
-				expanded_len++;
+				expanded_len += nbr_len((unsigned char) exit);
 			else
 				expand_len_insertion(&data, &expanded_len, &mode);
 		}
 		else
 			expanded_len++;
-		data++;
+		if (*data)
+			data++;
 	}
 	return (expanded_len);
 }
 
-void	expand_data(char data[], char new_data[])
+void	expand_data(char data[], char new_data[], int ignore_quotes,
+	unsigned char exit)
 {
 	int		mode;
 
 	mode = NO_QUOTE;
 	while (*data)
 	{
-		if (*data == '\'' || *data == '"')
+		if (!ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
-			data++;
-			if (*data == '?')
-				*(new_data++) = '0';
+			if (*(++data) == '?')
+				nbr_data(&new_data, exit, nbr_len(exit));
 			else if (mode == DB_QUOTE && *data == '"')
 			{
 				mode = NO_QUOTE;
@@ -125,6 +126,7 @@ void	expand_data(char data[], char new_data[])
 		}
 		else
 			*(new_data++) = *data;
-		data++;
+		if (*data)
+			data++;
 	}
 }

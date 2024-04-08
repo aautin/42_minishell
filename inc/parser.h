@@ -41,8 +41,8 @@ typedef struct s_token
 }	t_token;
 
 void	unquote(char data[]);
-int		expansion(t_token *token);
-int		parse_token(t_token *token);
+int		expansion(t_token *token, int ignore_quotes, int exit_status);
+int		parse_token(t_token *token, int exit_status);
 int		tokenize(t_list **tokens, char const line[]);
 t_list	*verify_tokens(t_list *tokens);
 

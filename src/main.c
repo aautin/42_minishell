@@ -44,7 +44,7 @@ void	print_token(void *content)
 			printf("REDIRECT_OUTPUT : ");
 		if (((t_token *)content)->type & T_REDIRECT_INPUT)
 			printf("REDIRECT_INPUT : ");
-		if (((t_token *)content)->type & T_REDIRECT_HERE_DOC)
+		if (((t_token *)content)->type & T_REDIRECT_HEREDOC)
 			printf("REDIRECT_HERE_DOC : ");
 		if (((t_token *)content)->type & T_REDIRECT_APPEND)
 			printf("REDIRECT_APPEND : ");
@@ -76,11 +76,11 @@ int	main(void)
 			bad_node = verify_tokens(tokens);
 			if (bad_node != NULL)
 				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
-			ft_lstiter(&tokens, &print_token);
+			ft_lstiter(tokens, &print_token);
 		}
 		else if (status == 1)
 			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
-		ft_lstclear(&tokens, &free_tokens);
+		ft_lstclear(&tokens, &free_token);
 	}
 	rl_clear_history();
 	return (EXIT_SUCCESS);
