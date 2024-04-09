@@ -13,12 +13,18 @@
 #ifndef PARSER_UTILS_H
 # define PARSER_UTILS_H
 
+typedef struct s_expansion
+{
+	t_list			*envp;
+	unsigned char	exit_status;
+	int				ignore_quotes;
+}	t_expansion;
+
 int		nbr_len(unsigned char nbr);
-void	nbr_data(char **data, unsigned char nbr, int nbr_len);
+void	nbr_data(char **data, unsigned char nbr);
 int		change_quote_mode(char data, int *mode);
 int		pathname_len(char *pathname);
-int		expand_len(char data[], int ignore_quotes, unsigned char exit);
-void	expand_data(char data[], char newdata[], int ignore_quotes,
-	unsigned char exit);
+int		expand_len(t_expansion const *config, char data[]);
+void	expand_data(t_expansion const *config, char data[], char newdata[]);
 
 #endif

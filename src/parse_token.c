@@ -46,29 +46,28 @@ void	unquote(char data[])
 	}
 }
 
-int	expansion(t_token *token, int ignore_quotes, int exit_status)
+int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
 {
-	char	*expanded_data;
-	int		expanded_len;
+	t_expansion const	config = {envp, exit_status, ignore_quotes};
+	char				*expanded_data;
+	int					expanded_len;
 
-	expanded_len = expand_len(token->data, ignore_quotes,
-			(unsigned char) exit_status);
+	expanded_len = expand_len(&config, token->data);
 	expanded_data = ft_calloc(expanded_len + 1, sizeof(char));
 	if (expanded_data == NULL)
 	{
 		perror("parse_token():malloc()");
 		return (1);
 	}
-	expand_data(token->data, expanded_data, ignore_quotes,
-		(unsigned char) exit_status);
+	expand_data(&config, token->data, expanded_data);
 	free(token->data);
 	token->data = expanded_data;
 	return (0);
 }
 
-int	parse_token(t_token *token, int exit_status)
+int	parse_token(t_list *envp, t_token *token, int exit_status)
 {
-	if (expansion(token, 0, exit_status))
+	if (expansion(envp, token, 0, exit_status))
 		return (1);
 	unquote(token->data);
 	return (0);
