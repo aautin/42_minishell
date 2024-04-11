@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 20:44:42 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 14:33:07 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@ int	main(int argc, char **argv, char **envp)
 	t_list		*bad_node;
 
 	ms.envl = create_env(envp);
+	ms.last_exit_status = 0;
 	init_signals(0);
 	while (1)
 	{
-		ms.last_exit_status = 0;
 		ms.tokens = NULL;
 		ms.head_heredoc = NULL;
 		line = ask_input("minishell> ");
