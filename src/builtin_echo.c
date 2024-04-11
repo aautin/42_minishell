@@ -6,11 +6,13 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 12:20:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/18 15:38:21 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/11 15:53:40 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "libft/libft.h"
 
@@ -44,7 +46,10 @@ static char	*join_string_argv(char **argv, char format)
 	len = len + i + (format == NORMAL_MODE);
 	output = malloc(len * sizeof(char));
 	if (output == NULL)
+	{
+		perror("join_string_argv():malloc()");
 		return (NULL);
+	}
 	output[0] = '\0';
 	while (*argv)
 	{
@@ -73,7 +78,12 @@ int	builtin_echo(char **argv)
 	output = join_string_argv(argv, format);
 	if (output == NULL)
 		return (1);
-	ft_putstr_fd(output, 1);
+	if (write(1, output, ft_strlen(output)) == -1)
+	{
+		perror("echo():write()");
+		free(output);
+		return (1);
+	}
 	free(output);
 	return (0);
 }
