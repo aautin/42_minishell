@@ -1,23 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   builtin_pwd.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:20:31 by aautin           ###   ########.fr       */
+/*   Created: 2024/04/11 14:38:37 by aautin            #+#    #+#             */
+/*   Updated: 2024/04/11 15:28:10 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#ifndef BUILTIN_PWD_H
+# define BUILTIN_PWD_H
 
-#include "builtin_pwd.h"
+# include <unistd.h>
+# include <stdio.h>
+# include <linux/limits.h>
 
-int	main(void)
-{
-	printf("Initial Release !\n");
-	builtin_pwd();
-	return (EXIT_SUCCESS);
-}
+int	builtin_pwd(void);
+
+#endif
