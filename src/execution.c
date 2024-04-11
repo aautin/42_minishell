@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/08 19:16:49 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:12:28 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,7 @@ static int	execute_simple_cmd(t_minishell *ms, t_cmd *cmd, char **argv)
 		return (create_process(ms, cmd, argv));
 	if (!save_std_fd(std_fd))
 	{
-		if (!redirect_files(cmd->first_token, cmd->last_token,
-				&ms->current_heredoc, ms->last_exit_status))
+		if (!redirect_files(ms, cmd->first_token, cmd->last_token))
 			cmd->proc.exit_status = execute_builtin(ms, argv);
 		return (reset_std_fd(std_fd));
 	}
@@ -122,8 +121,7 @@ static int	create_process(t_minishell *ms, t_cmd *cmd, char **argv)
 	{
 		init_signals(1);
 		if (!redirect_pipes(&cmd->pipeline)
-			&& !redirect_files(cmd->first_token, cmd->last_token,
-				&ms->current_heredoc, ms->last_exit_status))
+			&& !redirect_files(ms, cmd->first_token, cmd->last_token))
 			cmd->proc.exit_status = prepare_cmd(ms, argv);
 		ft_lstclear(&ms->tokens, &free_token);
 		ft_lstclear(&ms->envl, &free);

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:09:00 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:25:05 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@
 #include "libft/libft.h"
 
 #include "files.h"
+#include "minishell.h"
 #include "parser.h"
 #include "redirections.h"
 
-static int	open_file(t_list *tokens, t_list **current_heredoc,
-				int last_exit_status, int fd[2]);
+static int	open_file(t_minishell *ms, t_list *tokens, int fd[2]);
 
 int	redirect_fd(int oldfd, int newfd)
 {
@@ -82,8 +82,7 @@ int	reset_std_fd(int std_fd[3])
 	return (status);
 }
 
-int	redirect_files(t_list *current_token, t_list *last_token,
-		t_list **current_heredoc, int last_exit_status)
+int	redirect_files(t_minishell *ms, t_list *current_token, t_list *last_token)
 {
 	int	fd[2];
 	int	status;
@@ -94,8 +93,7 @@ int	redirect_files(t_list *current_token, t_list *last_token,
 	{
 		if (((t_token *)current_token->content)->type & T_REDIRECT_OPERATOR)
 		{
-			if (open_file(current_token, current_heredoc,
-					last_exit_status, fd))
+			if (open_file(ms, current_token, fd))
 				return (1);
 			current_token = current_token->next;
 		}
@@ -111,16 +109,15 @@ int	redirect_files(t_list *current_token, t_list *last_token,
 	return (status);
 }
 
-static int	open_file(t_list *operator, t_list **current_heredoc,
-		int last_exit_status, int fd[2])
+static int	open_file(t_minishell *ms, t_list *operator, int fd[2])
 {
 	t_token *const	redirect = operator->content;
 	t_token *const	word = operator->next->content;
 	int				fd_in;
 	int				fd_out;
 
-	fd_in = open_infile(redirect, word, current_heredoc, last_exit_status);
-	fd_out = open_outfile(redirect, word, last_exit_status);
+	fd_in = open_infile(ms, redirect, word);
+	fd_out = open_outfile(ms, redirect, word);
 	if (fd_in == -1 || fd_out == -1)
 	{
 		close_files(fd[0], fd[1]);

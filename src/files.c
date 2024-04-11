@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 18:51:41 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:24:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,35 +16,35 @@
 
 #include "libft/libft.h"
 
+#include "minishell.h"
 #include "parser.h"
 
-int	open_infile(t_token *redirect, t_token *word,
-		t_list **current_heredoc, int last_exit_status)
+int	open_infile(t_minishell *ms, t_token *redirect, t_token *word)
 {
 	int		fd;
 	char	*filename;
 
 	if (redirect->type & T_REDIRECT_INPUT)
 	{
-		parse_token(word, last_exit_status);
+		parse_token(word, ms->envl, ms->last_exit_status);
 		fd = open(word->data, O_RDONLY);
 		if (fd == -1)
 			perror(word->data);
 	}
 	else if (redirect->type & T_REDIRECT_HEREDOC)
 	{
-		filename = (*current_heredoc)->content;
+		filename = ms->current_heredoc->content;
 		fd = open(filename, O_RDONLY);
 		if (fd == -1)
 			perror(filename);
-		*current_heredoc = (*current_heredoc)->next;
+		ms->current_heredoc = ms->current_heredoc->next;
 	}
 	else
 		return (-2);
 	return (fd);
 }
 
-int	open_outfile(t_token *redirect, t_token *word, int last_exit_status)
+int	open_outfile(t_minishell *ms, t_token *redirect, t_token *word)
 {
 	int				fd;
 	int				flags;
@@ -57,7 +57,7 @@ int	open_outfile(t_token *redirect, t_token *word, int last_exit_status)
 		flags |= O_APPEND;
 	else
 		return (-2);
-	parse_token(word, last_exit_status);
+	parse_token(word, ms->envl, ms->last_exit_status);
 	fd = open(word->data, flags, mode);
 	if (fd == -1)
 		perror(word->data);

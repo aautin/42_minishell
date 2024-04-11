@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:06:38 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:23:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	add_to_args(t_list **args, t_list **last_node,
 		last_arg = args;
 	else
 		last_arg = last_node;
-	parse_token(token, ms->last_exit_status);
+	parse_token(token, ms->envl, ms->last_exit_status);
 	if (*token->data != '\0' && add_to_list(last_arg, token))
 	{
 		ft_lstclear(args, NULL);

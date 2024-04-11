@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:07:36 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 15:19:33 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,11 @@
 
 static int	process_heredoc(t_minishell *ms, t_token *token,
 				t_list **last_node);
-static char	*do_heredoc(t_token *word, int last_exit_status);
-static int	read_heredoc(int fd, char const delim[],
-				int last_exit_status, int delim_quoted);
-static int	parse_line_heredoc(int fd, char const line[],
-				int last_exit_status, int delim_quoted);
+static char	*do_heredoc(t_minishell *ms, t_token *word);
+static int	read_heredoc(t_minishell *ms, int fd,
+				char const delim[], int delim_quoted);
+static int	parse_line_heredoc(t_minishell *ms, int fd,
+				char const line[], int delim_quoted);
 
 int	retrieve_heredoc(t_minishell *ms)
 {
@@ -67,7 +67,7 @@ static int	process_heredoc(t_minishell *ms, t_token *token, t_list **last_node)
 	if (save_std_fd(std_fd))
 		return (1);
 	init_signal_heredoc();
-	filename = do_heredoc(token, ms->last_exit_status);
+	filename = do_heredoc(ms, token);
 	init_signals(0);
 	if (reset_std_fd(std_fd))
 	{
@@ -84,7 +84,7 @@ static int	process_heredoc(t_minishell *ms, t_token *token, t_list **last_node)
 	return (0);
 }
 
-static char	*do_heredoc(t_token *word, int last_exit_status)
+static char	*do_heredoc(t_minishell *ms, t_token *word)
 {
 	int		fd;
 	char	*filename;
@@ -100,7 +100,7 @@ static char	*do_heredoc(t_token *word, int last_exit_status)
 		free(filename);
 		return (NULL);
 	}
-	if (read_heredoc(fd, word->data, last_exit_status, word->type & T_QUOTED))
+	if (read_heredoc(ms, fd, word->data, word->type & T_QUOTED))
 	{
 		close(fd);
 		unlink(filename);
@@ -112,8 +112,8 @@ static char	*do_heredoc(t_token *word, int last_exit_status)
 	return (filename);
 }
 
-static int	read_heredoc(int fd, char const delim[],
-		int last_exit_status, int delim_quoted)
+static int	read_heredoc(t_minishell *ms, int fd,
+		char const delim[], int delim_quoted)
 {
 	char			*line;
 	int				std_fd[3];
@@ -124,7 +124,7 @@ static int	read_heredoc(int fd, char const delim[],
 		line = ask_input("> ");
 		if (line == NULL
 			|| ft_strncmp(line, delim, size_delim) == 0
-			|| parse_line_heredoc(fd, line, last_exit_status, delim_quoted))
+			|| parse_line_heredoc(ms, fd, line, delim_quoted))
 			break ;
 		free(line);
 	}
@@ -142,8 +142,8 @@ static int	read_heredoc(int fd, char const delim[],
 	return (0);
 }
 
-static int	parse_line_heredoc(int fd, char const line[],
-		int last_exit_status, int delim_quoted)
+static int	parse_line_heredoc(t_minishell *ms, int fd,
+		char const line[], int delim_quoted)
 {
 	t_token	token;
 
@@ -153,7 +153,7 @@ static int	parse_line_heredoc(int fd, char const line[],
 	token.type = T_WORD;
 	if (!delim_quoted)
 	{
-		if (expansion(&token, 1, last_exit_status))
+		if (expansion(&token, ms->envl, 1, ms->last_exit_status))
 		{
 			free(token.data);
 			return (1);
