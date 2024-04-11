@@ -17,8 +17,10 @@
 
 #include "parser.h"
 #include "parser_utils.h"
+#include "getenv.h"
 
-static void	expand_len_insertion(char *data[], int *expanded_len, int *mode)
+static void	expand_len_insertion(t_list *envp, char *data[], int *expanded_len,
+	int *mode)
 {
 	char	temp;
 	char	*getenv_find;
@@ -38,7 +40,7 @@ static void	expand_len_insertion(char *data[], int *expanded_len, int *mode)
 		{
 			temp = (*data)[path_len];
 			(*data)[path_len] = '\0';
-			getenv_find = getenv(*data);
+			getenv_find = ft_getenv(envp, *data);
 			(*data)[path_len] = temp;
 			*data += path_len - 1;
 			if (getenv_find != NULL)
@@ -47,7 +49,7 @@ static void	expand_len_insertion(char *data[], int *expanded_len, int *mode)
 	}
 }
 
-static void	expand_data_insertion(char *data[], char *new_data[])
+static void	expand_data_insertion(t_list *envp, char *data[], char *new_data[])
 {
 	int		path_len;
 	char	temp;
@@ -63,7 +65,7 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	{
 		temp = (*data)[path_len];
 		(*data)[path_len] = '\0';
-		env = getenv(*data);
+		env = ft_getenv(envp, *data);
 		(*data)[path_len] = temp;
 		if (env != NULL)
 		{
@@ -74,7 +76,7 @@ static void	expand_data_insertion(char *data[], char *new_data[])
 	}
 }
 
-int	expand_len(char data[], int ignore_quotes, unsigned char exit)
+int	expand_len(t_expansion const *config, char data[])
 {
 	int		mode;
 	int		expanded_len;
@@ -83,15 +85,15 @@ int	expand_len(char data[], int ignore_quotes, unsigned char exit)
 	expanded_len = 0;
 	while (*data)
 	{
-		if (!ignore_quotes && (*data == '\'' || *data == '"'))
+		if (!config->ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
 			data++;
 			if (*data == '?')
-				expanded_len += nbr_len((unsigned char) exit);
+				expanded_len += nbr_len(config->exit_status);
 			else
-				expand_len_insertion(&data, &expanded_len, &mode);
+				expand_len_insertion(config->envp, &data, &expanded_len, &mode);
 		}
 		else
 			expanded_len++;
@@ -101,20 +103,19 @@ int	expand_len(char data[], int ignore_quotes, unsigned char exit)
 	return (expanded_len);
 }
 
-void	expand_data(char data[], char new_data[], int ignore_quotes,
-	unsigned char exit)
+void	expand_data(t_expansion const *config, char data[], char new_data[])
 {
 	int		mode;
 
 	mode = NO_QUOTE;
 	while (*data)
 	{
-		if (!ignore_quotes && (*data == '\'' || *data == '"'))
+		if (!config->ignore_quotes && (*data == '\'' || *data == '"'))
 			change_quote_mode(*data, &mode);
 		if (*data == '$' && mode != SG_QUOTE)
 		{
 			if (*(++data) == '?')
-				nbr_data(&new_data, exit, nbr_len(exit));
+				nbr_data(&new_data, config->exit_status);
 			else if (mode == DB_QUOTE && *data == '"')
 			{
 				mode = NO_QUOTE;
@@ -122,7 +123,7 @@ void	expand_data(char data[], char new_data[], int ignore_quotes,
 				*(new_data++) = '"';
 			}
 			else
-				expand_data_insertion(&data, &new_data);
+				expand_data_insertion(config->envp, &data, &new_data);
 		}
 		else
 			*(new_data++) = *data;

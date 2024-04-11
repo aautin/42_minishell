@@ -27,14 +27,16 @@ int	nbr_len(unsigned char nbr)
 	return (size);
 }
 
-void	nbr_data(char **data, unsigned char nbr, int nbr_len)
+void	nbr_data(char **data, unsigned char nbr)
 {
 	int	power;
+	int	len;
 
+	len = nbr_len(nbr);
 	power = 1;
 	while (nbr / power > 9)
 		power *= 10;
-	while (nbr_len--)
+	while (len--)
 	{
 		*((*data)++) = ((nbr / power) % 10) + '0';
 		power = power / 10;
