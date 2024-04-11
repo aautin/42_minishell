@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:19:33 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:32:50 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ static int	process_heredoc(t_minishell *ms, t_token *token, t_list **last_node)
 
 	if (save_std_fd(std_fd))
 		return (1);
-	init_signal_heredoc();
+	init_sigint(H_HEREDOC);
 	filename = do_heredoc(ms, token);
-	init_signals(0);
+	init_sigint(H_MINISHELL);
 	if (reset_std_fd(std_fd))
 	{
 		free(filename);

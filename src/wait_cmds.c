@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 18:56:05 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/08 19:17:01 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 19:33:08 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "libft/libft.h"
 
 #include "execution_utils.h"
+#include "handle_signals.h"
 #include "parser.h"
 #include "print_signals.h"
 
@@ -38,6 +39,7 @@ void	wait_all(t_cmd *cmd)
 		token = last_token->content;
 	if (token != NULL && (token->type & T_PIPE))
 		return ;
+	init_sigint(H_WAIT);
 	proc_waited = waitpid(-1, &wstatus, WUNTRACED);
 	while (proc_waited >= 0 && proc_waited != cmd->proc.pid)
 		proc_waited = waitpid(-1, &wstatus, WUNTRACED);

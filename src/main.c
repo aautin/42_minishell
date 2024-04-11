@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 14:33:07 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/11 20:01:18 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ int	main(int argc, char **argv, char **envp)
 
 	ms.envl = create_env(envp);
 	ms.last_exit_status = 0;
-	init_signals(0);
+	init_sigint(H_MINISHELL);
+	init_sigquit(H_MINISHELL);
 	while (1)
 	{
 		ms.tokens = NULL;
@@ -57,7 +58,10 @@ int	main(int argc, char **argv, char **envp)
 		{
 			bad_node = verify_tokens(ms.tokens);
 			if (bad_node != NULL)
+			{
 				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
+				ms.last_exit_status = 2;
+			}
 			if (!retrieve_heredoc(&ms))
 			{
 				ms.current_heredoc = ms.head_heredoc;
@@ -73,8 +77,12 @@ int	main(int argc, char **argv, char **envp)
 			ft_lstclear(&ms.head_heredoc, &free_heredoc);
 		}
 		else if (status == 1)
+		{
 			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
+			ms.last_exit_status = 2;
+		}
 		ft_lstclear(&ms.tokens, &free_token);
+		init_sigint(H_MINISHELL);
 		printf("EXIT STATUS IS %d\n", ms.last_exit_status);
 	}
 	ft_lstclear(&ms.tokens, &free_token);
