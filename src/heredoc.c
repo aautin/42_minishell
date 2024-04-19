@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 19:32:50 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:07:50 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@
 
 #include "handle_signals.h"
 #include "heredoc_utils.h"
+#include "list_utils.h"
 #include "minishell.h"
 #include "parser.h"
 #include "redirections.h"
-#include "utils.h"
 
 #define HEREDOC_WARNING "warning: here_document delimited by end-of-file"
 

@@ -25,11 +25,12 @@ FILES		:=	\
 				handle_signals.c	\
 				heredoc.c			\
 				heredoc_utils.c		\
+				list_utils.c		\
 				main.c				\
+				minishell.c			\
 				pipeline.c			\
 				print_signals.c		\
 				redirections.c		\
-				utils.c				\
 				wait_cmds.c			\
 
 SRC_PATH	:=	src

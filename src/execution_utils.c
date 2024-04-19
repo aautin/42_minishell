@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:23:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:07:58 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 
 #include "libft/libft.h"
 
+#include "list_utils.h"
 #include "minishell.h"
 #include "parser.h"
-#include "utils.h"
 
 static int	add_to_args(t_list **args, t_list **last_node,
 				t_token *token, t_minishell *ms);

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 19:13:05 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:08:38 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 #include "check_exec.h"
 #include "getenv.h"
 #include "minishell.h"
-#include "utils.h"
 
 #define NOT_FOUND_MSG	": command not found\n"
 #define NOT_FOUND_CODE	127
@@ -29,6 +28,7 @@
 
 static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *envl);
+static void	my_perror(char const name[], char const msg[]);
 static int	execute_cmd(char const pathname[], char **argv, t_list *envp);
 
 int	prepare_cmd(t_minishell *ms, char **argv)
@@ -91,6 +91,19 @@ static char	**liststr_to_tabstr(t_list *envl)
 	}
 	tab[i] = NULL;
 	return (tab);
+}
+
+static void	my_perror(char const name[], char const msg[])
+{
+	char *const	full_msg = ft_strjoin(name, msg);
+
+	if (full_msg == NULL)
+	{
+		perror("my_perror():ft_strjoin()");
+		return ;
+	}
+	ft_putstr_fd(full_msg, STDERR_FILENO);
+	free(full_msg);
 }
 
 static int	execute_cmd(char const pathname[], char **argv, t_list *envl)

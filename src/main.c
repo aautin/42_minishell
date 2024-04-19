@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 20:01:18 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:09:00 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@
 #include "getenv.h"
 #include "handle_signals.h"
 #include "heredoc.h"
+#include "list_utils.h"
 #include "minishell.h"
 #include "parser.h"
-#include "utils.h"
 
 int	main(int argc, char **argv, char **envp)
 {

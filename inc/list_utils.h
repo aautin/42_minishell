@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   list_utils.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/24 18:19:50 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:02:58 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/04/19 14:59:00 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/19 14:59:50 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef LIST_UTILS_H
+# define LIST_UTILS_H
 
 # include "libft/libft.h"
 
-typedef struct s_minishell
-{
-	t_list	*tokens;
-	t_list	*envl;
-	t_list	*head_heredoc;
-	t_list	*current_heredoc;
-	int		last_exit_status;
-}	t_minishell;
-
-extern int	g_sig;
-
-char	*ask_input(char const prompt[]);
+int		add_to_list(t_list **list, void *content);
+void	free_heredoc(void *content);
+void	free_token(void *content);
 
 #endif

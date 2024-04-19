@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 19:56:47 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:07:24 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@
 #include "exec_cmd.h"
 #include "execution_utils.h"
 #include "handle_signals.h"
+#include "list_utils.h"
 #include "minishell.h"
 #include "parser.h"
 #include "pipeline.h"
 #include "redirections.h"
-#include "utils.h"
 #include "wait_cmds.h"
 
 static int	simple_cmd(t_minishell *ms, t_cmd *cmd);

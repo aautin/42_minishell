@@ -1,31 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/24 18:19:50 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:02:58 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/04/19 15:00:28 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/19 15:02:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <readline/readline.h>
+#include <unistd.h>
 
-# include "libft/libft.h"
+#include "libft/libft.h"
 
-typedef struct s_minishell
+char	*ask_input(char const prompt[])
 {
-	t_list	*tokens;
-	t_list	*envl;
-	t_list	*head_heredoc;
-	t_list	*current_heredoc;
-	int		last_exit_status;
-}	t_minishell;
+	char	*line;
+	char	*newline;
 
-extern int	g_sig;
-
-char	*ask_input(char const prompt[]);
-
-#endif
+	if (isatty(STDIN_FILENO))
+		line = readline(prompt);
+	else
+	{
+		line = get_next_line(STDIN_FILENO);
+		if (line != NULL)
+		{
+			newline = ft_strrchr(line, '\n');
+			if (newline != NULL)
+				*newline = '\0';
+		}
+	}
+	return (line);
+}
