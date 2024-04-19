@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_echo.h                                     :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 12:21:27 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/16 13:38:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 18:45:00 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_ECHO_H
-# define BUILTIN_ECHO_H
+#ifndef BUILTINS_H
+# define BUILTINS_H
 
 int	builtin_echo(char **argv);
 
