@@ -1,17 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.h                                      :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:45:36 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/21 17:10:16 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 20:43:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_ENV_H
-# define BUILTIN_ENV_H
+#ifndef BUILTINS_H
+# define BUILTINS_H
+
+# include "libft/libft.h"
 
 int	builtin_env(t_list *envp);
 
