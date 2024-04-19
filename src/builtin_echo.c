@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/16 12:20:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/11 15:53:40 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 18:21:40 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,15 @@ int	builtin_echo(char **argv)
 	char	format;
 	char	*output;
 
+	if (argv[1] == NULL)
+	{
+		if (write(1, "\n", 1) == -1)
+		{
+			perror("echo():write()");
+			return (1);
+		}
+		return (0);
+	}
 	format = NORMAL_MODE;
 	while (*(++argv))
 	{
@@ -75,6 +84,8 @@ int	builtin_echo(char **argv)
 		else
 			format = NO_NEWLINE_MODE;
 	}
+	if (*argv == NULL && format == NO_NEWLINE_MODE)
+		return (0);
 	output = join_string_argv(argv, format);
 	if (output == NULL)
 		return (1);
