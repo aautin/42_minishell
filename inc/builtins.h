@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_pwd.h                                      :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 14:38:37 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/11 15:31:51 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 18:42:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTIN_PWD_H
-# define BUILTIN_PWD_H
+#ifndef BUILTINS_H
+# define BUILTINS_H
 
 int	builtin_pwd(void);
 

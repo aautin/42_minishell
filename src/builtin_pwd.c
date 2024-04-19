@@ -6,15 +6,15 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 14:36:48 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/11 15:32:22 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 18:40:47 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <linux/limits.h>
-# include <stdio.h>
-# include <unistd.h>
+#include <linux/limits.h>
+#include <stdio.h>
+#include <unistd.h>
 
-#include "builtin_pwd.h"
+#include "libft/libft.h"
 
 int	builtin_pwd(void)
 {
@@ -25,10 +25,11 @@ int	builtin_pwd(void)
 		perror("pwd():getcwd()");
 		return (1);
 	}
-	if (printf("%s\n", buff) == -1)
+	if (write(1, buff, ft_strlen(buff)) == -1)
 	{
-		perror("pwd():printf()");
+		perror("pwd():write()");
 		return (1);
 	}
+	write(1, "\n", 1);
 	return (0);
 }
