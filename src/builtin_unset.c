@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/19 20:37:25 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 20:42:26 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	builtin_unset(char **argv, t_list **envp);
 		{
 			if (!ft_strncmp(((char *)node->content), key, key_len))
 			{
-				ft_remove(envp, prev, node);
+				remove_env(envp, prev, node);
 				break ;
 			}
 			prev = node;
