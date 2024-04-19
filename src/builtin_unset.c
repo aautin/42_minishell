@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/19 19:08:14 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 20:25:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	builtin_unset(char **argv, t_list **envp);
 		value = ft_getenv(*envp, *argv);
 		if (value == NULL)
 			continue ;
-		key -= ft_strlen(*argv) + 1;
+		key = value - ft_strlen(*argv) + 1;
 		key_len = ft_strlen(key);
 		node = *envp;
 		prev = node;
