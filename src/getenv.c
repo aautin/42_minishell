@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/13 16:05:52 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/19 20:40:39 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 #include "libft/libft.h"
 
-void	ft_remove(t_list **head, t_list *prev, t_list *cur)
+void	remove_env(t_list **head, t_list *prev, t_list *cur)
 {
-	if (prev == cur)
+	if (*head == cur)
 	{
-		*head = prev->next;
+		*head = cur->next;
 		ft_lstdelone(cur, &free);
 	}
 	else
