@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/28 10:29:51 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:14:22 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 #include "libft/libft.h"
 
+#include "list_utils.h"
 #include "parser.h"
 #include "tokenize_utils.h"
-#include "utils.h"
 
 t_action	rule_1(t_list **tokens, t_line_part *line_part)
 {

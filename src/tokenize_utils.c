@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:43:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 18:53:30 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/19 15:15:45 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 
 #include "libft/libft.h"
 
+#include "list_utils.h"
 #include "parser.h"
 #include "tokenize_utils.h"
-#include "utils.h"
 
 void	store_and_create_token(t_list **tokens, t_line_part *line_part)
 {
 	t_list	**last_node;
 
+	line_part->token->data = ft_substr(line_part->line, 0, line_part->index);
 	if (*tokens == NULL)
 		last_node = tokens;
 	else
 		last_node = &line_part->last_node;
-	line_part->token->data = ft_substr(line_part->line, 0, line_part->index);
 	if (add_to_list(last_node, line_part->token))
 	{
 		line_part->token = NULL;
