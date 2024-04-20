@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 15:00:28 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:02:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:35:01 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 
 #include "libft/libft.h"
 
-char	*ask_input(char const prompt[])
+char	*ask_input(char const prompt[], int is_interactive)
 {
 	char	*line;
 	char	*newline;
 
-	if (isatty(STDIN_FILENO))
+	if (is_interactive)
 		line = readline(prompt);
 	else
 	{

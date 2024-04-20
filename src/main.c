@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/20 10:27:57 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:39:23 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,21 +34,22 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	ms;
 	t_list		*bad_node;
 
+	ms.is_interactive = isatty(STDIN_FILENO);
 	ms.envl = create_env(envp);
-	ms.last_exit_status = 0;
+	ms.last_exit_status = EXIT_SUCCESS;
 	init_sigint(H_MINISHELL);
 	init_sigquit(H_MINISHELL);
 	while (1)
 	{
 		ms.tokens = NULL;
 		ms.head_heredoc = NULL;
-		line = ask_input("minishell> ");
+		line = ask_input("minishell> ", ms.is_interactive);
 		if (g_sig != 0)
 			ms.last_exit_status = SIG_RETURN + g_sig;
 		g_sig = 0;
 		if (line == NULL)
 			break ;
-		if (isatty(STDIN_FILENO) && *line != '\0')
+		if (ms.is_interactive && *line != '\0')
 			add_history(line);
 		status = tokenize(&ms.tokens, line);
 		free(line);
@@ -62,7 +63,7 @@ int	main(int argc, char **argv, char **envp)
 				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
 				ms.last_exit_status = 2;
 			}
-			if (!retrieve_heredoc(&ms))
+			else if (!retrieve_heredoc(&ms))
 			{
 				ms.current_heredoc = ms.head_heredoc;
 				if (bad_node == NULL)
@@ -88,7 +89,7 @@ int	main(int argc, char **argv, char **envp)
 	ft_lstclear(&ms.tokens, &free_token);
 	ft_lstclear(&ms.head_heredoc, &free_heredoc);
 	ft_lstclear(&ms.envl, &free);
-	if (isatty(STDIN_FILENO))
+	if (ms.is_interactive)
 		rl_clear_history();
 	return (ms.last_exit_status);
 }

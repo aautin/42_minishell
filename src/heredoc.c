@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:07:50 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:46:30 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ static int	read_heredoc(t_minishell *ms, int fd,
 
 	while (1)
 	{
-		line = ask_input("> ");
+		line = ask_input("> ", ms->is_interactive);
 		if (line == NULL
 			|| ft_strncmp(line, delim, size_delim) == 0
 			|| parse_line_heredoc(ms, fd, line, delim_quoted))
