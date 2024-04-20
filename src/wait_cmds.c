@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 18:56:05 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 19:33:08 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:27:33 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,6 @@
 #include "handle_signals.h"
 #include "parser.h"
 #include "print_signals.h"
-
-#define SIG_RETURN	128
 
 static int	get_exit_status(int wstatus);
 

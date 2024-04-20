@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:09:00 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:27:57 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	main(int argc, char **argv, char **envp)
 		ms.head_heredoc = NULL;
 		line = ask_input("minishell> ");
 		if (g_sig != 0)
-			ms.last_exit_status = 128 + g_sig;
+			ms.last_exit_status = SIG_RETURN + g_sig;
 		g_sig = 0;
 		if (line == NULL)
 			break ;
@@ -72,7 +72,7 @@ int	main(int argc, char **argv, char **envp)
 				}
 			}
 			if (g_sig != 0)
-				ms.last_exit_status = 128 + g_sig;
+				ms.last_exit_status = SIG_RETURN + g_sig;
 			g_sig = 0;
 			ft_lstclear(&ms.head_heredoc, &free_heredoc);
 		}
