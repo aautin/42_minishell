@@ -6,12 +6,13 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 16:57:48 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 19:57:32 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/20 10:54:14 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <readline/readline.h>
 #include <signal.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
@@ -37,6 +38,8 @@ void	init_sigquit(t_handler_sig mode)
 		sigemptyset(&act.sa_mask);
 		sigaction(SIGQUIT, &act, NULL);
 	}
+	else
+		perror("init_sigquit()");
 }
 
 void	init_sigint(t_handler_sig mode)
@@ -56,6 +59,8 @@ void	init_sigint(t_handler_sig mode)
 		sigemptyset(&act.sa_mask);
 		sigaction(SIGINT, &act, NULL);
 	}
+	else
+		perror("init_sigint()");
 }
 
 static void	sigint_ms_handler(int signum)
