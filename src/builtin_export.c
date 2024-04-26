@@ -6,11 +6,15 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/20 20:21:29 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/26 15:07:57 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <unistd.h>
+
 #include "libft/libft.h"
+
+#include "getenv.h"
 
 #define EXPORT_ERROR_MSG	"export: not a valid identifier\n"
 
@@ -46,7 +50,7 @@ static t_list	*find_env(char *arg, int arg_size, t_list *current)
 {
 	while (current)
 	{
-		if (ft_strncmp(*arg, current->content, arg_size) == 0)
+		if (ft_strncmp(arg, current->content, arg_size) == 0)
 			break ;
 		current = current->next;
 	}
