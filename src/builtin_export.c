@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/26 15:07:57 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/26 16:05:39 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,36 +46,23 @@ static int	is_valid_arg(char *arg, char *ptr)
 	return (1);
 }
 
-static t_list	*find_env(char *arg, int arg_size, t_list *current)
-{
-	while (current)
-	{
-		if (ft_strncmp(arg, current->content, arg_size) == 0)
-			break ;
-		current = current->next;
-	}
-	return (current);
-}
-
 int	builtin_export(char **argv, t_list **envp)
 {
 	char	*ptr;
 	t_list	*current;
-	int		arg_size;
 	int		exit_status;
 
 	exit_status = 0;
 	while (*(++argv))
 	{
-		arg_size = ft_strlen(*argv) + 1;
 		ptr = ft_strchr(*argv, '=');
-		if (is_valid_arg(*argv, ptr) == 0)
+		if (!is_valid_arg(*argv, ptr))
 		{
 			exit_status = 1;
 			continue ;
 		}
-		current = find_env(*argv, arg_size, *envp);
 		*ptr = '\0';
+		current = find_env(*envp, *argv);
 		if (current == NULL)
 			add_env(envp, *argv, ptr + 1);	
 		else
