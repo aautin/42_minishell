@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/20 19:27:13 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/28 17:34:51 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	add_env(t_list **envp, char const key[], char const value[])
 {
 	int const		content_size = ft_strlen(key) + 1 + ft_strlen(value) + 1;
 	char *const		content = malloc(content_size * sizeof(char));
-	t_list *const	new_node = malloc(sizeof(t_list));
+	t_list *const	new_node = ft_lstnew(content);
 
 	if (content == NULL || new_node == NULL)
 	{
@@ -99,6 +99,25 @@ t_list	*create_env(char **envp)
 	return (new_envp);
 }
 
+t_list	*find_env(t_list *envp, char const key[])
+{
+	size_t const	key_size = ft_strlen(key) + 1;
+	char			*ptr;
+
+	while (envp)
+	{
+		ptr = ft_strchr(envp->content, '=');
+		if (ptr == NULL)
+			continue ;
+		*ptr = '\0';
+		if (ft_strncmp(key, envp->content, key_size) == 0)
+			break ;
+		*ptr = '=';
+		envp = envp->next;
+	}
+	return (envp);
+}
+
 char	*ft_getenv(t_list *envp, const char key[])
 {
 	char	*temp;
@@ -109,9 +128,9 @@ char	*ft_getenv(t_list *envp, const char key[])
 		content = (char *) envp->content;
 		temp = ft_strchr(content, '=');
 		if (temp == NULL)
-			return (NULL);
+			continue ;
 		*temp = '\0';
-		if (ft_strncmp(key, content, ft_strlen(content)) == 0)
+		if (ft_strncmp(key, content, ft_strlen(content) + 1) == 0)
 		{
 			*temp = '=';
 			return (temp + 1);
