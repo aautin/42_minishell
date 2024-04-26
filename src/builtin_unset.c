@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/19 20:42:26 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/27 17:25:38 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "getenv.h"
 
-int	builtin_unset(char **argv, t_list **envp);
+int	builtin_unset(char **argv, t_list **envp)
 {
 	t_list	*node;
 	t_list	*prev;
@@ -33,7 +33,7 @@ int	builtin_unset(char **argv, t_list **envp);
 		prev = node;
 		while (node)
 		{
-			if (!ft_strncmp(((char *)node->content), key, key_len))
+			if (ft_strncmp(node->content, key, key_len) == 0)
 			{
 				remove_env(envp, prev, node);
 				break ;
