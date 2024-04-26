@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:40:57 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/26 14:53:26 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	unquote(char data[]);
 int		expansion(t_token *token, t_list *envp,
 			int ignore_quotes, int exit_status);
 int		parse_token(t_token *token, t_list *envp, int exit_status);
-int		tokenize(t_list **tokens, char line[]);
+int		tokenize(t_list **tokens, char const line[]);
 t_list	*verify_tokens(t_list *tokens);
 
 #endif
