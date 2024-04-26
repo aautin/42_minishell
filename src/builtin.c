@@ -48,7 +48,7 @@ int	execute_builtin(t_minishell *ms, char **argv, int is_child, int const fd[3])
 int	is_a_builtin(char const cmd[])
 {
 	size_t				i;
-	size_t				len;
+	size_t				size_cmd;
 	char const *const	builtin_names[] = {
 		ECHO_BUILTIN,
 		CD_BUILTIN,
@@ -63,11 +63,11 @@ int	is_a_builtin(char const cmd[])
 
 	if (cmd == NULL)
 		return (1);
-	len = ft_strlen(cmd);
+	size_cmd = ft_strlen(cmd) + 1;
 	i = 0;
 	while (i < size_builtin)
 	{
-		if (ft_strncmp(cmd, builtin_names[i], len) == 0)
+		if (ft_strncmp(cmd, builtin_names[i], size_cmd) == 0)
 			return (1);
 		i++;
 	}
