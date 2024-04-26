@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/20 18:47:03 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/26 16:34:36 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,12 @@ static void clear_minishell(t_minishell *ms, int is_child, int const fd[3])
 	
 	ft_lstclear(&ms->tokens, &free_token);
 	ft_lstclear(&ms->envl, &free);
-	close(fd[0]);
-	close(fd[1]);
-	close(fd[2]);
+	if (fd != NULL)
+	{
+		close(fd[0]);
+		close(fd[1]);
+		close(fd[2]);	
+	}
 }
 
 int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
