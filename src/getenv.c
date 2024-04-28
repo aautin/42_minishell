@@ -6,69 +6,13 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/28 17:34:51 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/28 17:39:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "libft/libft.h"
-
-void	remove_env(t_list **head, t_list *prev, t_list *cur)
-{
-	if (*head == cur)
-	{
-		*head = cur->next;
-		ft_lstdelone(cur, &free);
-	}
-	else
-	{
-		prev->next = cur->next;
-		ft_lstdelone(cur, &free);
-	}
-}
-
-int	modify_env(t_list *envp, char const key[], char const new_value[])
-{
-	char	*new_content;
-	int		new_content_len;
-
-	free(envp->content);
-	new_content_len = ft_strlen(key) + ft_strlen(new_value) + 2;
-	new_content = ft_calloc(new_content_len, sizeof(char));
-	if (new_content == NULL)
-	{
-		perror("modify():ft_calloc()");
-		return (1);
-	}
-	ft_strlcat(new_content, key, new_content_len);
-	ft_strlcat(new_content, "=", new_content_len);
-	ft_strlcat(new_content, new_value, new_content_len);
-	envp->content = new_content;
-	return (0);
-}
-
-int	add_env(t_list **envp, char const key[], char const value[])
-{
-	int const		content_size = ft_strlen(key) + 1 + ft_strlen(value) + 1;
-	char *const		content = malloc(content_size * sizeof(char));
-	t_list *const	new_node = ft_lstnew(content);
-
-	if (content == NULL || new_node == NULL)
-	{
-		perror("add_env():malloc()");
-		free(content);
-		free(new_node);
-		return (1);
-	}
-	content[0] = '\0';
-	ft_strlcat(content, key, content_size);	
-	ft_strlcat(content, "=", content_size);	
-	ft_strlcat(content, value, content_size);
-	ft_lstadd_front(envp, new_node);
-	return (0);
-}
 
 t_list	*create_env(char **envp)
 {
