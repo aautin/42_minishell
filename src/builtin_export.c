@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:30:46 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:47:45 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include "libft/libft.h"
 
+#include "getenv.h"
 #include "getenv_utils.h"
 
 #define EXPORT_ERROR_MSG	"export: not a valid identifier\n"
@@ -39,7 +40,7 @@ static int	is_valid_arg(char *arg, char *ptr)
 	*ptr = '\0';
 	if(!is_validname(arg))
 	{
-		write(1, EXPORT_ERROR_MSG, ft_strlen(EXPORT_ERROR_MSG));
+		write(STDERR_FILENO, EXPORT_ERROR_MSG, ft_strlen(EXPORT_ERROR_MSG));
 		return (0);
 	}
 	*ptr = '=';
