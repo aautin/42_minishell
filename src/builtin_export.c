@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/26 16:05:39 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:30:46 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "libft/libft.h"
 
-#include "getenv.h"
+#include "getenv_utils.h"
 
 #define EXPORT_ERROR_MSG	"export: not a valid identifier\n"
 
