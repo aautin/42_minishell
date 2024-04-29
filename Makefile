@@ -16,6 +16,7 @@ GOTO_B	:=	\e[1A\e[K
 DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
+				main.c
 				builtin_exit.c	\
 
 SRC_PATH	:=	src
