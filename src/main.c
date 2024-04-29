@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 12:11:08 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:11:19 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,15 +104,15 @@ static int	retrieve_tokens_line(t_minishell *ms)
 static int	use_tokens(t_minishell *ms)
 {
 	int				std_fd[3];
-	t_list *const	bad_node = verify_tokens(ms->tokens);
+	t_list *const	bad = verify_tokens(ms->tokens);
 
-	if (bad_node != NULL)
+	if (bad != NULL)
 	{
 		ms->last_exit_status = 2;
 		if (!save_std_fd(std_fd))
 		{
 			redirect_fd(STDERR_FILENO, STDOUT_FILENO);
-			printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
+			printf("Unexpected token '%s'\n", ((t_token *)bad->content)->data);
 			reset_std_fd(std_fd);
 		}
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:07:57 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 20:00:53 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:09:47 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	my_perror(char const name[], char const msg[])
 
 void	file_perror(char const name[])
 {
-	struct stat sb;
+	struct stat	sb;
 	int const	errsv = errno;
 
 	if (stat(name, &sb) == -1)
