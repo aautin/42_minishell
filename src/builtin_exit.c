@@ -6,11 +6,12 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:26:22 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:51:49 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <readline/history.h>
+#include <unistd.h>
 
 #include "libft/libft.h"
 
@@ -54,20 +55,19 @@ int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
 
 	if (argv[1] != NULL && argv[2] != NULL)
 	{
-		if (write(2, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)) == -1)
-			return (perror("builtin_exit():write()"), 1);
+		if (write(STDERR_FILENO, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)) == -1)
+			return (1);
 		return (2);
 	}
 	if (argv[1] == NULL)
 		exit_status = ms->last_exit_status;
 	else
 	{
-		if (!is_number(argv[1]))
+		if (is_number(argv[1]))
 			exit_status = ft_atoi(argv[1]);
 		else
 		{
-			if (write(2, NOT_DIGIT_ARG, ft_strlen(NOT_DIGIT_ARG)) == -1)
-				perror("builtin_exit():write()");
+			write(STDERR_FILENO, NOT_DIGIT_ARG, ft_strlen(NOT_DIGIT_ARG));
 			exit_status = 2;
 		}
 	}
