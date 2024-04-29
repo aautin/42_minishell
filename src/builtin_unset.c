@@ -6,13 +6,14 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/27 17:25:38 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:43:01 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft/libft.h"
 
 #include "getenv.h"
+#include "getenv_utils.h"
 
 int	builtin_unset(char **argv, t_list **envp)
 {
