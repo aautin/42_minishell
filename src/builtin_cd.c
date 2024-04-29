@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 19:49:41 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:58:46 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ static char	*get_cdpath(char **cdpaths, char arg[])
 	while (cdpaths[i])
 	{
 		path = build_path(cdpaths[i], arg);
-		if (path != NULL && access())
-		free(cdpaths[i])
+		if (path != NULL && )
+		free(cdpaths[i]);
 		i++;
 	}
 	while (cdpaths[i])
