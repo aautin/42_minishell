@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 10:53:10 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:04:02 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 
 static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *envl);
-static void	my_perror(char const name[], char const msg[]);
 static int	execute_cmd(char const pathname[], char **argv, t_list *envp);
 
 int	prepare_cmd(t_minishell *ms, char **argv)
@@ -94,19 +93,6 @@ static char	**liststr_to_tabstr(t_list *envl)
 	return (tab);
 }
 
-static void	my_perror(char const name[], char const msg[])
-{
-	char *const	full_msg = ft_strjoin(name, msg);
-
-	if (full_msg == NULL)
-	{
-		perror("my_perror():ft_strjoin()");
-		return ;
-	}
-	ft_putstr_fd(full_msg, STDERR_FILENO);
-	free(full_msg);
-}
-
 static int	execute_cmd(char const pathname[], char **argv, t_list *envl)
 {
 	int				exit_code;
@@ -117,7 +103,7 @@ static int	execute_cmd(char const pathname[], char **argv, t_list *envl)
 		exit_code = NO_ACCESS_CODE;
 	else
 		exit_code = EXIT_FAILURE;
-	perror(pathname);
+	file_perror(pathname);
 	free(envp);
 	return (exit_code);
 }
