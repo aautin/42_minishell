@@ -6,9 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/26 16:34:36 by aautin           ###   ########.fr       */
+/*   Updated: 2024/04/29 20:26:22 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include <readline/history.h>
 
 #include "libft/libft.h"
 
@@ -70,5 +72,7 @@ int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
 		}
 	}
 	clear_minishell(ms, is_child, fd);
+	free(argv);
+	rl_clear_history();
 	exit(exit_status);
 }

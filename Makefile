@@ -15,7 +15,8 @@ GOTO_B	:=	\e[1A\e[K
 
 DEFAULT	:=	\e(B\e[m
 
-FILES		:=	main.c
+FILES		:=	\
+				builtin_exit.c	\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
