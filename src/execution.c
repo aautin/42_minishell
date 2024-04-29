@@ -6,10 +6,12 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 10:53:37 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 20:23:23 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/readline.h>
+#include <readline/history.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -131,6 +133,8 @@ static int	create_process(t_minishell *ms, t_cmd *cmd, char **argv)
 		ft_lstclear(&ms->envl, &free);
 		ft_lstclear(&ms->head_heredoc, &free);
 		free(argv);
+		if (ms->is_interactive)
+			rl_clear_history();
 		exit(cmd->proc.exit_status);
 	}
 	return (0);
