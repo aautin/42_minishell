@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 19:03:22 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/20 10:27:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 11:16:29 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef enum e_handler_sig
 	H_WAIT
 }	t_handler_sig;
 
-#define SIG_RETURN	128
+# define SIG_RETURN	128
 
 void	init_sigquit(t_handler_sig mode);
 void	init_sigint(t_handler_sig mode);

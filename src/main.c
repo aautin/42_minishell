@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/20 10:39:23 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 12:11:08 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,72 +24,108 @@
 #include "list_utils.h"
 #include "minishell.h"
 #include "parser.h"
+#include "redirections.h"
+
+static void	init_minishell(t_minishell *ms, char **envp);
+static void	deinit_minishell(t_minishell *ms);
+static int	retrieve_tokens_line(t_minishell *ms);
+static int	use_tokens(t_minishell *ms);
 
 int	main(int argc, char **argv, char **envp)
 {
-	(void)argc;
-	(void)argv;
-	char		*line;
 	int			status;
 	t_minishell	ms;
-	t_list		*bad_node;
 
-	ms.is_interactive = isatty(STDIN_FILENO);
-	ms.envl = create_env(envp);
-	ms.last_exit_status = EXIT_SUCCESS;
-	init_sigint(H_MINISHELL);
-	init_sigquit(H_MINISHELL);
+	(void)argc;
+	(void)argv;
+	init_minishell(&ms, envp);
 	while (1)
 	{
 		ms.tokens = NULL;
 		ms.head_heredoc = NULL;
-		line = ask_input("minishell> ", ms.is_interactive);
-		if (g_sig != 0)
-			ms.last_exit_status = SIG_RETURN + g_sig;
-		g_sig = 0;
-		if (line == NULL)
-			break ;
-		if (ms.is_interactive && *line != '\0')
-			add_history(line);
-		status = tokenize(&ms.tokens, line);
-		free(line);
+		status = retrieve_tokens_line(&ms);
 		if (status == 2)
 			break ;
 		if (!status && ms.tokens != NULL)
 		{
-			bad_node = verify_tokens(ms.tokens);
-			if (bad_node != NULL)
-			{
-				printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
-				ms.last_exit_status = 2;
-			}
-			else if (!retrieve_heredoc(&ms))
-			{
-				ms.current_heredoc = ms.head_heredoc;
-				if (bad_node == NULL)
-				{
-					if (execute_line(&ms))
-						break ;
-				}
-			}
-			if (g_sig != 0)
-				ms.last_exit_status = SIG_RETURN + g_sig;
-			g_sig = 0;
-			ft_lstclear(&ms.head_heredoc, &free_heredoc);
-		}
-		else if (status == 1)
-		{
-			ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
-			ms.last_exit_status = 2;
+			if (use_tokens(&ms))
+				break ;
 		}
 		ft_lstclear(&ms.tokens, &free_token);
 		init_sigint(H_MINISHELL);
-		printf("EXIT STATUS IS %d\n", ms.last_exit_status);
 	}
-	ft_lstclear(&ms.tokens, &free_token);
-	ft_lstclear(&ms.head_heredoc, &free_heredoc);
-	ft_lstclear(&ms.envl, &free);
-	if (ms.is_interactive)
-		rl_clear_history();
+	deinit_minishell(&ms);
 	return (ms.last_exit_status);
+}
+
+static void	init_minishell(t_minishell *ms, char **envp)
+{
+	ms->is_interactive = isatty(STDIN_FILENO);
+	ms->envl = create_env(envp);
+	ms->last_exit_status = EXIT_SUCCESS;
+	init_sigint(H_MINISHELL);
+	init_sigquit(H_MINISHELL);
+}
+
+static void	deinit_minishell(t_minishell *ms)
+{
+	ft_lstclear(&ms->tokens, &free_token);
+	ft_lstclear(&ms->head_heredoc, &free_heredoc);
+	ft_lstclear(&ms->envl, &free);
+	if (ms->is_interactive)
+	{
+		rl_clear_history();
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
+	}
+}
+
+static int	retrieve_tokens_line(t_minishell *ms)
+{
+	int			status;
+	char *const	line = ask_input("minishell> ", ms->is_interactive);
+
+	if (g_sig != 0)
+		ms->last_exit_status = SIG_RETURN + g_sig;
+	g_sig = 0;
+	if (line == NULL)
+		return (2);
+	if (ms->is_interactive && *line != '\0')
+		add_history(line);
+	status = tokenize(&ms->tokens, line);
+	free(line);
+	if (status == 1)
+	{
+		ft_putstr_fd("Error : quote not closed\n", STDERR_FILENO);
+		ms->last_exit_status = 2;
+	}
+	return (status);
+}
+
+static int	use_tokens(t_minishell *ms)
+{
+	int				std_fd[3];
+	t_list *const	bad_node = verify_tokens(ms->tokens);
+
+	if (bad_node != NULL)
+	{
+		ms->last_exit_status = 2;
+		if (!save_std_fd(std_fd))
+		{
+			redirect_fd(STDERR_FILENO, STDOUT_FILENO);
+			printf("Unexpected token '%s'\n", ((t_token *)bad_node->content)->data);
+			reset_std_fd(std_fd);
+		}
+		return (0);
+	}
+	if (!retrieve_heredoc(ms))
+	{
+		ms->current_heredoc = ms->head_heredoc;
+		if (execute_line(ms))
+			return (1);
+	}
+	if (g_sig != 0)
+		ms->last_exit_status = SIG_RETURN + g_sig;
+	g_sig = 0;
+	ft_lstclear(&ms->head_heredoc, &free_heredoc);
+	return (0);
 }

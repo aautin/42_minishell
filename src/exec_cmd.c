@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:01:03 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/26 16:25:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/04/29 10:53:10 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #define NOT_FOUND_MSG	": command not found\n"
 #define NOT_FOUND_CODE	127
 #define NO_ACCESS_CODE	126
-#define	I_AM_A_CHILD	1
+#define I_AM_A_CHILD	1
 
 static char	**get_paths(t_list *envl);
 static char	**liststr_to_tabstr(t_list *envl);
