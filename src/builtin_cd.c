@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/01 18:32:55 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/01 18:59:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,34 @@
 #define NOT_DOT		0
 #define ONE_DOT		1
 #define TWO_DOT		2
+
+#define NO_OPTION	0
+#define L_OPTION	1
+#define P_OPTION	2
+
+static char	get_option(char ***argv)
+{
+	char	option;
+
+	option = NO_OPTION;
+	(*argv)++;
+	while (**argv)
+	{
+		if ((*argv)[0][0] == '-')
+		{
+			if ((*argv)[0][1] == 'P' && (*argv)[0][2] == '\0')
+				option = P_OPTION;
+			else if ((*argv)[0][1] == 'L' && (*argv)[0][2] == '\0')
+				option = L_OPTION;
+			else
+				break ;
+		}
+		else
+			break ;
+		(*argv)++;
+	}
+	return (option);
+}
 
 static int	get_pathmode(char const arg[])
 {
@@ -90,7 +118,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 	return (path);
 }
 
-static int	execute(char curpath[], t_list **envp)
+static int	execute(char curpath[], t_list **envp, char const option)
 {
 	
 	return (0);
@@ -100,26 +128,28 @@ int	builtin_cd(char **argv, t_list **envp)
 {
 	char	*env_val;
 	char	*curpath;
+	char	option;
 
 	curpath = NULL;
-	if (argv[1] == NULL)
+	option = parse_options(&argv);
+	if (*argv == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
 		if (env_val == NULL || env_val[0] == '\0')	// 1.
 			return (0);
 		curpath = env_val;							// 2.
 	}
-	else if (argv[1][0] == '/')						// 3.
-		curpath = argv[1];
-	else if (get_pathmode(argv[1]) == NOT_DOT)		// 5.
+	else if ((*argv)[0] == '/')						// 3.
+		curpath = *argv;
+	else if (get_pathmode(*argv) == NOT_DOT)		// 5.
 	{
 		env_val = ft_getenv(*envp, "CDPATH");
 		if (env_val != NULL)
-			curpath = get_cdpath(ft_split(env_val, ':'), argv[1], ft_strlen(argv[1]));
+			curpath = get_cdpath(ft_split(env_val, ':'), *argv, ft_strlen(*argv));
 		if (curpath == NULL)
-			curpath = argv[1];
+			curpath = *argv;
 	}
 	else											// 4.
-		curpath = argv[1];
-	return (execute(curpath, envp));				// from 7. to 10.
+		curpath = *argv;
+	return (execute(curpath, envp, option));				// from 7. to 10.
 }
