@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/01 18:17:17 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/01 18:32:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 #define ONE_DOT		1
 #define TWO_DOT		2
 
-static int	get_pathmode(char arg[])
+static int	get_pathmode(char const arg[])
 {
 	if (arg[0] == '.' && arg[1] == '.' && (arg[2] == '/' || arg[2] == '\0'))
 		return (TWO_DOT);
@@ -30,7 +30,7 @@ static int	get_pathmode(char arg[])
 	return (NOT_DOT);
 }
 
-static int	is_directory(const char path[])
+static int	is_directory(char const path[])
 {
 	struct stat	path_stat;
 
@@ -38,7 +38,8 @@ static int	is_directory(const char path[])
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-static char	*build_cdpath(char s1[], char s2[], const int s1_len, const int s2_len)
+static char	*build_cdpath(char const s1[], char const s2[],
+	int const s1_len, int const s2_len)
 {
 	char		*path;
 	int			path_size;
@@ -60,7 +61,7 @@ static char	*build_cdpath(char s1[], char s2[], const int s1_len, const int s2_l
 	return (NULL);
 }
 
-static char	*get_cdpath(char **cdpaths, char arg[], const int arg_len)
+static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 {
 	int		i;
 	char	*path;
