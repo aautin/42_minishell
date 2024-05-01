@@ -6,11 +6,13 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:58:46 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/01 18:17:17 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
@@ -21,40 +23,73 @@
 
 static int	get_pathmode(char arg[])
 {
-	if (arg[0] == '.' && arg[1] == '.')
+	if (arg[0] == '.' && arg[1] == '.' && (arg[2] == '/' || arg[2] == '\0'))
 		return (TWO_DOT);
-	if (arg[0] == '.')
+	if (arg[0] == '.' && (arg[1] == '/' || arg[1] == '\0'))
 		return (ONE_DOT);
 	return (NOT_DOT);
 }
 
-static char	*build_path(char *first_part, char *second_part)
+static int	is_directory(const char path[])
 {
-	
+	struct stat	path_stat;
+
+	stat(path, &stat);
+	return (S_ISDIR(path_stat.st_mode));
 }
 
-static char	*get_cdpath(char **cdpaths, char arg[])
+static char	*build_cdpath(char s1[], char s2[], const int s1_len, const int s2_len)
+{
+	char		*path;
+	int			path_size;
+
+	if (s1_len == 0 || s1[s1_len - 1] != '/')
+		path_size = s1_len + 1 + s2_len + 1;
+	else
+		path_size = s1_len + s2_len + 1;
+	path = malloc(path_size * sizeof(*path));
+	if (path == NULL)
+		return (NULL);
+	path[0]= '\0';
+	ft_strlcat(path, s1, path_size);
+	if (path_size == s1_len + 1 + s2_len + 1)
+		ft_strlcat(path, "/", path_size);
+	ft_strlcat(path, s2, path_size);
+	if (!is_directory(path))
+		free(path);
+	return (NULL);
+}
+
+static char	*get_cdpath(char **cdpaths, char arg[], const int arg_len)
 {
 	int		i;
 	char	*path;
 
-	i = 0;
-	if (cdpaths == NULL)
-		return (NULL);
-	while (cdpaths[i])
+	path = NULL;
+	if (cdpaths != NULL)
 	{
-		path = build_path(cdpaths[i], arg);
-		if (path != NULL && )
-		free(cdpaths[i]);
-		i++;
+		i = 0;
+		while (cdpaths[i])
+		{
+			path = build_cdpath(cdpaths[i], arg, ft_strlen(cdpaths[i]), arg_len);
+			if (path != NULL)
+				break ;
+			free(cdpaths[i++]);
+		}
+		while (cdpaths[i])
+			free(cdpaths[i++]);
+		free(cdpaths);
 	}
-	while (cdpaths[i])
-		free(cdpaths[i++]);
-	free(cdpaths);
-	return (NULL);
+	if (path == NULL)
+	{
+		path = ft_strjoin("./", arg);
+		if (!is_directory(path))
+			free(path);
+	}
+	return (path);
 }
 
-static int	execute(char curpath[], t_list **envp)	// from 
+static int	execute(char curpath[], t_list **envp)
 {
 	
 	return (0);
@@ -79,11 +114,11 @@ int	builtin_cd(char **argv, t_list **envp)
 	{
 		env_val = ft_getenv(*envp, "CDPATH");
 		if (env_val != NULL)
-			curpath = get_cdpath(ft_split(env_val, ':'), argv[1]);
+			curpath = get_cdpath(ft_split(env_val, ':'), argv[1], ft_strlen(argv[1]));
 		if (curpath == NULL)
 			curpath = argv[1];
 	}
 	else											// 4.
 		curpath = argv[1];
-	return (execute(curpath, envp));
+	return (execute(curpath, envp));				// from 7. to 10.
 }
