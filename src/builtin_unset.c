@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:43:01 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/01 18:28:54 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	builtin_unset(char **argv, t_list **envp)
 	t_list	*prev;
 	char	*value;
 	char	*key;
-	int		key_len;
+	int		key_size;
 
 	while (*(++argv))
 	{
@@ -29,12 +29,12 @@ int	builtin_unset(char **argv, t_list **envp)
 		if (value == NULL)
 			continue ;
 		key = value - (ft_strlen(*argv) + 1);
-		key_len = ft_strlen(key);
+		key_size = ft_strlen(key) + 1;
 		node = *envp;
 		prev = node;
 		while (node)
 		{
-			if (ft_strncmp(node->content, key, key_len) == 0)
+			if (ft_strncmp(node->content, key, key_size) == 0)
 			{
 				remove_env(envp, prev, node);
 				break ;
