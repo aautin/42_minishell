@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:07:58 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/02 17:28:37 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,23 @@ int	find_args(t_list **args, t_minishell *ms,
 static int	add_to_args(t_list **args, t_list **last_node,
 		t_token *token, t_minishell *ms)
 {
-	t_list	**last_arg;
+	t_list		**last_arg;
+	int			is_empty;
+	char *const	dup = ft_strdup(token->data);
 
 	if (*args == NULL)
 		last_arg = args;
 	else
 		last_arg = last_node;
+	is_empty = 0;
+	if (dup != NULL)
+	{
+		unquote(dup);
+		is_empty = *dup == '\0';
+		free(dup);
+	}
 	parse_token(token, ms->envl, ms->last_exit_status);
-	if (*token->data != '\0' && add_to_list(last_arg, token))
+	if ((is_empty || *token->data != '\0') && add_to_list(last_arg, token))
 	{
 		ft_lstclear(args, NULL);
 		return (1);
