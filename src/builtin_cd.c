@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/01 18:59:21 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/03 14:43:50 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,36 +17,30 @@
 
 #include "libft/libft.h"
 
-#define NOT_DOT		0
-#define ONE_DOT		1
-#define TWO_DOT		2
+#define NOT_DOT	0
+#define ONE_DOT	1
+#define TWO_DOT	2
 
-#define NO_OPTION	0
-#define L_OPTION	1
-#define P_OPTION	2
-
-static char	get_option(char ***argv)
+static char	**get_argv_after_options(char **argv)
 {
-	char	option;
+	int	i;
 
-	option = NO_OPTION;
-	(*argv)++;
-	while (**argv)
+	i = 1;
+	while (argv[i] != NULL)
 	{
-		if ((*argv)[0][0] == '-')
+		if (argv[i][0] == '-')
 		{
-			if ((*argv)[0][1] == 'P' && (*argv)[0][2] == '\0')
-				option = P_OPTION;
-			else if ((*argv)[0][1] == 'L' && (*argv)[0][2] == '\0')
-				option = L_OPTION;
+			if (argv[i][1] == 'P' && argv[i][2] == '\0')
+				i++;
+			else if (argv[i][1] == 'L' && argv[i][2] == '\0')
+				i++;
 			else
 				break ;
 		}
 		else
 			break ;
-		(*argv)++;
 	}
-	return (option);
+	return (argv[i]);
 }
 
 static int	get_pathmode(char const arg[])
@@ -118,7 +112,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 	return (path);
 }
 
-static int	execute(char curpath[], t_list **envp, char const option)
+static int	execute(char curpath[], t_list **envp)
 {
 	
 	return (0);
@@ -128,10 +122,8 @@ int	builtin_cd(char **argv, t_list **envp)
 {
 	char	*env_val;
 	char	*curpath;
-	char	option;
 
-	curpath = NULL;
-	option = parse_options(&argv);
+	argv = get_argv_after_options(argv);
 	if (*argv == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
@@ -151,5 +143,5 @@ int	builtin_cd(char **argv, t_list **envp)
 	}
 	else											// 4.
 		curpath = *argv;
-	return (execute(curpath, envp, option));				// from 7. to 10.
+	return (execute(curpath, envp));				// from 7. to 10.
 }
