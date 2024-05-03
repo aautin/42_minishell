@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/03 14:43:50 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/03 15:39:14 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 #include <unistd.h>
 
 #include "libft/libft.h"
+
+#define	TOO_MANY_ARGS "cd: too many arguments\n"
 
 #define NOT_DOT	0
 #define ONE_DOT	1
@@ -40,7 +42,7 @@ static char	**get_argv_after_options(char **argv)
 		else
 			break ;
 	}
-	return (argv[i]);
+	return (&argv[i]);
 }
 
 static int	get_pathmode(char const arg[])
@@ -60,7 +62,7 @@ static int	is_directory(char const path[])
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-static char	*build_cdpath(char const s1[], char const s2[],
+static char	*build_path(char const s1[], char const s2[],
 	int const s1_len, int const s2_len)
 {
 	char		*path;
@@ -94,7 +96,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 		i = 0;
 		while (cdpaths[i])
 		{
-			path = build_cdpath(cdpaths[i], arg, ft_strlen(cdpaths[i]), arg_len);
+			path = build_path(cdpaths[i], arg, ft_strlen(cdpaths[i]), arg_len);
 			if (path != NULL)
 				break ;
 			free(cdpaths[i++]);
@@ -112,9 +114,43 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 	return (path);
 }
 
+static int	component_conversion(char abs_path[])
+{
+	int	i;
+
+	while (*abs_path)
+	{
+		i = 0;
+		while (abs_path[i] && abs_path[i] != '/')
+			i++;
+		if (abs_path[i] == '/')
+			i++;
+		if (i > 1)
+		{
+			if (i == 1 && (abs_path[0] == '.' || abs_path[0] == '/'))
+				ft_memmove(abs_path, abs_path + 2)
+		}
+		abs_path = abs_path + i;
+	}
+	return (0);
+}
+
 static int	execute(char curpath[], t_list **envp)
 {
-	
+	char	*pwd;
+	char	*absolute_path;
+
+	if (*curpath != '/')
+	{
+		pwd = ft_getenv(*envp, "PWD");
+		if (pwd == NULL)
+			return (0);
+		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
+	}
+	else
+		absolute_path = curpath;
+	if (component_conversion(absolute_path) == 1)
+		return (0);
 	return (0);
 }
 
@@ -124,6 +160,8 @@ int	builtin_cd(char **argv, t_list **envp)
 	char	*curpath;
 
 	argv = get_argv_after_options(argv);
+	if (argv[1] != NULL)
+		return (write(STDERR_FILENO, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)), 1);
 	if (*argv == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
