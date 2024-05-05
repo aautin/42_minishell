@@ -6,16 +6,19 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/05 19:19:58 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/05 19:34:15 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
+
+#include "getenv.h"
 
 #define	TOO_MANY_ARGS "cd: too many arguments\n"
 
@@ -36,21 +39,16 @@ static int	is_directory(char const path[])
 {
 	struct stat	path_stat;
 
-	stat(path, &stat);
+	stat(path, &path_stat);
 	return (S_ISDIR(path_stat.st_mode));
 }
 
 static char	*build_path(char const s1[], char const s2[],
 	int const s1_len, int const s2_len)
 {
-	char		*path;
-	int			path_size;
+	int const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/') + s2_len + 1;
+	char *const	path = malloc(path_size * sizeof(*path));
 
-	if (s1_len == 0 || s1[s1_len - 1] != '/')
-		path_size = s1_len + 1 + s2_len + 1;
-	else
-		path_size = s1_len + s2_len + 1;
-	path = malloc(path_size * sizeof(*path));
 	if (path == NULL)
 		return (NULL);
 	path[0]= '\0';
@@ -59,10 +57,7 @@ static char	*build_path(char const s1[], char const s2[],
 		ft_strlcat(path, "/", path_size);
 	ft_strlcat(path, s2, path_size);
 	if (!is_directory(path))
-	{
-		free(path);
-		path = NULL;
-	}
+		return (free(path), NULL);
 	return (path);
 }
 
@@ -98,7 +93,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 static char *components_to_path(char **components)
 {
 	int		i;
-	char	path;
+	char	*path;
 	int		path_len;
 
 	path_len = 1;
@@ -130,8 +125,8 @@ static char	*component_conversion(char abs_path[])
 		{
 			if (i != 0 && get_pathmode(path_components[i - 1]) != TWO_DOT)
 			{
-				path_components[i - 1][0] == '\0';
-				path_components[i][0] == '\0';
+				path_components[i - 1][0] = '\0';
+				path_components[i][0] = '\0';
 			}
 		}
 		i++;
@@ -165,6 +160,7 @@ int	builtin_cd(char **argv, t_list **envp)
 	char	*env_val;
 	char	*curpath;
 
+	curpath = NULL;
 	if (argv[2] != NULL)
 		return (write(STDERR_FILENO, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)), 1);
 	if (argv[1] == NULL)
