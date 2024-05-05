@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/05 19:34:15 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/05 19:44:19 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ static char *components_to_path(char **components)
 		i++;
 	}
 	path = NULL;
+	ft_freeall(components);
 	return (path);
 }
 
@@ -176,9 +177,9 @@ int	builtin_cd(char **argv, t_list **envp)
 		if (env_val != NULL)
 			curpath = get_cdpath(ft_split(env_val, ':'), argv[1], ft_strlen(argv[1]));
 		if (curpath == NULL)
-			curpath = argv[1];
+			curpath = ft_strdup(argv[1]);
 	}
 	else											// 3. and 4.
-		curpath = argv[1];
+		curpath = ft_strdup(argv[1]);
 	return (execute(curpath, envp));				// from 7. to 10.
 }
