@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/05 19:44:19 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/06 17:54:58 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,18 +94,29 @@ static char *components_to_path(char **components)
 {
 	int		i;
 	char	*path;
-	int		path_len;
+	int		path_size;
 
-	path_len = 1;
+	path_size = 1;	// '\0'
 	i = 0;
 	while (components[i])
 	{
-		printf("%s|", components[i]);
-		i++;
+		path_size += ft_strlen(components[i]); // the component
+		path_size += (components[i++][0] != '\0'); // the '/' if component's not empty
 	}
-	path = NULL;
-	ft_freeall(components);
-	return (path);
+	path_size += (path_size == 1);	// root path : just '/'
+	path = malloc(path_size * sizeof(*path));
+	if (path == NULL)
+		return (ft_freeall(components), perror("components_to_path():malloc()"), NULL);
+	path[0] = '/';
+	path[1] = '\0';
+	i = 0;
+	while (components[i])
+	{
+		ft_strlcat(path, components[i++], path_size);
+		ft_strlcat(path, "/", path_size);
+	}
+	path[path_size - 2] = '/0'; 
+	return (ft_freeall(components), path);
 }
 
 static char	*component_conversion(char abs_path[])
@@ -152,6 +163,7 @@ static int	execute(char curpath[], t_list **envp)
 	absolute_path = component_conversion(absolute_path);	// 8.
 	if (absolute_path == NULL)
 		return (1);
+	printf("%s\n", absolute_path);
 	// change current working directory...
 	return (0);
 }
@@ -181,5 +193,5 @@ int	builtin_cd(char **argv, t_list **envp)
 	}
 	else											// 3. and 4.
 		curpath = ft_strdup(argv[1]);
-	return (execute(curpath, envp));				// from 7. to 10.
+component_conversion	return (execute(curpath, envp));				// from 7. to 10.
 }
