@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/06 17:54:58 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/07 14:56:37 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,8 +115,17 @@ static char *components_to_path(char **components)
 		ft_strlcat(path, components[i++], path_size);
 		ft_strlcat(path, "/", path_size);
 	}
-	path[path_size - 2] = '/0'; 
+	path[path_size - 1] = '\0'; 
 	return (ft_freeall(components), path);
+}
+
+static void	go_previous_dir(char **components, int twodot_index)
+{
+	components[twodot_index--][0] = '\0';
+	while (twodot_index + 1 && components[twodot_index][0] == '\0')
+		twodot_index--;
+	if (twodot_index >= 0)
+		components[twodot_index][0] = '\0';
 }
 
 static char	*component_conversion(char abs_path[])
@@ -136,10 +145,7 @@ static char	*component_conversion(char abs_path[])
 		else if (get_pathmode(path_components[i]) == TWO_DOT)
 		{
 			if (i != 0 && get_pathmode(path_components[i - 1]) != TWO_DOT)
-			{
-				path_components[i - 1][0] = '\0';
-				path_components[i][0] = '\0';
-			}
+				go_previous_dir(path_components, i);
 		}
 		i++;
 	}
@@ -174,14 +180,14 @@ int	builtin_cd(char **argv, t_list **envp)
 	char	*curpath;
 
 	curpath = NULL;
-	if (argv[2] != NULL)
+	if (argv[1] != NULL && argv[2] != NULL)
 		return (write(STDERR_FILENO, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)), 1);
 	if (argv[1] == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
 		if (env_val == NULL || env_val[0] == '\0')	// 1.
 			return (0);
-		curpath = env_val;							// 2.
+		curpath = ft_strdup(env_val);							// 2.
 	}
 	else if (get_pathmode(argv[1]) == NOT_DOT && argv[1][0] != '/') // 5.
 	{
@@ -193,5 +199,5 @@ int	builtin_cd(char **argv, t_list **envp)
 	}
 	else											// 3. and 4.
 		curpath = ft_strdup(argv[1]);
-component_conversion	return (execute(curpath, envp));				// from 7. to 10.
+	return (execute(curpath, envp));				// from 7. to 10.
 }
