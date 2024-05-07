@@ -6,10 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/07 14:56:37 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/07 20:38:50 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <linux/limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -47,7 +48,7 @@ static char	*build_path(char const s1[], char const s2[],
 	int const s1_len, int const s2_len)
 {
 	int const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/') + s2_len + 1;
-	char *const	path = malloc(path_size * sizeof(*path));
+	char* const	path = malloc(path_size * sizeof(*path));
 
 	if (path == NULL)
 		return (NULL);
@@ -56,8 +57,6 @@ static char	*build_path(char const s1[], char const s2[],
 	if (path_size == s1_len + 1 + s2_len + 1)
 		ft_strlcat(path, "/", path_size);
 	ft_strlcat(path, s2, path_size);
-	if (!is_directory(path))
-		return (free(path), NULL);
 	return (path);
 }
 
@@ -74,7 +73,12 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 		{
 			path = build_path(cdpaths[i], arg, ft_strlen(cdpaths[i]), arg_len);
 			if (path != NULL)
-				break ;
+			{
+				if (is_directory(path))
+					break ;
+				else
+					free(path);
+			}
 			free(cdpaths[i++]);
 		}
 		while (cdpaths[i])
@@ -112,8 +116,9 @@ static char *components_to_path(char **components)
 	i = 0;
 	while (components[i])
 	{
-		ft_strlcat(path, components[i++], path_size);
-		ft_strlcat(path, "/", path_size);
+		ft_strlcat(path, components[i], path_size);
+		if (components[i++][0] != '\0')
+			ft_strlcat(path, "/", path_size);
 	}
 	path[path_size - 1] = '\0'; 
 	return (ft_freeall(components), path);
@@ -133,45 +138,51 @@ static char	*component_conversion(char abs_path[])
 	int		i;
 	char	**path_components;
 
+	// printf("%p\n", abs_path);
 	path_components = ft_split(abs_path, '/');
+	free(abs_path);
 	if (path_components == NULL)
 		return (perror("component_conversion():ft_split()"), NULL);
-	free(abs_path);
 	i = 0;
 	while (path_components[i] != NULL)
 	{
 		if (get_pathmode(path_components[i]) == ONE_DOT)
 			path_components[i][0] = '\0';
 		else if (get_pathmode(path_components[i]) == TWO_DOT)
-		{
-			if (i != 0 && get_pathmode(path_components[i - 1]) != TWO_DOT)
-				go_previous_dir(path_components, i);
-		}
+			go_previous_dir(path_components, i);
 		i++;
 	}
+	printf("path components:\n");
+	i = 0;
+	while (path_components[i] != NULL)
+		printf("%s\n", path_components[i++]);
 	return (components_to_path(path_components));
 }
 
-static int	execute(char curpath[], t_list **envp)
+static int	execute(char curpath[], t_list **envp, char dir_operand)
 {
-	char	*pwd;
-	char	*absolute_path;
+	char const	*pwd = ft_getenv(*envp, "PWD");
+	char		*absolute_path;
 
-	if (*curpath != '/')							// 7.
-	{
-		pwd = ft_getenv(*envp, "PWD");
-		if (pwd == NULL)
-			return (0);
+	if (*curpath != '/' && pwd)							// 7.
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
-	}
-	else
-		absolute_path = curpath;
+	else if (*curpath != '/' && !pwd)
+		return (free(curpath), 0);
+	else if (*curpath == '/' || absolute_path == NULL)
+		absolute_path = ft_strdup(curpath);
+	free(curpath);
 	absolute_path = component_conversion(absolute_path);	// 8.
 	if (absolute_path == NULL)
 		return (1);
-	printf("%s\n", absolute_path);
-	// change current working directory...
-	return (0);
+	if (ft_strlen(absolute_path) + 1 > PATH_MAX && ft_strlen(dir_operand) + 1 <= PATH_MAX)	// 9.
+	{
+		if (pwd && ft_strnstr(absolute_path, pwd, ft_strlen(absolute_path)) != NULL)
+			absolute_path = find_subpath();
+		else
+			return (free(absolute_path), 0);
+	}
+	//chdir
+	return (free(absolute_path), 0);
 }
 
 int	builtin_cd(char **argv, t_list **envp)
@@ -199,5 +210,5 @@ int	builtin_cd(char **argv, t_list **envp)
 	}
 	else											// 3. and 4.
 		curpath = ft_strdup(argv[1]);
-	return (execute(curpath, envp));				// from 7. to 10.
+	return (execute(curpath, envp, argv[1]));				// from 7. to 10.
 }
