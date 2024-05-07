@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:07:57 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 20:09:47 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/07 17:45:11 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,14 +88,14 @@ static char	*find_cmd(char const exec_name[], char *const *paths)
 	{
 		pathname = join_path(paths[i], exec_name);
 		if (pathname == NULL)
-			return (NULL);
+			return (second_chance);
 		if (access(pathname, F_OK | X_OK) != -1)
-			return (pathname);
-		if (access(pathname, F_OK) != -1)
 		{
 			free(second_chance);
-			second_chance = pathname;
+			return (pathname);
 		}
+		if (access(pathname, F_OK) != -1 && second_chance == NULL)
+			second_chance = pathname;
 		else
 			free(pathname);
 		i++;
