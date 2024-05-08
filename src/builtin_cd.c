@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/07 20:38:50 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/09 15:15:23 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "getenv.h"
 
 #define	TOO_MANY_ARGS "cd: too many arguments\n"
+#define	PATH_TOO_LONG "cd: path given is too long\n"
 
 #define NOT_DOT	0
 #define ONE_DOT	1
@@ -76,8 +77,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
 			{
 				if (is_directory(path))
 					break ;
-				else
-					free(path);
+				free(path);
 			}
 			free(cdpaths[i++]);
 		}
@@ -159,6 +159,19 @@ static char	*component_conversion(char abs_path[])
 	return (components_to_path(path_components));
 }
 
+static int	is_subpath_available(char abs_path[])
+{
+	while (*abs_path)
+		//...
+	return (0);
+}
+
+static int	change_directory(char absolute_path[], char const pwd[])
+{
+	
+	return (0);
+}
+
 static int	execute(char curpath[], t_list **envp, char dir_operand)
 {
 	char const	*pwd = ft_getenv(*envp, "PWD");
@@ -177,11 +190,15 @@ static int	execute(char curpath[], t_list **envp, char dir_operand)
 	if (ft_strlen(absolute_path) + 1 > PATH_MAX && ft_strlen(dir_operand) + 1 <= PATH_MAX)	// 9.
 	{
 		if (pwd && ft_strnstr(absolute_path, pwd, ft_strlen(absolute_path)) != NULL)
-			absolute_path = find_subpath();
+		{
+			if (!is_subpath_available(absolute_path))
+				return (free(absolute_path), write(1, PATH_TOO_LONG, ft_strlen(PATH_TOO_LONG)), 1);
+		}
 		else
-			return (free(absolute_path), 0);
+			return (free(absolute_path), write(1, PATH_TOO_LONG, ft_strlen(PATH_TOO_LONG)), 1);
 	}
-	//chdir
+	if (change_directory(absolute_path, pwd) == 1)
+		return (1);
 	return (free(absolute_path), 0);
 }
 
