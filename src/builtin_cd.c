@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/09 15:15:23 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/09 16:57:19 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@
 #include "getenv.h"
 
 #define	TOO_MANY_ARGS "cd: too many arguments\n"
-#define	PATH_TOO_LONG "cd: path given is too long\n"
+#define	TOO_LONG_PATH "cd: path given is too long\n"
+#define	INVALID_PATH "cd: no such file or directory\n"
 
 #define NOT_DOT	0
 #define ONE_DOT	1
@@ -162,14 +163,21 @@ static char	*component_conversion(char abs_path[])
 static int	is_subpath_available(char abs_path[])
 {
 	while (*abs_path)
-		//...
+	{
+		abs_path++;
+	}
 	return (0);
 }
 
 static int	change_directory(char absolute_path[], char const pwd[])
 {
-	
-	return (0);
+	int	status;
+
+	status = chdir(absolute_path);
+	if (status == -1)
+		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
+	free(absolute_path);
+	return (status);
 }
 
 static int	execute(char curpath[], t_list **envp, char dir_operand)
@@ -177,7 +185,7 @@ static int	execute(char curpath[], t_list **envp, char dir_operand)
 	char const	*pwd = ft_getenv(*envp, "PWD");
 	char		*absolute_path;
 
-	if (*curpath != '/' && pwd)							// 7.
+	if (*curpath != '/' && pwd)								// 7.
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
 	else if (*curpath != '/' && !pwd)
 		return (free(curpath), 0);
@@ -192,10 +200,10 @@ static int	execute(char curpath[], t_list **envp, char dir_operand)
 		if (pwd && ft_strnstr(absolute_path, pwd, ft_strlen(absolute_path)) != NULL)
 		{
 			if (!is_subpath_available(absolute_path))
-				return (free(absolute_path), write(1, PATH_TOO_LONG, ft_strlen(PATH_TOO_LONG)), 1);
+				return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
 		}
 		else
-			return (free(absolute_path), write(1, PATH_TOO_LONG, ft_strlen(PATH_TOO_LONG)), 1);
+			return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
 	}
 	if (change_directory(absolute_path, pwd) == 1)
 		return (1);
