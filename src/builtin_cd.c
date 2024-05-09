@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/09 16:57:19 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/09 17:05:32 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,18 +173,25 @@ static int	change_directory(char absolute_path[], char const pwd[])
 {
 	int	status;
 
+	(void) pwd;	
 	status = chdir(absolute_path);
 	if (status == -1)
 		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
-	free(absolute_path);
-	return (status);
+	else
+	{
+		// here, have to change the pwd and oldpwd env variable (have to export or another way ?)
+		if (builtin_export() == 1)
+			status = -1;
+	}
+	return (status == -1);
 }
 
-static int	execute(char curpath[], t_list **envp, char dir_operand)
+static int	execute(char curpath[], t_list **envp, char dir_operand[])
 {
 	char const	*pwd = ft_getenv(*envp, "PWD");
 	char		*absolute_path;
 
+	absolute_path = NULL;
 	if (*curpath != '/' && pwd)								// 7.
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
 	else if (*curpath != '/' && !pwd)
