@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/09 17:05:32 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/09 18:31:14 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,16 @@
 #include "libft/libft.h"
 
 #include "getenv.h"
+#include "getenv_utils.h"
 
-#define	TOO_MANY_ARGS "cd: too many arguments\n"
-#define	TOO_LONG_PATH "cd: path given is too long\n"
-#define	INVALID_PATH "cd: no such file or directory\n"
+#define	TOO_MANY_ARGS			"cd: too many arguments\n"
+#define	TOO_LONG_PATH			"cd: path given is too long\n"
+#define	INVALID_PATH			"cd: no such file or directory\n"
+#define	ENV_OVERWRITING_ERROR	"change_pwds():modify_env()/add_env()\n"
 
-#define NOT_DOT	0
-#define ONE_DOT	1
-#define TWO_DOT	2
+#define NOT_DOT					0
+#define ONE_DOT					1
+#define TWO_DOT					2
 
 static int	get_pathmode(char const arg[])
 {
@@ -169,21 +171,38 @@ static int	is_subpath_available(char abs_path[])
 	return (0);
 }
 
-static int	change_directory(char absolute_path[], char const pwd[])
+static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], char const oldpwd[])
 {
 	int	status;
 
-	(void) pwd;	
-	status = chdir(absolute_path);
-	if (status == -1)
-		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
+	if (pwd)
+		status = status || modify_env(envp, "PWD", absolute_path);
 	else
+		status = status || add_env(envp, "PWD", absolute_path);
+	if (oldpwd && status == 0)
+		status = status || modify_env(envp, "OLDPWD", pwd);
+	else if (status == 0)
+		status = status || add_env(envp, "OLDPWD", pwd);
+	if (status == 0)
+		write(1, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
+	return (status);
+}
+
+static int	change_directory(t_list **envp, char absolute_path[], char const pwd[])
+{
+	if (chdir(absolute_path) == -1)
 	{
-		// here, have to change the pwd and oldpwd env variable (have to export or another way ?)
-		if (builtin_export() == 1)
-			status = -1;
+		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
+		return (1);
 	}
-	return (status == -1);
+	// here, have to change the pwd and oldpwd env variable (have to export or another way ?)
+	if (change_pwds(envp, absolute_path, pwd, ft_getenv("OLDPWD")) == 1)
+	{
+		free(absolute_path);
+		return (1);
+	}
+	free(absolute_path);
+	return (0);
 }
 
 static int	execute(char curpath[], t_list **envp, char dir_operand[])
@@ -212,9 +231,7 @@ static int	execute(char curpath[], t_list **envp, char dir_operand[])
 		else
 			return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
 	}
-	if (change_directory(absolute_path, pwd) == 1)
-		return (1);
-	return (free(absolute_path), 0);
+	return (change_directory(envp, absolute_path, pwd));
 }
 
 int	builtin_cd(char **argv, t_list **envp)
