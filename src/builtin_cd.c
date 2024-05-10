@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/09 19:26:37 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:44:16 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], ch
 {
 	int	status;
 
+	status = 0;
 	if (pwd)
 		status = status || modify_env(envp, "PWD", absolute_path);
 	else
