@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:44:46 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:45:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,11 +177,11 @@ static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], ch
 
 	status = 0;
 	if (oldpwd)
-		status = status || modify_env(*envp, "OLDPWD", pwd);
+		status = status || modify_env(find_env(*envp, "OLDPWD"), "OLDPWD", pwd);
 	else
 		status = status || add_env(envp, "OLDPWD", pwd);
 	if (pwd)
-		status = status || modify_env(envp, "PWD", absolute_path);
+		status = status || modify_env(find_env(*envp, "PWD"), "PWD", absolute_path);
 	else
 		status = status || add_env(envp, "PWD", absolute_path);
 	if (status == 1)
@@ -197,8 +197,7 @@ static int	change_directory(t_list **envp, char absolute_path[], char const pwd[
 		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
 		return (1);
 	}
-	// here, have to change the pwd and oldpwd env variable (have to export or another way ?)
-	if (change_pwds(envp, absolute_path, pwd, ft_getenv("OLDPWD")) == 1)
+	if (change_pwds(envp, absolute_path, pwd, ft_getenv(*envp, "OLDPWD")) == 1)
 	{
 		free(absolute_path);
 		return (1);
