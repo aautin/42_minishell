@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:44:16 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/10 17:44:46 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,19 +173,20 @@ static int	is_subpath_available(char abs_path[])
 
 static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], char const oldpwd[])
 {
-	int	status;
+	int		status;
 
 	status = 0;
+	if (oldpwd)
+		status = status || modify_env(*envp, "OLDPWD", pwd);
+	else
+		status = status || add_env(envp, "OLDPWD", pwd);
 	if (pwd)
 		status = status || modify_env(envp, "PWD", absolute_path);
 	else
 		status = status || add_env(envp, "PWD", absolute_path);
-	if (oldpwd && status == 0)
-		status = status || modify_env(envp, "OLDPWD", pwd);
-	else if (status == 0)
-		status = status || add_env(envp, "OLDPWD", pwd);
 	if (status == 1)
 		write(1, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
+	printf("OLDPWD=%s\nPWD=%s\n", ft_getenv(*envp, "OLDPWD"), ft_getenv(*envp, "PWD"));
 	return (status);
 }
 
