@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 20:07:57 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:45:11 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/10 20:19:00 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,16 +19,18 @@
 
 #include "libft/libft.h"
 
+#include "getenv.h"
+
 #define ERROR_MSG_DIR	": Is a directory\n"
 
-void		my_perror(char const name[], char const msg[]);
-void		file_perror(char const name[]);
-static char	*join_path(char const path[], char const exec_name[]);
+static char	**get_paths(t_list *envl);
 static char	*find_cmd(char const exec_name[], char *const *paths);
+static char	*join_path(char const path[], char const exec_name[]);
 
-char	*check_exec(char const exec_name[], char *const *paths)
+char	*check_exec(char const exec_name[], t_list *envl)
 {
 	char	*pathname;
+	char	**paths;
 
 	if (ft_strchr(exec_name, '/') != NULL)
 	{
@@ -39,41 +41,25 @@ char	*check_exec(char const exec_name[], char *const *paths)
 			perror("check_cmd():ft_strdup()");
 		return (pathname);
 	}
+	paths = get_paths(envl);
 	if (paths == NULL)
 		return (NULL);
-	return (find_cmd(exec_name, paths));
+	pathname = find_cmd(exec_name, paths);
+	ft_freeall(paths);
+	return (pathname);
 }
 
-void	my_perror(char const name[], char const msg[])
+static char	**get_paths(t_list *envl)
 {
-	char *const	full_msg = ft_strjoin(name, msg);
+	char *const	env_path = ft_getenv(envl, "PATH");
+	char		**paths;
 
-	if (full_msg == NULL)
-	{
-		perror("my_perror():ft_strjoin()");
-		return ;
-	}
-	ft_putstr_fd(full_msg, STDERR_FILENO);
-	free(full_msg);
-}
-
-void	file_perror(char const name[])
-{
-	struct stat	sb;
-	int const	errsv = errno;
-
-	if (stat(name, &sb) == -1)
-	{
-		perror(name);
-		return ;
-	}
-	if (S_ISDIR(sb.st_mode))
-		my_perror(name, ERROR_MSG_DIR);
-	else
-	{
-		errno = errsv;
-		perror(name);
-	}
+	if (env_path == NULL)
+		return (NULL);
+	paths = ft_split(env_path, ':');
+	if (paths == NULL)
+		perror("get_paths():ft_split()");
+	return (paths);
 }
 
 static char	*find_cmd(char const exec_name[], char *const *paths)
