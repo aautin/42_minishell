@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtins.h                                         :+:      :+:    :+:   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 14:38:37 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:33:04 by aautin           ###   ########.fr       */
+/*   Created: 2024/04/11 14:36:48 by aautin            #+#    #+#             */
+/*   Updated: 2024/04/19 18:40:47 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUILTINS_H
-# define BUILTINS_H
+#include <linux/limits.h>
+#include <stdio.h>
+#include <unistd.h>
 
-# include "libft/libft.h"
+#include "libft/libft.h"
 
-# include "minishell.h"
+int	builtin_pwd(void)
+{
+	char	buff[PATH_MAX];
 
-int	builtin_echo(char **argv);
-int	builtin_env(t_list *envp);
-int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3]);
-int	builtin_export(char **argv, t_list **envp);
-int	builtin_pwd(void);
-int	builtin_unset(char **argv, t_list **envp);
-
-#endif
+	if (getcwd(buff, PATH_MAX) == NULL)
+	{
+		perror("pwd():getcwd()");
+		return (1);
+	}
+	if (write(1, buff, ft_strlen(buff)) == -1)
+	{
+		perror("pwd():write()");
+		return (1);
+	}
+	write(1, "\n", 1);
+	return (0);
+}

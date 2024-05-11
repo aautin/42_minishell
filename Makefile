@@ -16,16 +16,22 @@ GOTO_B	:=	\e[1A\e[K
 DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
-				builtin.c			\
 				builtin_cd.c		\
+				builtin_echo.c		\
+				builtin_env.c		\
+				builtin_exit.c		\
+				builtin_export.c	\
+				builtin_pwd.c		\
+				builtin_unset.c		\
+				builtin.c			\
 				check_exec.c		\
 				exec_cmd.c			\
-				execution.c			\
 				execution_utils.c	\
+				execution.c			\
 				files.c				\
 				handle_signals.c	\
-				heredoc.c			\
 				heredoc_utils.c		\
+				heredoc.c			\
 				list_utils.c		\
 				main.c				\
 				minishell.c			\
@@ -33,11 +39,6 @@ FILES		:=	\
 				print_signals.c		\
 				redirections.c		\
 				wait_cmds.c			\
-				builtin_echo.c		\
-				builtin_exit.c		\
-				builtin_env.c		\
-				builtin_export.c	\
-				builtin_unset.c		\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
