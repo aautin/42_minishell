@@ -37,6 +37,7 @@ FILES		:=	\
 				builtin_exit.c		\
 				builtin_env.c		\
 				builtin_export.c	\
+				builtin_unset.c		\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
