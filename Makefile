@@ -17,7 +17,8 @@ DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
 				main.c			\
-				getenv.c
+				getenv_utils.c	\
+				getenv.c		\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
