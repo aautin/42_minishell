@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/10 17:45:13 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:11:17 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ static char *components_to_path(char **components)
 {
 	int		i;
 	char	*path;
-	int		path_size;
+	size_t	path_size;
 
 	path_size = 1;	// '\0'
 	i = 0;
@@ -162,25 +162,16 @@ static char	*component_conversion(char abs_path[])
 	return (components_to_path(path_components));
 }
 
-static int	is_subpath_available(char abs_path[])
-{
-	while (*abs_path)
-	{
-		abs_path++;
-	}
-	return (0);
-}
-
 static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], char const oldpwd[])
 {
 	int		status;
 
 	status = 0;
-	if (oldpwd)
+	if (oldpwd != NULL)
 		status = status || modify_env(find_env(*envp, "OLDPWD"), "OLDPWD", pwd);
 	else
 		status = status || add_env(envp, "OLDPWD", pwd);
-	if (pwd)
+	if (pwd != NULL)
 		status = status || modify_env(find_env(*envp, "PWD"), "PWD", absolute_path);
 	else
 		status = status || add_env(envp, "PWD", absolute_path);
@@ -208,13 +199,13 @@ static int	change_directory(t_list **envp, char absolute_path[], char const pwd[
 
 static int	execute(char curpath[], t_list **envp, char dir_operand[])
 {
-	char const	*pwd = ft_getenv(*envp, "PWD");
+	char *const	pwd = ft_getenv(*envp, "PWD");
 	char		*absolute_path;
 
 	absolute_path = NULL;
-	if (*curpath != '/' && pwd)								// 7.
+	if (*curpath != '/' && pwd != NULL)								// 7.
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
-	else if (*curpath != '/' && !pwd)
+	else if (*curpath != '/' && pwd == NULL)
 		return (free(curpath), 0);
 	else if (*curpath == '/' || absolute_path == NULL)
 		absolute_path = ft_strdup(curpath);
@@ -222,16 +213,8 @@ static int	execute(char curpath[], t_list **envp, char dir_operand[])
 	absolute_path = component_conversion(absolute_path);	// 8.
 	if (absolute_path == NULL)
 		return (1);
-	if (ft_strlen(absolute_path) + 1 > PATH_MAX && ft_strlen(dir_operand) + 1 <= PATH_MAX)	// 9.
-	{
-		if (pwd && ft_strnstr(absolute_path, pwd, ft_strlen(absolute_path)) != NULL)
-		{
-			if (!is_subpath_available(absolute_path))
-				return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
-		}
-		else
-			return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
-	}
+	if (ft_strlen(absolute_path) + 1 > PATH_MAX)			// 9.
+		return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
 	return (change_directory(envp, absolute_path, pwd));
 }
 
