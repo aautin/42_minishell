@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:11:17 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:13:22 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ static int	change_directory(t_list **envp, char absolute_path[], char const pwd[
 	return (0);
 }
 
-static int	execute(char curpath[], t_list **envp, char dir_operand[])
+static int	execute(char curpath[], t_list **envp)
 {
 	char *const	pwd = ft_getenv(*envp, "PWD");
 	char		*absolute_path;
@@ -243,5 +243,5 @@ int	builtin_cd(char **argv, t_list **envp)
 	}
 	else											// 3. and 4.
 		curpath = ft_strdup(argv[1]);
-	return (execute(curpath, envp, argv[1]));				// from 7. to 10.
+	return (execute(curpath, envp));				// from 7. to 10.
 }
