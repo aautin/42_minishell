@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:51:49 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:19:19 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
 	}
 	clear_minishell(ms, is_child, fd);
 	free(argv);
-	rl_clear_history();
+	if (ms->is_interactive)
+	{
+		rl_clear_history();
+		write(STDOUT_FILENO, "exit\n", 5);
+	}
 	exit(exit_status);
 }
