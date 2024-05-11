@@ -35,6 +35,7 @@ FILES		:=	\
 				wait_cmds.c			\
 				builtin_echo.c		\
 				builtin_exit.c		\
+				builtin_env.c		\
 
 SRC_PATH	:=	src
 SRCS		:=	$(addprefix $(SRC_PATH)/,$(FILES))
