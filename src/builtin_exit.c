@@ -6,11 +6,12 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:19:19 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/11 20:23:52 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/history.h>
+#include <readline/readline.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
