@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/14 20:41:43 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/14 21:33:39 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 #define	TOO_LONG_PATH			"cd: path given is too long\n"
 #define	INVALID_PATH			"cd: no such file or directory\n"
 #define	ENV_OVERWRITING_ERROR	"change_pwds():modify_env()/add_env()\n"
+#define	GETCWD_ERROR			"cd: cannot get current working directory\n"
 
 #define NOT_DOT					0
 #define ONE_DOT					1
@@ -49,7 +50,7 @@ static int	is_directory(char const path[])
 }
 
 static char	*build_path(char const s1[], char const s2[],
-	int const s1_len, int const s2_len)
+	size_t const s1_len, size_t const s2_len)
 {
 	size_t const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/') + s2_len + 1;
 	char* const		path = malloc(path_size * sizeof(*path));
@@ -64,7 +65,7 @@ static char	*build_path(char const s1[], char const s2[],
 	return (path);
 }
 
-static char	*get_cdpath(char **cdpaths, char const arg[], int const arg_len)
+static char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 {
 	int		i;
 	char	*path;
@@ -162,33 +163,40 @@ static char	*component_conversion(char abs_path[])
 	return (components_to_path(path_components));
 }
 
-static int	change_pwds(t_list **envp, char absolute_path[], char const pwd[], char const oldpwd[])
+static int	change_pwds(t_list **envp, char absolute_path[], t_list *pwd, t_list *oldpwd)
 {
 	int		status;
+	char	*lastpwd_str;
 
 	status = 0;
-	if (oldpwd != NULL)
-		status = status || modify_env(find_env(*envp, "OLDPWD"), "OLDPWD", pwd);
-	else
-		status = status || add_env(envp, "OLDPWD", pwd);
 	if (pwd != NULL)
-		status = status || modify_env(find_env(*envp, "PWD"), "PWD", absolute_path);
+	{
+		lastpwd_str = pwd->content;
+		status = status || modify_env(pwd, "PWD", absolute_path);
+	}
 	else
+	{
+		lastpwd_str = "";
 		status = status || add_env(envp, "PWD", absolute_path);
+	}
+	if (oldpwd != NULL)
+		status = status || modify_env(oldpwd, "OLDPWD", lastpwd_str);
+	else
+		status = status || add_env(envp, "OLDPWD", lastpwd_str);
 	if (status == 1)
-		write(1, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
+		write(STDERR_FILENO, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
 	printf("OLDPWD=%s\nPWD=%s\n", ft_getenv(*envp, "OLDPWD"), ft_getenv(*envp, "PWD"));
 	return (status);
 }
 
-static int	change_directory(t_list **envp, char absolute_path[], char const pwd[])
+static int	change_directory(t_list **envp, char absolute_path[])
 {
 	if (chdir(absolute_path) == -1)
 	{
-		write(1, INVALID_PATH, ft_strlen(INVALID_PATH));
-		return (1);
+		write(STDERR_FILENO, INVALID_PATH, ft_strlen(INVALID_PATH));
+		return (free(absolute_path), 1);
 	}
-	if (change_pwds(envp, absolute_path, pwd, ft_getenv(*envp, "OLDPWD")) == 1)
+	if (change_pwds(envp, absolute_path, find_env(*envp, "PWD"), find_env(*envp, "OLDPWD")) == 1)
 	{
 		free(absolute_path);
 		return (1);
@@ -199,14 +207,19 @@ static int	change_directory(t_list **envp, char absolute_path[], char const pwd[
 
 static int	execute(char curpath[], t_list **envp)
 {
-	char *const	pwd = ft_getenv(*envp, "PWD");
-	char		*absolute_path;
+	char	pwd[PATH_MAX];
+	char	*absolute_path;
 
+	if (curpath == NULL)
+		return (perror("builtin_cd():ft_strdup()"), 1);
+	if (getcwd(pwd, PATH_MAX) == NULL)
+	{
+		write(STDERR_FILENO, GETCWD_ERROR, ft_strlen(GETCWD_ERROR));
+		return (free(curpath), 1);
+	}
 	absolute_path = NULL;
-	if (*curpath != '/' && pwd != NULL)								// 7.
+	if (*curpath != '/')								// 7.
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
-	else if (*curpath != '/' && pwd == NULL)
-		return (free(curpath), 0);
 	else if (*curpath == '/' || absolute_path == NULL)
 		absolute_path = ft_strdup(curpath);
 	free(curpath);
@@ -214,8 +227,11 @@ static int	execute(char curpath[], t_list **envp)
 	if (absolute_path == NULL)
 		return (1);
 	if (ft_strlen(absolute_path) + 1 > PATH_MAX)			// 9.
-		return (free(absolute_path), write(1, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH)), 1);
-	return (change_directory(envp, absolute_path, pwd));
+	{
+		write(STDERR_FILENO, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH));
+		return (free(absolute_path), 1);
+	}
+	return (change_directory(envp, absolute_path));
 }
 
 int	builtin_cd(char **argv, t_list **envp)
