@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:37:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/28 17:38:38 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/14 20:44:20 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ int	modify_env(t_list *envp, char const key[], char const new_value[])
 	char	*new_content;
 	int		new_content_len;
 
+	if (new_value == NULL)
+		new_value = "";
 	free(envp->content);
 	new_content_len = ft_strlen(key) + ft_strlen(new_value) + 2;
 	new_content = ft_calloc(new_content_len, sizeof(char));
@@ -51,10 +53,15 @@ int	modify_env(t_list *envp, char const key[], char const new_value[])
 
 int	add_env(t_list **envp, char const key[], char const value[])
 {
-	int const		content_size = ft_strlen(key) + 1 + ft_strlen(value) + 1;
-	char *const		content = malloc(content_size * sizeof(char));
-	t_list *const	new_node = ft_lstnew(content);
+	int		content_size;
+	char	*content;
+	t_list	*new_node;
 
+	if (value == NULL)
+		value = "";
+	content_size = ft_strlen(key) + 1 + ft_strlen(value) + 1;
+	content = malloc(content_size * sizeof(char));
+	new_node = ft_lstnew(content);
 	if (content == NULL || new_node == NULL)
 	{
 		perror("add_env():malloc()");
