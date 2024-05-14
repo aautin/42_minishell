@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:13:22 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/14 20:41:43 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ static int	is_directory(char const path[])
 static char	*build_path(char const s1[], char const s2[],
 	int const s1_len, int const s2_len)
 {
-	int const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/') + s2_len + 1;
-	char* const	path = malloc(path_size * sizeof(*path));
+	size_t const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/') + s2_len + 1;
+	char* const		path = malloc(path_size * sizeof(*path));
 
 	if (path == NULL)
 		return (NULL);
