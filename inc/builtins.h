@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 14:38:37 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:33:04 by aautin           ###   ########.fr       */
+/*   Created: 2024/05/14 20:37:06 by aautin            #+#    #+#             */
+/*   Updated: 2024/05/15 17:25:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 # include "minishell.h"
 
+int	builtin_cd(char **argv, t_list **envp);
 int	builtin_echo(char **argv);
 int	builtin_env(t_list *envp);
 int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3]);
