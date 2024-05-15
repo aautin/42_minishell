@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:37:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/14 20:44:20 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:07:53 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	modify_env(t_list *envp, char const key[], char const new_value[])
 		perror("modify():ft_calloc()");
 		return (1);
 	}
+	new_content[0] = '\0';
 	ft_strlcat(new_content, key, new_content_len);
 	ft_strlcat(new_content, "=", new_content_len);
 	ft_strlcat(new_content, new_value, new_content_len);

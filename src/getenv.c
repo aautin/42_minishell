@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/14 21:35:32 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:08:31 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ t_list	*create_env(char **envp)
 	char	*env_copy;
 
 	new_envp = NULL;
-	while (*envp)
+	while (*envp != NULL)
 	{
 		env_copy = ft_strdup(*envp);
 		if (env_copy == NULL)
@@ -49,7 +49,7 @@ t_list	*find_env(t_list *envp, char const key[])
 	size_t const	key_size = ft_strlen(key) + 1;
 	char			*ptr;
 
-	while (envp)
+	while (envp != NULL)
 	{
 		ptr = ft_strchr(envp->content, '=');
 		if (ptr == NULL)
@@ -71,7 +71,7 @@ char	*ft_getenv(t_list *envp, const char key[])
 	char	*temp;
 	char	*content;
 
-	while (envp)
+	while (envp != NULL)
 	{
 		content = (char *) envp->content;
 		temp = ft_strchr(content, '=');
