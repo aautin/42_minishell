@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:32:00 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:37:11 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 #include "getenv.h"
 #include "getenv_utils.h"
 
-#define	TOO_MANY_ARGS			"cd: too many arguments\n"
-#define	TOO_LONG_PATH			"cd: path given is too long\n"
-#define	INVALID_PATH			"cd: no such file or directory\n"
+#define	TOO_MANY_ARGS			"builtin_cd(): too many arguments\n"
+#define	TOO_LONG_PATH			"builtin_cd(): path given is too long\n"
+#define	INVALID_PATH			"builtin_cd(): no such file or directory\n"
 #define	ENV_OVERWRITING_ERROR	"change_pwds():modify_env()/add_env()\n"
-#define	GETCWD_ERROR			"cd: cannot get current working directory\n"
+#define	GETCWD_ERROR			"builtin_cd(): cannot get current working directory\n"
 
 #define NOT_DOT					0
 #define ONE_DOT					1
@@ -74,7 +74,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 	if (cdpaths != NULL)
 	{
 		i = 0;
-		while (cdpaths[i])
+		while (cdpaths[i] != NULL)
 		{
 			path = build_path(cdpaths[i], arg, ft_strlen(cdpaths[i]), arg_len);
 			if (path != NULL)
@@ -85,7 +85,7 @@ static char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 			}
 			free(cdpaths[i++]);
 		}
-		while (cdpaths[i])
+		while (cdpaths[i] != NULL)
 			free(cdpaths[i++]);
 		free(cdpaths);
 	}
@@ -106,7 +106,7 @@ static char *components_to_path(char **components)
 
 	path_size = 1;	// '\0'
 	i = 0;
-	while (components[i])
+	while (components[i] != NULL)
 	{
 		path_size += ft_strlen(components[i]); // the component
 		path_size += (components[i++][0] != '\0'); // the '/' if component's not empty
@@ -118,7 +118,7 @@ static char *components_to_path(char **components)
 	path[0] = '/';
 	path[1] = '\0';
 	i = 0;
-	while (components[i])
+	while (components[i] != NULL)
 	{
 		ft_strlcat(path, components[i], path_size);
 		if (components[i++][0] != '\0')
@@ -131,7 +131,7 @@ static char *components_to_path(char **components)
 static void	go_previous_dir(char **components, int twodot_index)
 {
 	components[twodot_index--][0] = '\0';
-	while (twodot_index + 1 && components[twodot_index][0] == '\0')
+	while (twodot_index > 0 && components[twodot_index][0] == '\0')
 		twodot_index--;
 	if (twodot_index >= 0)
 		components[twodot_index][0] = '\0';
@@ -193,7 +193,7 @@ static int	change_directory(t_list **envp, char absolute_path[])
 		write(STDERR_FILENO, INVALID_PATH, ft_strlen(INVALID_PATH));
 		return (free(absolute_path), 1);
 	}
-	if (change_pwds(envp, absolute_path, find_env(*envp, "PWD"), find_env(*envp, "OLDPWD")) == 1)
+	if (change_pwds(envp, absolute_path, find_env(*envp, "PWD"), find_env(*envp, "OLDPWD")))
 	{
 		free(absolute_path);
 		return (1);
