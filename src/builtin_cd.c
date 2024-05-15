@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:37:11 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:38:51 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,9 @@ static int	change_pwds(t_list **envp, char absolute_path[], t_list *pwd, t_list 
 	status = 0;
 	lastpwd_str = NULL;
 	if (pwd != NULL)
-		lastpwd_str = pwd->content;
+		lastpwd_str = ft_strchr(pwd->content, '=');
+	if (lastpwd_str != NULL)
+		lastpwd_str++;
 	if (oldpwd != NULL)
 		status = status || modify_env(oldpwd, "OLDPWD", lastpwd_str);
 	else
