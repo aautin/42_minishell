@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/11 20:23:52 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:47:53 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 #include "list_utils.h"
 #include "minishell.h"
 
-#define	TOO_MANY_ARGS "exit: too many arguments\n"
-#define	NOT_DIGIT_ARG "exit: numeric argument required\n"
+#define	TOO_MANY_ARGS "builtin_exit(): too many arguments\n"
+#define	NOT_DIGIT_ARG "builtin_exit(): numeric argument required\n"
 
-static int	is_number(char str[])
+static int	is_number(char const str[])
 {
 	while (*str)
 	{
@@ -52,7 +52,7 @@ static void clear_minishell(t_minishell *ms, int is_child, int const fd[3])
 
 int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
 {
-	unsigned char	exit_status;
+	int	exit_status;
 
 	if (argv[1] != NULL && argv[2] != NULL)
 	{
@@ -62,15 +62,12 @@ int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3])
 	}
 	if (argv[1] == NULL)
 		exit_status = ms->last_exit_status;
+	else if (is_number(argv[1]))
+		exit_status = ft_atoi(argv[1]);
 	else
 	{
-		if (is_number(argv[1]))
-			exit_status = ft_atoi(argv[1]);
-		else
-		{
-			write(STDERR_FILENO, NOT_DIGIT_ARG, ft_strlen(NOT_DIGIT_ARG));
-			exit_status = 2;
-		}
+		write(STDERR_FILENO, NOT_DIGIT_ARG, ft_strlen(NOT_DIGIT_ARG));
+		exit_status = 2;
 	}
 	clear_minishell(ms, is_child, fd);
 	free(argv);
