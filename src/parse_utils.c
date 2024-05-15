@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 18:42:35 by aautin            #+#    #+#             */
-/*   Updated: 2024/03/20 18:44:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:20:27 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,14 @@
 
 #include "parser.h"
 
-int	nbr_len(unsigned char nbr)
+size_t	nbr_len(unsigned char nbr)
 {
-	int	size;
+	size_t	size;
 
-	size = 1;
-	while (nbr / 10)
+	if (nbr == 0)
+		return (1);
+	size = 0;
+	while (nbr != 0)
 	{
 		nbr /= 10;
 		size++;
@@ -27,10 +29,10 @@ int	nbr_len(unsigned char nbr)
 	return (size);
 }
 
-void	nbr_data(char **data, unsigned char nbr)
+void	nbr_data(char *data[], unsigned char nbr)
 {
-	int	power;
-	int	len;
+	size_t	power;
+	size_t	len;
 
 	len = nbr_len(nbr);
 	power = 1;
@@ -64,13 +66,13 @@ int	change_quote_mode(char data, int *mode)
 	return (0);
 }
 
-int	pathname_len(char *pathname)
+size_t	pathname_len(char const pathname[])
 {
-	int	len;
+	size_t	len;
 
 	len = 0;
-	if (!ft_isalpha(*pathname) && *pathname != '_')
-		return (-1);
+	if (!ft_isalpha(pathname[0]) && pathname[0] != '_')
+		return (0);
 	while (ft_isalnum(pathname[len]) || pathname[len] == '_')
 		len++;
 	return (len);
