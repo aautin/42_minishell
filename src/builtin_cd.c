@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/14 21:33:39 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:32:00 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,20 +169,17 @@ static int	change_pwds(t_list **envp, char absolute_path[], t_list *pwd, t_list 
 	char	*lastpwd_str;
 
 	status = 0;
+	lastpwd_str = NULL;
 	if (pwd != NULL)
-	{
 		lastpwd_str = pwd->content;
-		status = status || modify_env(pwd, "PWD", absolute_path);
-	}
-	else
-	{
-		lastpwd_str = "";
-		status = status || add_env(envp, "PWD", absolute_path);
-	}
 	if (oldpwd != NULL)
 		status = status || modify_env(oldpwd, "OLDPWD", lastpwd_str);
 	else
 		status = status || add_env(envp, "OLDPWD", lastpwd_str);
+	if (pwd != NULL)
+		status = status || modify_env(pwd, "PWD", absolute_path);
+	else
+		status = status || add_env(envp, "PWD", absolute_path);
 	if (status == 1)
 		write(STDERR_FILENO, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
 	printf("OLDPWD=%s\nPWD=%s\n", ft_getenv(*envp, "OLDPWD"), ft_getenv(*envp, "PWD"));
