@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:37:11 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 18:00:27 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,14 +104,14 @@ static char *components_to_path(char **components)
 	char	*path;
 	size_t	path_size;
 
-	path_size = 1;	// '\0'
+	path_size = 1;
 	i = 0;
 	while (components[i] != NULL)
 	{
-		path_size += ft_strlen(components[i]); // the component
-		path_size += (components[i++][0] != '\0'); // the '/' if component's not empty
+		path_size += ft_strlen(components[i]);
+		path_size += (components[i++][0] != '\0');
 	}
-	path_size += (path_size == 1);	// root path : just '/'
+	path_size += (path_size == 1);
 	path = malloc(path_size * sizeof(*path));
 	if (path == NULL)
 		return (ft_freeall(components), perror("components_to_path():malloc()"), NULL);
@@ -142,7 +142,6 @@ static char	*component_conversion(char abs_path[])
 	int		i;
 	char	**path_components;
 
-	// printf("%p\n", abs_path);
 	path_components = ft_split(abs_path, '/');
 	free(abs_path);
 	if (path_components == NULL)
@@ -156,10 +155,6 @@ static char	*component_conversion(char abs_path[])
 			go_previous_dir(path_components, i);
 		i++;
 	}
-	printf("path components:\n");
-	i = 0;
-	while (path_components[i] != NULL)
-		printf("%s\n", path_components[i++]);
 	return (components_to_path(path_components));
 }
 
@@ -171,7 +166,9 @@ static int	change_pwds(t_list **envp, char absolute_path[], t_list *pwd, t_list 
 	status = 0;
 	lastpwd_str = NULL;
 	if (pwd != NULL)
-		lastpwd_str = pwd->content;
+		lastpwd_str = ft_strchr(pwd->content, '=');
+	if (lastpwd_str != NULL)
+		lastpwd_str++;
 	if (oldpwd != NULL)
 		status = status || modify_env(oldpwd, "OLDPWD", lastpwd_str);
 	else
@@ -182,7 +179,6 @@ static int	change_pwds(t_list **envp, char absolute_path[], t_list *pwd, t_list 
 		status = status || add_env(envp, "PWD", absolute_path);
 	if (status == 1)
 		write(STDERR_FILENO, ENV_OVERWRITING_ERROR, ft_strlen(ENV_OVERWRITING_ERROR));
-	printf("OLDPWD=%s\nPWD=%s\n", ft_getenv(*envp, "OLDPWD"), ft_getenv(*envp, "PWD"));
 	return (status);
 }
 
@@ -215,15 +211,15 @@ static int	execute(char curpath[], t_list **envp)
 		return (free(curpath), 1);
 	}
 	absolute_path = NULL;
-	if (*curpath != '/')								// 7.
+	if (*curpath != '/')
 		absolute_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
 	else if (*curpath == '/' || absolute_path == NULL)
 		absolute_path = ft_strdup(curpath);
 	free(curpath);
-	absolute_path = component_conversion(absolute_path);	// 8.
+	absolute_path = component_conversion(absolute_path);
 	if (absolute_path == NULL)
 		return (1);
-	if (ft_strlen(absolute_path) + 1 > PATH_MAX)			// 9.
+	if (ft_strlen(absolute_path) + 1 > PATH_MAX)
 	{
 		write(STDERR_FILENO, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH));
 		return (free(absolute_path), 1);
@@ -242,11 +238,11 @@ int	builtin_cd(char **argv, t_list **envp)
 	if (argv[1] == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
-		if (env_val == NULL || env_val[0] == '\0')	// 1.
+		if (env_val == NULL || env_val[0] == '\0')
 			return (0);
-		curpath = ft_strdup(env_val);							// 2.
+		curpath = ft_strdup(env_val);
 	}
-	else if (get_pathmode(argv[1]) == NOT_DOT && argv[1][0] != '/') // 5.
+	else if (get_pathmode(argv[1]) == NOT_DOT && argv[1][0] != '/')
 	{
 		env_val = ft_getenv(*envp, "CDPATH");
 		if (env_val != NULL)
@@ -254,7 +250,7 @@ int	builtin_cd(char **argv, t_list **envp)
 		if (curpath == NULL)
 			curpath = ft_strdup(argv[1]);
 	}
-	else											// 3. and 4.
+	else
 		curpath = ft_strdup(argv[1]);
-	return (execute(curpath, envp));				// from 7. to 10.
+	return (execute(curpath, envp));
 }
