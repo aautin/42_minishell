@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/29 20:47:45 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 16:56:18 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "getenv.h"
 #include "getenv_utils.h"
 
-#define EXPORT_ERROR_MSG	"export: not a valid identifier\n"
+#define EXPORT_ERROR_MSG	"builtin_export(): not a valid identifier\n"
 
 static int	is_validname(char const name[])
 {
@@ -33,17 +33,13 @@ static int	is_validname(char const name[])
 	return (1);
 }
 
-static int	is_valid_arg(char *arg, char *ptr)
+static int	is_valid_arg(char const arg[])
 {
-	if (ptr == NULL)
-		return (0);
-	*ptr = '\0';
 	if(!is_validname(arg))
 	{
 		write(STDERR_FILENO, EXPORT_ERROR_MSG, ft_strlen(EXPORT_ERROR_MSG));
 		return (0);
 	}
-	*ptr = '=';
 	return (1);
 }
 
@@ -54,21 +50,23 @@ int	builtin_export(char **argv, t_list **envp)
 	int		exit_status;
 
 	exit_status = 0;
-	while (*(++argv))
+	while (*(++argv) != NULL)
 	{
 		ptr = ft_strchr(*argv, '=');
-		if (!is_valid_arg(*argv, ptr))
+		if (ptr != NULL)
 		{
-			exit_status = 1;
-			continue ;
+			*ptr = '\0';
+			if (is_valid_arg(*argv))
+			{
+				current = find_env(*envp, *argv);
+				if (current == NULL)
+					add_env(envp, *argv, ptr + 1);	
+				else
+					modify_env(current, *argv, ptr + 1);
+				continue ;
+			}
 		}
-		*ptr = '\0';
-		current = find_env(*envp, *argv);
-		if (current == NULL)
-			add_env(envp, *argv, ptr + 1);	
-		else
-			modify_env(current, *argv, ptr + 1);
-		*ptr = '=';
+		exit_status = 1;
 	}
 	return (exit_status);
 }
