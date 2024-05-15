@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 17:51:00 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:08:31 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:56:30 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,10 @@ t_list	*find_env(t_list *envp, char const key[])
 		}
 		*ptr = '\0';
 		if (ft_strncmp(key, envp->content, key_size) == 0)
+		{
+			*ptr = '=';
 			break ;
+		}
 		*ptr = '=';
 		envp = envp->next;
 	}
