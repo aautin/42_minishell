@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/04/11 15:38:56 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/15 17:23:24 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
 {
 	t_expansion const	config = {envp, exit_status, ignore_quotes};
 	char				*expanded_data;
-	int					expanded_len;
+	size_t				expanded_len;
 
 	expanded_len = expand_len(&config, token->data);
 	expanded_data = ft_calloc(expanded_len + 1, sizeof(char));
