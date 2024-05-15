@@ -6,7 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 15:56:32 by aautin            #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/05/15 17:06:02 by aautin           ###   ########.fr       */
+=======
+/*   Updated: 2024/05/15 17:31:48 by aautin           ###   ########.fr       */
+>>>>>>> builtin_unset
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +44,7 @@ static void	find_and_unset(char const arg[], t_list **envp, char const value[])
 
 int	builtin_unset(char **argv, t_list **envp)
 {
-	t_list	*node;
-	t_list	*prev;
 	char	*value;
-	char	*key;
-	size_t	key_size;
 
 	while (*(++argv) != NULL)
 	{
