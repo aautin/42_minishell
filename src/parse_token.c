@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/17 17:34:55 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:57:04 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	unquote(char data[])
 	}
 }
 
-int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
+static int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
 {
 	t_expansion const	config = {envp, exit_status, ignore_quotes};
 	char				*expanded_data;
