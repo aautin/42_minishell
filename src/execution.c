@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/29 20:23:23 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 19:41:02 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,13 @@ static int	execute_simple_cmd(t_minishell *ms, t_cmd *cmd, char **argv)
 		return (create_process(ms, cmd, argv));
 	if (!save_std_fd(std_fd))
 	{
+		init_sigint(H_DEFAULT);
+		init_sigquit(H_DEFAULT);
 		if (!redirect_files(ms, cmd->first_token, cmd->last_token))
 			cmd->proc.exit_status = execute_builtin(ms, argv,
 					NOT_CHILD, std_fd);
+		init_sigint(H_MINISHELL);
+		init_sigquit(H_MINISHELL);
 		return (reset_std_fd(std_fd));
 	}
 	return (0);

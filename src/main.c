@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/11 20:31:54 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 21:40:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ int	main(int argc, char **argv, char **envp)
 				break ;
 		}
 		ft_lstclear(&ms.tokens, &free_token);
+		ft_lstclear(&ms.head_heredoc, &free_heredoc);
 		init_sigint(H_MINISHELL);
 	}
 	deinit_minishell(&ms);
@@ -75,7 +76,8 @@ static void	deinit_minishell(t_minishell *ms)
 	if (ms->is_interactive)
 	{
 		rl_clear_history();
-		ft_putstr_fd("exit\n", STDOUT_FILENO);
+		if (write(STDOUT_FILENO, "exit\n", 5) == -1)
+			perror("deinit_minishell():write()");
 	}
 }
 
@@ -104,6 +106,7 @@ static int	retrieve_tokens_line(t_minishell *ms)
 static int	use_tokens(t_minishell *ms)
 {
 	int				std_fd[3];
+	int				status;
 	t_list *const	bad = verify_tokens(ms->tokens);
 
 	if (bad != NULL)
@@ -113,19 +116,18 @@ static int	use_tokens(t_minishell *ms)
 		{
 			redirect_fd(STDERR_FILENO, STDOUT_FILENO);
 			printf("Unexpected token '%s'\n", ((t_token *)bad->content)->data);
-			reset_std_fd(std_fd);
+			return (reset_std_fd(std_fd));
 		}
 		return (0);
 	}
-	if (!retrieve_heredoc(ms))
-	{
-		ms->current_heredoc = ms->head_heredoc;
-		if (execute_line(ms))
-			return (1);
-	}
+	status = retrieve_heredoc(ms);
+	if (status)
+		ms->last_exit_status = 2;
+	ms->current_heredoc = ms->head_heredoc;
+	if (!status && execute_line(ms))
+		return (1);
 	if (g_sig != 0)
 		ms->last_exit_status = SIG_RETURN + g_sig;
 	g_sig = 0;
-	ft_lstclear(&ms->head_heredoc, &free_heredoc);
-	return (0);
+	return (status);
 }

@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 17:48:51 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 20:07:22 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,18 @@ static int	process_heredoc(t_minishell *ms, t_token *token, t_list **last_node)
 	init_sigint(H_MINISHELL);
 	if (reset_std_fd(std_fd))
 	{
-		free(filename);
-		return (2);
+		free_heredoc(filename);
+		return (1);
 	}
 	if (ms->head_heredoc == NULL)
 		last_heredoc = &ms->head_heredoc;
 	else
 		last_heredoc = last_node;
 	if (filename == NULL || add_to_list(last_heredoc, filename))
+	{
+		free_heredoc(filename);
 		return (1);
+	}
 	*last_node = ft_lstlast(*last_heredoc);
 	return (0);
 }
@@ -103,8 +106,7 @@ static char	*do_heredoc(t_minishell *ms, t_token *word)
 	if (read_heredoc(ms, fd, word->data, word->type & T_QUOTED))
 	{
 		close(fd);
-		unlink(filename);
-		free(filename);
+		free_heredoc(filename);
 		return (NULL);
 	}
 	if (close(fd) == -1)
