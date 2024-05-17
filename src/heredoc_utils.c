@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/25 16:07:11 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 20:17:21 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:58:48 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,34 @@ char	*get_random_filename(char const delim[])
 	char		*filename;
 	char		*temp;
 	int const	fd = open(RANDOM_FILE, O_RDONLY);
+	char *const	delim_dup = ft_strdup(delim);
 
-	if (fd == -1)
+	if (fd == -1 || delim_dup == NULL)
 	{
-		perror(RANDOM_FILE);
+		perror("get_random_filename()");
+		free(delim_dup);
+		close(fd);
 		return (NULL);
 	}
-	filename = ft_strjoin(".temp-", delim);
-	replace_slashes_by_underscores(filename);
+	replace_slashes_by_underscores(delim_dup);
+	filename = ft_strjoin("/tmp/.temp-", delim_dup);
+	free(delim_dup);
+	if (filename == NULL)
+	{
+		perror("get_random_filename()");
+		close(fd);
+		return (NULL);
+	}
 	while (access(filename, F_OK) != -1)
 	{
 		temp = append_random_char(fd, filename);
 		free(filename);
 		if (temp == NULL)
+		{
+			perror("get_random_filename()");
+			close(fd);
 			return (NULL);
+		}
 		filename = temp;
 	}
 	if (close(fd) == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   files.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:35:32 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:14:36 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 18:34:19 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "minishell.h"
 # include "parser.h"
 
-int		open_infile(t_minishell *ms, t_token *redirect, t_token *word);
+int		open_infile(t_minishell *ms, t_list **heredoc, t_token *redirect, t_token *word);
 int		open_outfile(t_minishell *ms, t_token *redirect, t_token *word);
 void	close_files(int fd1, int fd2);
 
