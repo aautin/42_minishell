@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 14:56:02 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 14:57:49 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 20:02:30 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ void	free_heredoc(void *content)
 {
 	char *const	filename = content;
 
+	if (filename == NULL)
+		return ;
 	if (unlink(filename) == -1)
 		perror(filename);
 	free(filename);
@@ -46,6 +48,5 @@ void	free_token(void *content)
 	t_token *const	token = content;
 
 	free(token->data);
-	token->data = NULL;
 	free(token);
 }
