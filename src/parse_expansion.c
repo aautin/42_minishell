@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:19:31 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:40:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,21 @@ static void	expand_len_insertion(t_list *envp, char *data[], size_t *expanded_le
 	}
 }
 
+static size_t	strnegcat(char new_data[], char const env[])
+{
+	size_t	i;
+	size_t	j;
+
+	i = 0;
+	while (new_data[i] != '\0')
+		i++;
+	j = 0;
+	while (env[j] != '\0')
+		new_data[i++] = -env[j++];
+	new_data[i] = '\0';
+	return (j);
+}
+
 static void	expand_data_insertion(t_list *envp, char *data[], char *new_data[])
 {
 	size_t	path_len;
@@ -68,10 +83,7 @@ static void	expand_data_insertion(t_list *envp, char *data[], char *new_data[])
 		env = ft_getenv(envp, *data);
 		(*data)[path_len] = temp;
 		if (env != NULL)
-		{
-			ft_strlcat(*new_data, env, ft_strlen(env) + 1);
-			*new_data += ft_strlen(env);
-		}
+			*new_data += strnegcat(*new_data, env);
 		*data += path_len - 1;
 	}
 }

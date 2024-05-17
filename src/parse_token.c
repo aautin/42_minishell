@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:23:24 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 17:34:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,25 @@ int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
 	return (0);
 }
 
-int	parse_token(t_token *token, t_list *envp, int exit_status)
+void	turn_to_abs(char str[])
 {
-	if (expansion(token, envp, 0, exit_status))
+	int	i;
+
+	i = 0;
+	while (str[i] != '\0')
+	{
+		if (str[i] < 0)
+			str[i] = -str[i];
+		i++;
+	}
+}
+
+int	parse_token(t_token *token, t_list *envp, int exit_status, int ignore_quotes)
+{
+	if (expansion(token, envp, ignore_quotes, exit_status))
 		return (1);
-	unquote(token->data);
+	if (!ignore_quotes)
+		unquote(token->data);
+	turn_to_abs(token->data);
 	return (0);
 }
