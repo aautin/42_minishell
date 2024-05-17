@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 18:35:51 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 21:00:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@
 #include "minishell.h"
 #include "parser.h"
 
-int	open_infile(t_minishell *ms, t_list **heredoc, t_token *redirect, t_token *word)
+int	open_infile(t_minishell *ms, t_list **heredoc,
+		t_token *redirect, t_token *word)
 {
 	int		fd;
 	char	*filename;

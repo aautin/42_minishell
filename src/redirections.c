@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 18:34:09 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/17 21:01:24 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@
 #include "parser.h"
 #include "redirections.h"
 
-static int	open_file(t_minishell *ms, t_list **heredoc, t_list *tokens, int fd[2]);
+static int	open_file(t_minishell *ms, t_list **heredoc,
+				t_list *tokens, int fd[2]);
 
 int	redirect_fd(int oldfd, int newfd)
 {
@@ -84,8 +85,8 @@ int	reset_std_fd(int std_fd[3])
 
 int	redirect_files(t_minishell *ms, t_list *current_token, t_list *last_token)
 {
-	int	fd[2];
-	int	status;
+	int		fd[2];
+	int		status;
 	t_list	*heredoc;
 
 	fd[0] = -1;
@@ -111,7 +112,8 @@ int	redirect_files(t_minishell *ms, t_list *current_token, t_list *last_token)
 	return (status);
 }
 
-static int	open_file(t_minishell *ms, t_list **heredoc, t_list *operator, int fd[2])
+static int	open_file(t_minishell *ms, t_list **heredoc,
+				t_list *operator, int fd[2])
 {
 	t_token *const	redirect = operator->content;
 	t_token *const	word = operator->next->content;
