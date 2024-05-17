@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/20 10:46:30 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 17:48:51 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ static int	parse_line_heredoc(t_minishell *ms, int fd,
 	token.type = T_WORD;
 	if (!delim_quoted)
 	{
-		if (expansion(&token, ms->envl, 1, ms->last_exit_status))
+		if (parse_token(&token, ms->envl, ms->last_exit_status, 1))
 		{
 			free(token.data);
 			return (1);
