@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   files.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:31:25 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/11 15:24:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 17:49:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	open_infile(t_minishell *ms, t_token *redirect, t_token *word)
 
 	if (redirect->type & T_REDIRECT_INPUT)
 	{
-		parse_token(word, ms->envl, ms->last_exit_status);
+		parse_token(word, ms->envl, ms->last_exit_status, 0);
 		fd = open(word->data, O_RDONLY);
 		if (fd == -1)
 			perror(word->data);
@@ -57,7 +57,7 @@ int	open_outfile(t_minishell *ms, t_token *redirect, t_token *word)
 		flags |= O_APPEND;
 	else
 		return (-2);
-	parse_token(word, ms->envl, ms->last_exit_status);
+	parse_token(word, ms->envl, ms->last_exit_status, 0);
 	fd = open(word->data, flags, mode);
 	if (fd == -1)
 		perror(word->data);

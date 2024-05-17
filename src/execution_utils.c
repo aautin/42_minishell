@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/02 17:28:37 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/17 17:49:33 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ static int	add_to_args(t_list **args, t_list **last_node,
 		is_empty = *dup == '\0';
 		free(dup);
 	}
-	parse_token(token, ms->envl, ms->last_exit_status);
+	parse_token(token, ms->envl, ms->last_exit_status, 0);
 	if ((is_empty || *token->data != '\0') && add_to_list(last_arg, token))
 	{
 		ft_lstclear(args, NULL);
