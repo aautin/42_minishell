@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/17 17:40:13 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:47:11 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #include "parser_utils.h"
 #include "getenv.h"
 
-static void	expand_len_insertion(t_list *envp, char *data[], size_t *expanded_len,
-	int *mode)
+static void	expand_len_insertion(t_list *envp, char *data[],
+	size_t *expanded_len, int *mode)
 {
 	char	temp;
 	char	*getenv_find;
