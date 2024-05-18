@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:37:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 17:07:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:46:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@ int	add_env(t_list **envp, char const key[], char const value[])
 		return (1);
 	}
 	content[0] = '\0';
-	ft_strlcat(content, key, content_size);	
-	ft_strlcat(content, "=", content_size);	
+	ft_strlcat(content, key, content_size);
+	ft_strlcat(content, "=", content_size);
 	ft_strlcat(content, value, content_size);
 	ft_lstadd_front(envp, new_node);
 	return (0);
