@@ -16,6 +16,8 @@ GOTO_B	:=	\e[1A\e[K
 DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
+				builtin_cd_utils2.c	\
+				builtin_cd_utils.c	\
 				builtin_cd.c		\
 				builtin_echo.c		\
 				builtin_env.c		\
