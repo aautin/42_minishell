@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 16:45:36 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:43:27 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:37:55 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 int	builtin_env(t_list *envp)
 {
 	size_t	content_len;
-	
+
 	while (envp)
 	{
 		content_len = ft_strlen(envp->content);
