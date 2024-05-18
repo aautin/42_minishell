@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/17 17:57:04 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:47:39 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ void	unquote(char data[])
 	}
 }
 
-static int	expansion(t_token *token, t_list *envp, int ignore_quotes, int exit_status)
+static int	expansion(t_token *token, t_list *envp, int ignore_quotes,
+	int exit_status)
 {
 	t_expansion const	config = {envp, exit_status, ignore_quotes};
 	char				*expanded_data;
@@ -78,7 +79,8 @@ void	turn_to_abs(char str[])
 	}
 }
 
-int	parse_token(t_token *token, t_list *envp, int exit_status, int ignore_quotes)
+int	parse_token(t_token *token, t_list *envp, int exit_status,
+	int ignore_quotes)
 {
 	if (expansion(token, envp, ignore_quotes, exit_status))
 		return (1);
