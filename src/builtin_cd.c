@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 18:00:27 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 19:37:45 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 #define	TOO_MANY_ARGS			"builtin_cd(): too many arguments\n"
 #define	TOO_LONG_PATH			"builtin_cd(): path given is too long\n"
-#define	INVALID_PATH			"builtin_cd(): no such file or directory\n"
+#define	INVALID_PATH			" : no such file or directory\n"
 #define	ENV_OVERWRITING_ERROR	"change_pwds():modify_env()/add_env()\n"
 #define	GETCWD_ERROR			"builtin_cd(): cannot get current working directory\n"
 
@@ -186,6 +186,7 @@ static int	change_directory(t_list **envp, char absolute_path[])
 {
 	if (chdir(absolute_path) == -1)
 	{
+		write(STDERR_FILENO, absolute_path, ft_strlen(absolute_path));
 		write(STDERR_FILENO, INVALID_PATH, ft_strlen(INVALID_PATH));
 		return (free(absolute_path), 1);
 	}
