@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/20 17:56:31 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:47:53 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:39:48 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #include "list_utils.h"
 #include "minishell.h"
 
-#define	TOO_MANY_ARGS "builtin_exit(): too many arguments\n"
-#define	NOT_DIGIT_ARG "builtin_exit(): numeric argument required\n"
+#define TOO_MANY_ARGS "builtin_exit(): too many arguments\n"
+#define NOT_DIGIT_ARG "builtin_exit(): numeric argument required\n"
 
 static int	is_number(char const str[])
 {
@@ -33,20 +33,19 @@ static int	is_number(char const str[])
 	return (1);
 }
 
-static void clear_minishell(t_minishell *ms, int is_child, int const fd[3])
+static void	clear_minishell(t_minishell *ms, int is_child, int const fd[3])
 {
 	if (is_child)
 		ft_lstclear(&ms->head_heredoc, &free);
 	else
 		ft_lstclear(&ms->head_heredoc, &free_heredoc);
-	
 	ft_lstclear(&ms->tokens, &free_token);
 	ft_lstclear(&ms->envl, &free);
 	if (fd != NULL)
 	{
 		close(fd[0]);
 		close(fd[1]);
-		close(fd[2]);	
+		close(fd[2]);
 	}
 }
 
