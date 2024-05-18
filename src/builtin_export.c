@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/15 16:56:18 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/18 20:42:24 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ static int	is_validname(char const name[])
 
 static int	is_valid_arg(char const arg[])
 {
-	if(!is_validname(arg))
+	if (!is_validname(arg))
 	{
 		write(STDERR_FILENO, EXPORT_ERROR_MSG, ft_strlen(EXPORT_ERROR_MSG));
 		return (0);
@@ -60,7 +60,7 @@ int	builtin_export(char **argv, t_list **envp)
 			{
 				current = find_env(*envp, *argv);
 				if (current == NULL)
-					add_env(envp, *argv, ptr + 1);	
+					add_env(envp, *argv, ptr + 1);
 				else
 					modify_env(current, *argv, ptr + 1);
 				continue ;
