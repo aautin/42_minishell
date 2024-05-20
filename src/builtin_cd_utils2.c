@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/20 16:17:22 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/20 21:16:46 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,17 +52,17 @@ char	*build_path(char const s1[], char const s2[],
 	return (path);
 }
 
-static void	test_path(char *path[], char const arg[])
+static int	test_path(char *path[], char const arg[])
 {
 	if (*path == NULL)
 	{
-		*path = ft_strjoin("./", arg);
-		if (*path != NULL && !is_directory(*path))
+		if (!is_directory(*path))
 		{
 			free(*path);
 			*path = NULL;
 		}
 	}
+	return (0);
 }
 
 char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
@@ -82,6 +82,7 @@ char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 				if (is_directory(path))
 					break ;
 				free(path);
+				path = NULL;
 			}
 			free(cdpaths[i++]);
 		}
@@ -89,6 +90,5 @@ char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 			free(cdpaths[i++]);
 		free(cdpaths);
 	}
-	test_path(&path, arg);
-	return (path);
+	return (test_path(&path, arg));
 }
