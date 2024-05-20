@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:25:18 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/20 16:17:22 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,11 @@ static void	test_path(char *path[], char const arg[])
 	if (*path == NULL)
 	{
 		*path = ft_strjoin("./", arg);
-		if (!is_directory(*path))
+		if (*path != NULL && !is_directory(*path))
+		{
 			free(*path);
+			*path = NULL;
+		}
 	}
 }
 

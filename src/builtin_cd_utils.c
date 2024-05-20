@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:28:46 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/20 16:21:34 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 #include "getenv.h"
 #include "getenv_utils.h"
 
-#define INVALID_PATH		" : no such file or directory\n"
 #define ENV_OVERWRITING_ERR	"change_pwds():modify_env()/add_env()\n"
 
 void	go_previous_dir(char **components, int twodot_index)
@@ -35,8 +34,7 @@ int	change_directory(t_list **envp, char absolute_path[])
 {
 	if (chdir(absolute_path) == -1)
 	{
-		write(STDERR_FILENO, absolute_path, ft_strlen(absolute_path));
-		write(STDERR_FILENO, INVALID_PATH, ft_strlen(INVALID_PATH));
+		perror(absolute_path);
 		return (free(absolute_path), 1);
 	}
 	if (change_pwds(envp, absolute_path, find_env(*envp, "PWD"),
