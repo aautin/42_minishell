@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:22:58 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/20 16:14:26 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,10 @@
 #include "getenv_utils.h"
 #include "builtin_cd.h"
 
-#define ERRNO				STDERR_FILENO
-#define TOO_MANY_ARGS		"builtin_cd(): too many arguments\n"
-#define TOO_LONG_PATH		"builtin_cd(): path given is too long\n"
-#define GETCWD_ERR			"builtin_cd(): cannot get current working\
-							directory\n"
+#define ERRNO			STDERR_FILENO
+#define TOO_MANY_ARGS	"builtin_cd(): too many arguments\n"
+#define TOO_LONG_PATH	"builtin_cd(): path given is too long\n"
+#define GETCWD_ERR		"builtin_cd(): cannot get current working directory\n"
 
 static char	*comp_path(char **components)
 {
