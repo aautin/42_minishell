@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 17:39:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/19 15:14:22 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:24:09 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ t_action	rule_1(t_list **tokens, t_line_part *line_part)
 		last_node = tokens;
 	else
 		last_node = &line_part->last_node;
-	if (add_to_list(last_node, line_part->token))
+	if (line_part->token->data == NULL
+		|| add_to_list(last_node, line_part->token))
 		return (A_RETURN);
 	line_part->token = NULL;
 	return (A_BREAK);
