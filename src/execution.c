@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/17 19:45:04 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 19:41:02 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:33:44 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,7 @@ static int	simple_cmd(t_minishell *ms, t_cmd *cmd)
 		}
 	}
 	status = prepare_simple_cmd(ms, cmd);
-	close_pipes(&cmd->pipeline);
-	if (status)
+	if (close_pipes(&cmd->pipeline) || status)
 		return (1);
 	goto_next_heredoc(ms, cmd->first_token, cmd->last_token);
 	return (0);
