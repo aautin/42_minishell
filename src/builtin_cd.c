@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/21 13:18:31 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 14:11:17 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,21 +77,13 @@ static char	*component_conversion(char abs_path[])
 
 static int	execute(char curpath[], t_list **envp)
 {
-	char	pwd[PATH_MAX];
 	char	*abs_path;
 
 	if (curpath == NULL)
 		return (perror("builtin_cd():ft_strdup()"), 1);
-	if (getcwd(pwd, PATH_MAX) == NULL)
-	{
-		perror("execute():getcwd()");
-		return (free(curpath), 1);
-	}
-	abs_path = NULL;
 	if (*curpath != '/')
-		abs_path = build_path(pwd, curpath, ft_strlen(pwd), ft_strlen(curpath));
-	else if (*curpath == '/' || abs_path == NULL)
-		abs_path = ft_strdup(curpath);
+		return (change_directory(envp, curpath));
+	abs_path = ft_strdup(curpath);
 	free(curpath);
 	abs_path = component_conversion(abs_path);
 	if (abs_path == NULL)

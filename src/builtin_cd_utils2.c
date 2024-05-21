@@ -6,10 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/21 13:26:06 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:12:59 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -28,15 +29,21 @@ int	get_pathmode(char const arg[])
 	return (NOT_DOT);
 }
 
-int	is_directory(char const path[])
+static int	is_directory(char const path[])
 {
 	struct stat	path_stat;
 
-	stat(path, &path_stat);
+	errno = 0;
+	if (stat(path, &path_stat) == -1)
+	{
+		if (errno != EACCES)
+			perror(path);
+		return (0);
+	}
 	return (S_ISDIR(path_stat.st_mode));
 }
 
-char	*build_path(char const s1[], char const s2[],
+static char	*build_path(char const s1[], char const s2[],
 	size_t const s1_len, size_t const s2_len)
 {
 	size_t const	path_size = s1_len + (s1_len == 0 || s1[s1_len - 1] != '/')
