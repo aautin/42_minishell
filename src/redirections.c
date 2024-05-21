@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/21 16:40:46 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 17:30:39 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,9 @@ int	redirect_files(t_minishell *ms, t_list *current_token, t_list *last_token)
 	}
 	status = 0;
 	if (fd[0] >= 0)
-		status += redirect_fd(fd[0], STDIN_FILENO);
+		status |= redirect_fd(fd[0], STDIN_FILENO);
 	if (!status && fd[1] >= 0)
-		status += redirect_fd(fd[1], STDOUT_FILENO);
+		status |= redirect_fd(fd[1], STDOUT_FILENO);
 	if (status)
 		close_files(fd[0], fd[1]);
 	return (status);
