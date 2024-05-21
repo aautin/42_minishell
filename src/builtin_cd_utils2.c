@@ -6,13 +6,14 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/21 12:50:49 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:26:06 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #include "libft/libft.h"
 
@@ -52,17 +53,19 @@ char	*build_path(char const s1[], char const s2[],
 	return (path);
 }
 
-static char	*test_path(char *path[], char const arg[])
+static void	test_path(char *path[], char const arg[])
 {
 	if (*path == NULL)
 	{
-		if (!is_directory(*path))
-		{
-			free(*path);
+		if (!is_directory(arg))
 			*path = NULL;
+		else
+		{
+			*path = ft_strdup(arg);
+			if (*path == NULL)
+				perror("test_path():ft_strdup()");
 		}
 	}
-	return (*path);
 }
 
 char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
@@ -90,5 +93,6 @@ char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
 			free(cdpaths[i++]);
 		free(cdpaths);
 	}
-	return (test_path(&path, arg));
+	test_path(&path, arg);
+	return (path);
 }

@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/20 16:14:26 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/21 13:18:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@
 #include "getenv_utils.h"
 #include "builtin_cd.h"
 
-#define ERRNO			STDERR_FILENO
+#define STDERR			STDERR_FILENO
 #define TOO_MANY_ARGS	"builtin_cd(): too many arguments\n"
 #define TOO_LONG_PATH	"builtin_cd(): path given is too long\n"
-#define GETCWD_ERR		"builtin_cd(): cannot get current working directory\n"
 
 static char	*comp_path(char **components)
 {
@@ -85,7 +84,7 @@ static int	execute(char curpath[], t_list **envp)
 		return (perror("builtin_cd():ft_strdup()"), 1);
 	if (getcwd(pwd, PATH_MAX) == NULL)
 	{
-		write(ERRNO, GETCWD_ERR, ft_strlen(GETCWD_ERR));
+		perror("execute():getcwd()");
 		return (free(curpath), 1);
 	}
 	abs_path = NULL;
@@ -99,7 +98,7 @@ static int	execute(char curpath[], t_list **envp)
 		return (1);
 	if (ft_strlen(abs_path) + 1 > PATH_MAX)
 	{
-		write(ERRNO, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH));
+		write(STDERR, TOO_LONG_PATH, ft_strlen(TOO_LONG_PATH));
 		return (free(abs_path), 1);
 	}
 	return (change_directory(envp, abs_path));
@@ -112,7 +111,7 @@ int	builtin_cd(char **argv, t_list **envp)
 
 	curpath = NULL;
 	if (argv[1] != NULL && argv[2] != NULL)
-		return (write(ERRNO, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)), 1);
+		return (write(STDERR, TOO_MANY_ARGS, ft_strlen(TOO_MANY_ARGS)), 1);
 	if (argv[1] == NULL)
 	{
 		env_val = ft_getenv(*envp, "HOME");
