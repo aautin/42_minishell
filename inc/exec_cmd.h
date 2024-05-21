@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   exec_cmd.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/21 20:04:19 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/03/24 18:37:34 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef EXEC_CMD_H
+# define EXEC_CMD_H
 
-void	ft_freeall(char **arr_str)
-{
-	size_t	i;
+# include "minishell.h"
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
-	{
-		free(arr_str[i]);
-		i++;
-	}
-	free(arr_str);
-}
+int		prepare_cmd(t_minishell *ms, char **argv);
+
+#endif

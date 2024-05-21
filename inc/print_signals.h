@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   print_signals.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/28 16:17:19 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/03/28 16:18:11 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef PRINT_SIGNALS_H
+# define PRINT_SIGNALS_H
 
-void	ft_freeall(char **arr_str)
-{
-	size_t	i;
+void	print_signal_msg(int status);
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
-	{
-		free(arr_str[i]);
-		i++;
-	}
-	free(arr_str);
-}
+#endif

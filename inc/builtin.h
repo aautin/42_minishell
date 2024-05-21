@@ -1,28 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/21 18:43:54 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/26 16:23:31 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef BUILTIN_H
+# define BUILTIN_H
 
-void	ft_freeall(char **arr_str)
-{
-	size_t	i;
+# include "libft/libft.h"
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
-	{
-		free(arr_str[i]);
-		i++;
-	}
-	free(arr_str);
-}
+# include "minishell.h"
+
+int	execute_builtin(t_minishell *ms, char **argv,
+		int is_child, int const fd[3]);
+int	is_a_builtin(char const cmd[]);
+
+#endif

@@ -1,28 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   handle_signals.h                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/22 19:03:22 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/29 11:16:29 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef HANDLE_SIGNALS_H
+# define HANDLE_SIGNALS_H
 
-void	ft_freeall(char **arr_str)
+typedef enum e_handler_sig
 {
-	size_t	i;
+	H_DEFAULT = 0u,
+	H_MINISHELL,
+	H_HEREDOC,
+	H_WAIT
+}	t_handler_sig;
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
-	{
-		free(arr_str[i]);
-		i++;
-	}
-	free(arr_str);
-}
+# define SIG_RETURN	128
+
+void	init_sigquit(t_handler_sig mode);
+void	init_sigint(t_handler_sig mode);
+
+#endif

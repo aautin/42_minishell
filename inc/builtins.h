@@ -1,24 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstiter.c                                       :+:      :+:    :+:   */
+/*   builtins.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/10 15:38:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 17:06:36 by aautin           ###   ########.fr       */
+/*   Created: 2024/05/14 20:37:06 by aautin            #+#    #+#             */
+/*   Updated: 2024/05/15 17:25:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
+#ifndef BUILTINS_H
+# define BUILTINS_H
 
-#include "libft.h"
+# include "libft/libft.h"
 
-void	ft_lstiter(t_list *lst, void (*f)(void *))
-{
-	while (lst != NULL)
-	{
-		f(lst->content);
-		lst = lst->next;
-	}
-}
+# include "minishell.h"
+
+int	builtin_cd(char **argv, t_list **envp);
+int	builtin_echo(char **argv);
+int	builtin_env(t_list *envp);
+int	builtin_exit(char **argv, t_minishell *ms, int is_child, int const fd[3]);
+int	builtin_export(char **argv, t_list **envp);
+int	builtin_pwd(void);
+int	builtin_unset(char **argv, t_list **envp);
+
+#endif

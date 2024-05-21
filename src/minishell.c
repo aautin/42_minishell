@@ -1,28 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/04/19 15:00:28 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/20 10:35:01 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#include <readline/readline.h>
+#include <unistd.h>
 
-void	ft_freeall(char **arr_str)
+#include "libft/libft.h"
+
+char	*ask_input(char const prompt[], int is_interactive)
 {
-	size_t	i;
+	char	*line;
+	char	*newline;
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
+	if (is_interactive)
+		line = readline(prompt);
+	else
 	{
-		free(arr_str[i]);
-		i++;
+		line = get_next_line(STDIN_FILENO);
+		if (line != NULL)
+		{
+			newline = ft_strrchr(line, '\n');
+			if (newline != NULL)
+				*newline = '\0';
+		}
 	}
-	free(arr_str);
+	return (line);
 }

@@ -1,28 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_freeall.c                                       :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/05 15:31:19 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/07 17:47:22 by pnguyen-         ###   ########.fr       */
+/*   Created: 2024/03/24 18:19:50 by pnguyen-          #+#    #+#             */
+/*   Updated: 2024/04/20 10:35:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
+#ifndef MINISHELL_H
+# define MINISHELL_H
 
-void	ft_freeall(char **arr_str)
+# include "libft/libft.h"
+
+typedef struct s_minishell
 {
-	size_t	i;
+	t_list	*tokens;
+	t_list	*envl;
+	t_list	*head_heredoc;
+	t_list	*current_heredoc;
+	int		last_exit_status;
+	int		is_interactive;
+}	t_minishell;
 
-	if (arr_str == NULL)
-		return ;
-	i = 0;
-	while (arr_str[i] != NULL)
-	{
-		free(arr_str[i]);
-		i++;
-	}
-	free(arr_str);
-}
+extern int	g_sig;
+
+char	*ask_input(char const prompt[], int is_interactive);
+
+#endif

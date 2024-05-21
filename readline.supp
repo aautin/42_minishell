@@ -10,3 +10,10 @@
    ...
    fun:add_history
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   obj:/*/bin/*
+   ...
+}

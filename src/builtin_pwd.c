@@ -1,24 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstiter.c                                       :+:      :+:    :+:   */
+/*   builtin_pwd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/10 15:38:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/03/21 17:06:36 by aautin           ###   ########.fr       */
+/*   Created: 2024/04/11 14:36:48 by aautin            #+#    #+#             */
+/*   Updated: 2024/05/15 16:57:46 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stddef.h>
+#include <linux/limits.h>
+#include <stdio.h>
+#include <unistd.h>
 
-#include "libft.h"
+#include "libft/libft.h"
 
-void	ft_lstiter(t_list *lst, void (*f)(void *))
+int	builtin_pwd(void)
 {
-	while (lst != NULL)
+	char	buff[PATH_MAX];
+
+	if (getcwd(buff, PATH_MAX) == NULL)
 	{
-		f(lst->content);
-		lst = lst->next;
+		perror("builtin_pwd():getcwd()");
+		return (1);
 	}
+	if (write(STDOUT_FILENO, buff, ft_strlen(buff)) == -1)
+	{
+		perror("builtin_pwd():write()");
+		return (1);
+	}
+	write(STDOUT_FILENO, "\n", 1);
+	return (0);
 }
