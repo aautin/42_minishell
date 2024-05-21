@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/20 21:16:46 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/21 12:50:49 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ char	*build_path(char const s1[], char const s2[],
 	return (path);
 }
 
-static int	test_path(char *path[], char const arg[])
+static char	*test_path(char *path[], char const arg[])
 {
 	if (*path == NULL)
 	{
@@ -62,7 +62,7 @@ static int	test_path(char *path[], char const arg[])
 			*path = NULL;
 		}
 	}
-	return (0);
+	return (*path);
 }
 
 char	*get_cdpath(char **cdpaths, char const arg[], size_t const arg_len)
