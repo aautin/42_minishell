@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/28 17:37:47 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:46:13 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/21 18:09:33 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,30 +32,30 @@ void	remove_env(t_list **head, t_list *prev, t_list *cur)
 int	modify_env(t_list *envp, char const key[], char const new_value[])
 {
 	char	*new_content;
-	int		new_content_len;
+	size_t	new_content_size;
 
 	if (new_value == NULL)
 		new_value = "";
 	free(envp->content);
-	new_content_len = ft_strlen(key) + ft_strlen(new_value) + 2;
-	new_content = ft_calloc(new_content_len, sizeof(char));
+	new_content_size = ft_strlen(key) + 1 + ft_strlen(new_value) + 1;
+	new_content = malloc(new_content_size * sizeof(char));
 	if (new_content == NULL)
 	{
 		perror("modify():ft_calloc()");
 		return (1);
 	}
 	new_content[0] = '\0';
-	ft_strlcat(new_content, key, new_content_len);
-	ft_strlcat(new_content, "=", new_content_len);
-	ft_strlcat(new_content, new_value, new_content_len);
+	ft_strlcat(new_content, key, new_content_size);
+	ft_strlcat(new_content, "=", new_content_size);
+	ft_strlcat(new_content, new_value, new_content_size);
 	envp->content = new_content;
 	return (0);
 }
 
 int	add_env(t_list **envp, char const key[], char const value[])
 {
-	int		content_size;
 	char	*content;
+	size_t	content_size;
 	t_list	*new_node;
 
 	if (value == NULL)
