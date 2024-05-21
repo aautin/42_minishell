@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/27 17:35:17 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/21 14:11:17 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:55:01 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ static char	*component_conversion(char abs_path[])
 	int		i;
 	char	**path_components;
 
+	if (abs_path == NULL)
+		return (perror("execute():ft_strdup()"), NULL);
 	path_components = ft_split(abs_path, '/');
 	free(abs_path);
 	if (path_components == NULL)
