@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/18 20:18:15 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 21:01:24 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:40:46 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,10 @@ int	redirect_fd(int oldfd, int newfd)
 		return (1);
 	}
 	if (close(oldfd) == -1)
+	{
 		perror("redirect_fd():close()");
+		return (1);
+	}
 	return (0);
 }
 

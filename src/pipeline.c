@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:53:32 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/04 13:03:25 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/21 16:48:10 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,26 @@ enum e_pipe_mode	get_pipe_mode(t_list *first_token, t_list *last_token)
 	return (mode);
 }
 
-void	close_pipes(t_pipe *pipeline)
+int	close_pipes(t_pipe *pipeline)
 {
 	if (pipeline->mode & P_INPUT)
 	{
 		if (close(pipeline->prev_fd_in) == -1)
+		{
 			perror("close_pipes():close()");
+			return (1);
+		}
 	}
 	if (pipeline->mode & P_OUTPUT)
 	{
 		if (close(pipeline->fd[1]) == -1)
+		{
 			perror("close_pipes():close()");
+			return (1);
+		}
 		pipeline->prev_fd_in = pipeline->fd[0];
 	}
+	return (0);
 }
 
 int	redirect_pipes(t_pipe *pipeline)
@@ -60,13 +67,16 @@ int	redirect_pipes(t_pipe *pipeline)
 		if (redirect_fd(pipeline->prev_fd_in, STDIN_FILENO))
 		{
 			close(pipeline->prev_fd_in);
-			return (1);
+			return (2);
 		}
 	}
 	if (pipeline->mode & P_OUTPUT)
 	{
 		if (close(pipeline->fd[0]) == -1)
+		{
 			perror("apply_pipe_redirections():close()");
+			return (1);
+		}
 		if (redirect_fd(pipeline->fd[1], STDOUT_FILENO))
 		{
 			close(pipeline->fd[1]);
