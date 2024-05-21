@@ -15,7 +15,10 @@ GOTO_B	:=	\e[1A\e[K
 
 DEFAULT	:=	\e(B\e[m
 
-FILES		:=	main.c				\
+FILES		:=	\
+				main.c			\
+				getenv_utils.c	\
+				getenv.c		\
 				parse_expansion.c	\
 				parse_utils.c		\
 				parse_token.c		\
