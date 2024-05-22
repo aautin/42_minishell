@@ -6,7 +6,7 @@
 /*   By: pnguyen- <pnguyen-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 16:57:48 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/04/20 10:54:14 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/22 18:14:33 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,5 +75,6 @@ static void	sigint_ms_handler(int signum)
 static void	sigint_heredoc_handler(int signum)
 {
 	g_sig = signum;
+	ft_putchar_fd('\n', STDOUT_FILENO);
 	close(STDIN_FILENO);
 }
