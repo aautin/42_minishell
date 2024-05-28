@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:47:11 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/28 19:46:27 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,6 +134,8 @@ void	expand_data(t_expansion const *config, char data[], char new_data[])
 				*(new_data++) = '$';
 				*(new_data++) = '"';
 			}
+			else if (*data == '"')
+				mode = DB_QUOTE;
 			else
 				expand_data_insertion(config->envp, &data, &new_data);
 		}
