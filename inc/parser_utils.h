@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/15 17:21:25 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/29 18:50:35 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ typedef struct s_expansion
 	t_list			*envp;
 	unsigned char	exit_status;
 	int				ignore_quotes;
+	t_list			*components;
 }	t_expansion;
 
 size_t	nbr_len(unsigned char nbr);
