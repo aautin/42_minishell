@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/29 20:52:55 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/29 21:57:00 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,13 @@
 #include "parser.h"
 #include "parser_utils.h"
 
-void	unquote(char data[])
+#include "getenv.h"
+
+int	unquote(char data[], int starting_mode)
 {
 	int	mode;
 
-	mode = NO_QUOTE;
+	mode = starting_mode;
 	while (*data)
 	{
 		if (*data == '\'' && (mode == NO_QUOTE || mode == SG_QUOTE))
@@ -44,69 +46,26 @@ void	unquote(char data[])
 		else
 			data++;
 	}
+	return (mode);
 }
-
-t_list	*create_component(char data[], int len)
-{
-	t_list	*component;
-	char	*data_cpy;
-
-	data_cpy = malloc((len + 1) * sizeof(char));
-	if (data_cpy == NULL)
-		return (perror("create_component():malloc()"), NULL);
-	data_cpy[0] = '\0';
-	ft_strlcat(data_cpy, data, len + 1);
-	component = ft_lstnew(data_cpy);
-	if (component == NULL)
-	{
-		free(data_cpy);
-		perror("create_component():ft_lstnew()");
-	}
-	return (component);
-}
-
-t_list	*get_token_components(char data[])
-{
-	t_list	*components;
-	t_list	*component;
-	int		start;
-	int		end;
-
-	components = NULL;
-	start = 0;
-	end = 0;
-	while (data[start])
-	{
-		if (data[start] == '$')
-			end = start + 1 + pathname_len(data[start + 1]);
-		else
-		{
-			end = start;
-			while (data[end + 1] != '\0' && data[end + 1] != '$')
-				end++;
-		}
-		component = create_component(&data[start], end - start);
-		if (component == NULL)
-			return (ft_lstclear(&components, free), NULL);
-		ft_lstadd_back(&components, component);
-		start = end;
-	}
-	return (components);
-}
-
 
 static int	expansion(t_token *token, t_list *envp, int ignore_quotes,
 	int exit_status)
 {
 	t_expansion const	config = {envp, exit_status, ignore_quotes};
-	char				*expanded_data;
-	size_t				expanded_len;
 	t_list				*components;
 
 	components = get_token_components(token->data);
-	while (components) {
-		printf("%s\n", (char *) components->content);
-		components = components->next;
+	if (parse_components(&config, components) == 1)
+	{
+		perror("parse_token():malloc()");
+		ft_lstclear(&components, free);
+		return (1);
+	}
+	t_list	*ptr = components;
+	while (ptr) {
+		printf("%s\n", (char *) ptr->content);
+		ptr = ptr->next;
 	}
 	if (components == NULL)
 	{
@@ -116,26 +75,10 @@ static int	expansion(t_token *token, t_list *envp, int ignore_quotes,
 	return (0);
 }
 
-static void	turn_to_abs(char str[])
-{
-	int	i;
-
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str[i] < 0)
-			str[i] = -str[i];
-		i++;
-	}
-}
-
 int	parse_token(t_token *token, t_list *envp, int exit_status,
 	int ignore_quotes)
 {
 	if (expansion(token, envp, ignore_quotes, exit_status))
 		return (1);
-	if (!ignore_quotes)
-		unquote(token->data);
-	turn_to_abs(token->data);
 	return (0);
 }
