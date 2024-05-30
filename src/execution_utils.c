@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/21 19:55:27 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 21:02:59 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/30 19:52:58 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ static int	add_to_args(t_list **args, t_list **last_node,
 	is_empty = 0;
 	if (dup != NULL)
 	{
-		unquote(dup);
+		unquote(dup, NO_QUOTE);
 		is_empty = dup[0] == '\0';
 		free(dup);
 	}

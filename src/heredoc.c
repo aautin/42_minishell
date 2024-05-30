@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/24 19:41:33 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/17 20:07:22 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/30 19:54:02 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ static char	*do_heredoc(t_minishell *ms, t_token *word)
 	int		fd;
 	char	*filename;
 
-	unquote(word->data);
+	unquote(word->data, NO_QUOTE);
 	filename = get_random_filename(word->data);
 	if (filename == NULL)
 		return (NULL);
