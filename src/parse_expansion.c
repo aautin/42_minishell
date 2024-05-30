@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/29 22:00:10 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 17:34:49 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "parser.h"
 #include "parser_utils.h"
 #include "getenv.h"
-
 
 static t_list	*create_component(char data[], int len)
 {
@@ -76,7 +75,10 @@ int	parse_components(t_expansion const *config, t_list *components)
 		data = (char *) components->content;
 		if (data[0] == '$' && mode != SG_QUOTE)
 		{
-			env = ft_getenv(config->envp, &data[1]);
+			if (data[1] == '?')
+				env = ft_itoa(config->exit_status);
+			else
+				env = ft_getenv(config->envp, &data[1]);
 			if (env != NULL)
 			{
 				env = ft_strdup(env);
