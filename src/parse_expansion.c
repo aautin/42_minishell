@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/30 18:42:45 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:47:09 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ int	parse_components(t_expansion const *config, t_list *components)
 			if (expansion(components, config->envp, config->exit_status) == 1)
 				return (1);
 		}
-		else
+		else if (config->ignore_quotes == 0)
 			mode = unquote(data, mode);
 		components = components->next;
 	}
