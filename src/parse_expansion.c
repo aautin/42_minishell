@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/30 18:47:09 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:21:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static t_list	*create_component(char data[], int len)
 	if (data_cpy == NULL)
 		return (NULL);
 	data_cpy[0] = '\0';
-	ft_strlcat(data_cpy, data, len + 1);
+	ft_strlcpy(data_cpy, data, len + 1);
 	component = ft_lstnew(data_cpy);
 	if (component == NULL)
 		free(data_cpy);
@@ -124,7 +124,7 @@ int	components_to_data(t_token *token, t_list *components)
 
 	len = 0;
 	head = components;
-	while (components)
+	while (components != NULL)
 	{
 		len += ft_strlen((char *) components->content);
 		components = components->next;
@@ -134,7 +134,7 @@ int	components_to_data(t_token *token, t_list *components)
 		return (1);
 	new_data[0] = '\0';
 	components = head;
-	while (components)
+	while (components != NULL)
 	{
 		ft_strlcat(new_data, (char *) components->content, len + 1);
 		components = components->next;
