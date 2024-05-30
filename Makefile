@@ -17,7 +17,6 @@ DEFAULT	:=	\e(B\e[m
 
 FILES		:=	main.c				\
 				parse_expansion.c	\
-				parse_utils.c		\
 				parse_token.c		\
 				tokenize.c			\
 				tokenize_rules.c	\

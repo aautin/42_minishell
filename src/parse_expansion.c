@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:47:11 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:21:21 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,127 +19,127 @@
 #include "parser_utils.h"
 #include "getenv.h"
 
-static void	expand_len_insertion(t_list *envp, char *data[],
-	size_t *expanded_len, int *mode)
+static t_list	*create_component(char data[], int len)
 {
-	char	temp;
-	char	*getenv_find;
-	size_t	path_len;
+	t_list	*component;
+	char	*data_cpy;
 
-	if (*mode == DB_QUOTE && **data == '"')
+	data_cpy = malloc((len + 1) * sizeof(char));
+	if (data_cpy == NULL)
+		return (NULL);
+	data_cpy[0] = '\0';
+	ft_strlcpy(data_cpy, data, len + 1);
+	component = ft_lstnew(data_cpy);
+	if (component == NULL)
+		free(data_cpy);
+	return (component);
+}
+
+t_list	*get_token_components(char data[])
+{
+	t_list	*components;
+	t_list	*component;
+	int		start;
+	int		end;
+
+	components = NULL;
+	start = 0;
+	while (data[start] != '\0')
 	{
-		*mode = NO_QUOTE;
-		*expanded_len += 2;
-	}
-	else
-	{
-		path_len = pathname_len(*data);
-		if (path_len == 0)
-			*expanded_len += 2;
+		if (data[start] == '$' && data[start + 1] == '?')
+			end = start + 1;
+		else if (data[start] == '$')
+			end = start + pathname_len(&data[start + 1]);
 		else
 		{
-			temp = (*data)[path_len];
-			(*data)[path_len] = '\0';
-			getenv_find = ft_getenv(envp, *data);
-			(*data)[path_len] = temp;
-			*data += path_len - 1;
-			if (getenv_find != NULL)
-				*expanded_len += ft_strlen(getenv_find);
+			end = start;
+			while (data[end + 1] != '\0' && data[end + 1] != '$')
+				end++;
 		}
+		component = create_component(&data[start], end - start + 1);
+		if (component == NULL)
+			return (ft_lstclear(&components, free), NULL);
+		ft_lstadd_back(&components, component);
+		start = end + 1;
 	}
+	return (components);
 }
 
-static size_t	strnegcat(char new_data[], char const env[])
+static int	expansion(t_list *component, t_list *envp, 
+			unsigned char exit_status)
 {
-	size_t	i;
-	size_t	j;
-
-	i = 0;
-	while (new_data[i] != '\0')
-		i++;
-	j = 0;
-	while (env[j] != '\0')
-		new_data[i++] = -env[j++];
-	new_data[i] = '\0';
-	return (j);
-}
-
-static void	expand_data_insertion(t_list *envp, char *data[], char *new_data[])
-{
-	size_t	path_len;
-	char	temp;
+	char	*data;
 	char	*env;
 
-	path_len = pathname_len(*data);
-	if (path_len == 0)
+	data = (char *) component->content;
+	if (data[1] == '?')
 	{
-		*((*new_data)++) = '$';
-		*((*new_data)++) = **data;
+		env = ft_itoa(exit_status);
+		if (env == NULL)
+			return (perror("parse_components():ft_itoa()"), 1);
 	}
 	else
 	{
-		temp = (*data)[path_len];
-		(*data)[path_len] = '\0';
-		env = ft_getenv(envp, *data);
-		(*data)[path_len] = temp;
+		env = ft_getenv(envp, &data[1]);
 		if (env != NULL)
-			*new_data += strnegcat(*new_data, env);
-		*data += path_len - 1;
+		{
+			env = ft_strdup(env);
+			if (env == NULL)
+				return (perror("parse_components():ft_strdup()"), 1);
+		}
 	}
+	if (env == NULL)
+		return (0);
+	free(component->content);
+	component->content = env;
+	return (0);
 }
 
-size_t	expand_len(t_expansion const *config, char data[])
+int	parse_components(t_expansion const *config, t_list *components)
 {
 	int		mode;
-	size_t	expanded_len;
+	char	*data;
 
 	mode = NO_QUOTE;
-	expanded_len = 0;
-	while (*data)
+	while (components != NULL)
 	{
-		if (!config->ignore_quotes && (*data == '\'' || *data == '"'))
-			change_quote_mode(*data, &mode);
-		if (*data == '$' && mode != SG_QUOTE)
+		data = (char *) components->content;
+		if (data[0] == '$' && mode != SG_QUOTE)
 		{
-			data++;
-			if (*data == '?')
-				expanded_len += nbr_len(config->exit_status);
-			else
-				expand_len_insertion(config->envp, &data, &expanded_len, &mode);
+			if (expansion(components, config->envp, config->exit_status) == 1)
+				return (1);
 		}
-		else
-			expanded_len++;
-		if (*data)
-			data++;
+		else if (config->ignore_quotes == 0)
+			mode = unquote(data, mode);
+		components = components->next;
 	}
-	return (expanded_len);
+	return (0);
 }
 
-void	expand_data(t_expansion const *config, char data[], char new_data[])
+int	components_to_data(t_token *token, t_list *components)
 {
-	int		mode;
+	size_t	len;
+	t_list	*head;
+	char	*new_data;
 
-	mode = NO_QUOTE;
-	while (*data != '\0')
+	len = 0;
+	head = components;
+	while (components != NULL)
 	{
-		if (!config->ignore_quotes && (*data == '\'' || *data == '"'))
-			change_quote_mode(*data, &mode);
-		if (*data == '$' && mode != SG_QUOTE)
-		{
-			if (*(++data) == '?')
-				nbr_data(&new_data, config->exit_status);
-			else if (mode == DB_QUOTE && *data == '"')
-			{
-				mode = NO_QUOTE;
-				*(new_data++) = '$';
-				*(new_data++) = '"';
-			}
-			else
-				expand_data_insertion(config->envp, &data, &new_data);
-		}
-		else
-			*(new_data++) = *data;
-		if (*data != '\0')
-			data++;
+		len += ft_strlen((char *) components->content);
+		components = components->next;
 	}
+	new_data = malloc((len + 1) * sizeof(char));
+	if (new_data == NULL)
+		return (1);
+	new_data[0] = '\0';
+	components = head;
+	while (components != NULL)
+	{
+		ft_strlcat(new_data, (char *) components->content, len + 1);
+		components = components->next;
+	}
+	free(token->data);
+	token->data = new_data;
+	return (0);
 }
