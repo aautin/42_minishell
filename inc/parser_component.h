@@ -1,23 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_utils.h                                     :+:      :+:    :+:   */
+/*   parser_component.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 15:30:29 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/30 20:51:44 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:45:13 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PARSER_UTILS_H
-# define PARSER_UTILS_H
+#ifndef PARSER_COMPONENT_H
+# define PARSER_COMPONENT_H
 
 # include "libft/libft.h"
+
 # include "parser.h"
 
-int		expansion(t_list *component, t_list *envp, 
-			unsigned char exit_status);
-size_t	pathname_len(char pathname[]);
+typedef struct s_expansion
+{
+	t_list			*envp;
+	unsigned char	exit_status;
+	int				ignore_quotes;
+}	t_expansion;
+
+t_list	*get_token_components(char data[]);
+int		parse_components(t_expansion const *config, t_list *components);
+int		components_to_data(t_token *token, t_list *components);
+
 
 #endif

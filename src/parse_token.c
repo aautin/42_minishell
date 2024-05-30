@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/30 20:23:00 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 20:50:31 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,7 @@
 #include "libft/libft.h"
 
 #include "parser.h"
-#include "parser_utils.h"
-
-#include "getenv.h"
-
-size_t	pathname_len(char const pathname[])
-{
-	size_t	len;
-
-	len = 0;
-	if (!ft_isalpha(pathname[0]) && pathname[0] != '_')
-		return (0);
-	while (ft_isalnum(pathname[len]) || pathname[len] == '_')
-		len++;
-	return (len);
-}
+#include "parser_component.h"
 
 int	unquote(char data[], int starting_mode)
 {
