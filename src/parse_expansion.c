@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/30 17:34:49 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:42:45 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,9 +44,11 @@ t_list	*get_token_components(char data[])
 
 	components = NULL;
 	start = 0;
-	while (data[start])
+	while (data[start] != '\0')
 	{
-		if (data[start] == '$')
+		if (data[start] == '$' && data[start + 1] == '?')
+			end = start + 1;
+		else if (data[start] == '$')
 			end = start + pathname_len(&data[start + 1]);
 		else
 		{
@@ -63,11 +65,40 @@ t_list	*get_token_components(char data[])
 	return (components);
 }
 
+static int	expansion(t_list *component, t_list *envp, 
+			unsigned char exit_status)
+{
+	char	*data;
+	char	*env;
+
+	data = (char *) component->content;
+	if (data[1] == '?')
+	{
+		env = ft_itoa(exit_status);
+		if (env == NULL)
+			return (perror("parse_components():ft_itoa()"), 1);
+	}
+	else
+	{
+		env = ft_getenv(envp, &data[1]);
+		if (env != NULL)
+		{
+			env = ft_strdup(env);
+			if (env == NULL)
+				return (perror("parse_components():ft_strdup()"), 1);
+		}
+	}
+	if (env == NULL)
+		return (0);
+	free(component->content);
+	component->content = env;
+	return (0);
+}
+
 int	parse_components(t_expansion const *config, t_list *components)
 {
 	int		mode;
 	char	*data;
-	char	*env;
 
 	mode = NO_QUOTE;
 	while (components != NULL)
@@ -75,22 +106,40 @@ int	parse_components(t_expansion const *config, t_list *components)
 		data = (char *) components->content;
 		if (data[0] == '$' && mode != SG_QUOTE)
 		{
-			if (data[1] == '?')
-				env = ft_itoa(config->exit_status);
-			else
-				env = ft_getenv(config->envp, &data[1]);
-			if (env != NULL)
-			{
-				env = ft_strdup(env);
-				if (env == NULL)
-					return (1);
-				free(components->content);
-				components->content = env;
-			}
+			if (expansion(components, config->envp, config->exit_status) == 1)
+				return (1);
 		}
 		else
 			mode = unquote(data, mode);
 		components = components->next;
 	}
+	return (0);
+}
+
+int	components_to_data(t_token *token, t_list *components)
+{
+	size_t	len;
+	t_list	*head;
+	char	*new_data;
+
+	len = 0;
+	head = components;
+	while (components)
+	{
+		len += ft_strlen((char *) components->content);
+		components = components->next;
+	}
+	new_data = malloc((len + 1) * sizeof(char));
+	if (new_data == NULL)
+		return (1);
+	new_data[0] = '\0';
+	components = head;
+	while (components)
+	{
+		ft_strlcat(new_data, (char *) components->content, len + 1);
+		components = components->next;
+	}
+	free(token->data);
+	token->data = new_data;
 	return (0);
 }

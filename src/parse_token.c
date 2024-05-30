@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 16:12:39 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/29 21:57:00 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/30 18:43:01 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,36 +49,25 @@ int	unquote(char data[], int starting_mode)
 	return (mode);
 }
 
-static int	expansion(t_token *token, t_list *envp, int ignore_quotes,
-	int exit_status)
+int	parse_token(t_token *token, t_list *envp, int exit_status,
+	int ignore_quotes)
 {
 	t_expansion const	config = {envp, exit_status, ignore_quotes};
 	t_list				*components;
 
 	components = get_token_components(token->data);
+	if (components == NULL)
+		return (perror("get_token_components():ft_lstnew()"), 1);
 	if (parse_components(&config, components) == 1)
 	{
 		perror("parse_token():malloc()");
 		ft_lstclear(&components, free);
 		return (1);
 	}
-	t_list	*ptr = components;
-	while (ptr) {
-		printf("%s\n", (char *) ptr->content);
-		ptr = ptr->next;
-	}
-	if (components == NULL)
+	if (components_to_data(token, components) == 1)
 	{
-		perror("parse_token():malloc()");
+		perror("components_to_data():malloc()");
 		return (1);
 	}
-	return (0);
-}
-
-int	parse_token(t_token *token, t_list *envp, int exit_status,
-	int ignore_quotes)
-{
-	if (expansion(token, envp, ignore_quotes, exit_status))
-		return (1);
 	return (0);
 }
