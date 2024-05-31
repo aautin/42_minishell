@@ -16,38 +16,38 @@ GOTO_B	:=	\e[1A\e[K
 DEFAULT	:=	\e(B\e[m
 
 FILES		:=	\
-				builtin.c			\
-				builtin_cd.c		\
-				builtin_cd_utils2.c	\
 				builtin_cd_utils.c	\
+				builtin_cd_utils2.c	\
+				builtin_cd.c		\
 				builtin_echo.c		\
 				builtin_env.c		\
 				builtin_exit.c		\
 				builtin_export.c	\
 				builtin_pwd.c		\
 				builtin_unset.c		\
+				builtin.c			\
 				check_exec.c		\
 				exec_cmd.c			\
-				execution.c			\
 				execution_utils.c	\
+				execution.c			\
 				files.c				\
-				getenv.c			\
 				getenv_utils.c		\
+				getenv.c			\
 				handle_signals.c	\
-				heredoc.c			\
 				heredoc_utils.c		\
+				heredoc.c			\
 				list_utils.c		\
 				main.c				\
 				minishell.c			\
-				parse_expansion.c	\
+				parse_component.c	\
 				parse_token.c		\
 				parse_utils.c		\
 				pipeline.c			\
 				print_signals.c		\
 				redirections.c		\
-				tokenize.c			\
 				tokenize_rules.c	\
 				tokenize_utils.c	\
+				tokenize.c			\
 				wait_cmds.c			\
 
 SRC_PATH	:=	src
