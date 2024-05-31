@@ -6,10 +6,11 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/18 20:42:24 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/31 17:31:29 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
@@ -17,7 +18,7 @@
 #include "getenv.h"
 #include "getenv_utils.h"
 
-#define EXPORT_ERROR_MSG	"builtin_export(): not a valid identifier\n"
+#define NOT_VALID_ARG_MSG	": not a valid identifier\n"
 
 static int	is_validname(char const name[])
 {
@@ -33,11 +34,18 @@ static int	is_validname(char const name[])
 	return (1);
 }
 
-static int	is_valid_arg(char const arg[])
+static int	is_valid_arg(char arg[], char *ptr)
 {
+	char	*msg_error;
+
 	if (!is_validname(arg))
 	{
-		write(STDERR_FILENO, EXPORT_ERROR_MSG, ft_strlen(EXPORT_ERROR_MSG));
+		*ptr = '=';
+		msg_error = ft_strjoin(arg, NOT_VALID_ARG_MSG);
+		if (msg_error == NULL)
+			perror("is_valid_arg():ft_strjoin()");
+		else
+			write(STDERR_FILENO, msg_error, ft_strlen(msg_error));
 		return (0);
 	}
 	return (1);
@@ -56,7 +64,7 @@ int	builtin_export(char **argv, t_list **envp)
 		if (ptr != NULL)
 		{
 			*ptr = '\0';
-			if (is_valid_arg(*argv))
+			if (is_valid_arg(*argv, ptr))
 			{
 				current = find_env(*envp, *argv);
 				if (current == NULL)
