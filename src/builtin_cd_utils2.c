@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/18 20:00:16 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/21 16:12:59 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/28 15:48:25 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,8 @@ static int	is_directory(char const path[])
 {
 	struct stat	path_stat;
 
-	errno = 0;
 	if (stat(path, &path_stat) == -1)
-	{
-		if (errno != EACCES)
-			perror(path);
 		return (0);
-	}
 	return (S_ISDIR(path_stat.st_mode));
 }
 

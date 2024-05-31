@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/07 15:07:01 by pnguyen-          #+#    #+#             */
-/*   Updated: 2024/05/21 18:38:48 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/31 17:22:09 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,29 +105,26 @@ static int	retrieve_tokens_line(t_minishell *ms)
 
 static int	use_tokens(t_minishell *ms)
 {
-	int				std_fd[3];
-	int				status;
 	t_list *const	bad = verify_tokens(ms->tokens);
 
 	if (bad != NULL)
 	{
 		ms->last_exit_status = 2;
-		if (!save_std_fd(std_fd))
-		{
-			redirect_fd(STDERR_FILENO, STDOUT_FILENO);
-			printf("Unexpected token '%s'\n", ((t_token *)bad->content)->data);
-			return (reset_std_fd(std_fd));
-		}
+		ft_putstr_fd("Unexpected token '", STDERR_FILENO);
+		ft_putstr_fd(((t_token *)bad->content)->data, STDERR_FILENO);
+		ft_putstr_fd("'\n", STDERR_FILENO);
 		return (0);
 	}
-	status = retrieve_heredoc(ms);
-	if (status)
+	if (retrieve_heredoc(ms))
 		ms->last_exit_status = 2;
-	ms->current_heredoc = ms->head_heredoc;
-	if (!status && execute_line(ms))
-		return (1);
+	else
+	{
+		ms->current_heredoc = ms->head_heredoc;
+		if (execute_line(ms))
+			return (1);
+	}
 	if (g_sig != 0)
 		ms->last_exit_status = SIG_RETURN + g_sig;
 	g_sig = 0;
-	return (status);
+	return (0);
 }
