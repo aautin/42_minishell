@@ -6,11 +6,12 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/13 18:03:01 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/31 17:31:29 by pnguyen-         ###   ########.fr       */
+/*   Updated: 2024/05/31 18:06:42 by pnguyen-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 
 #include "libft/libft.h"
@@ -46,6 +47,7 @@ static int	is_valid_arg(char arg[], char *ptr)
 			perror("is_valid_arg():ft_strjoin()");
 		else
 			write(STDERR_FILENO, msg_error, ft_strlen(msg_error));
+		free(msg_error);
 		return (0);
 	}
 	return (1);
