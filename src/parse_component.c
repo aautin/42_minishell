@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/30 20:50:35 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/31 14:06:12 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,16 @@ static t_list	*create_component(char data[], int len)
 	return (component);
 }
 
+static size_t	len_until_expand(char data[])
+{
+	size_t	len;
+
+	len = 0;
+	while (data[len] != '\0' && data[len] != '$')
+		len++;
+	return (len);
+}
+
 t_list	*get_token_components(char data[])
 {
 	t_list	*components;
@@ -50,11 +60,7 @@ t_list	*get_token_components(char data[])
 		else if (data[start] == '$')
 			end = start + pathname_len(&data[start + 1]);
 		else
-		{
-			end = start;
-			while (data[end + 1] != '\0' && data[end + 1] != '$')
-				end++;
-		}
+			end = start + len_until_expand(&data[end + 1]);
 		component = create_component(&data[start], end - start + 1);
 		if (component == NULL)
 			return (ft_lstclear(&components, free), NULL);
