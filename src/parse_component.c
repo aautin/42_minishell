@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/31 14:45:14 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/31 21:06:52 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,10 @@ t_list	*get_token_components(char data[])
 	int		start;
 	int		end;
 
-	components = NULL;
+	if (data[0] == '\0')
+		return (create_component(data, 0));
 	start = 0;
+	components = NULL;
 	while (data[start] != '\0')
 	{
 		if (data[start] == '$' && data[start + 1] == '?')
