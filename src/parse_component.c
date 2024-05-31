@@ -6,7 +6,7 @@
 /*   By: aautin <aautin@student.42.fr >             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 16:36:12 by aautin            #+#    #+#             */
-/*   Updated: 2024/05/31 14:06:12 by aautin           ###   ########.fr       */
+/*   Updated: 2024/05/31 14:45:14 by aautin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_list	*get_token_components(char data[])
 		else if (data[start] == '$')
 			end = start + pathname_len(&data[start + 1]);
 		else
-			end = start + len_until_expand(&data[end + 1]);
+			end = start + len_until_expand(&data[start + 1]);
 		component = create_component(&data[start], end - start + 1);
 		if (component == NULL)
 			return (ft_lstclear(&components, free), NULL);
